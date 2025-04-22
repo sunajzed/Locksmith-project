@@ -23,14 +23,14 @@ const ResidentialService = () => {
   //   navigate("/residential");
   // };
   const handleViewServices = () => {
-    const accessToken = localStorage.getItem("accessToken");
-    const userRole = localStorage.getItem("userRole");
+    // const accessToken = localStorage.getItem("accessToken");
+    // const userRole = localStorage.getItem("userRole");
   
-    if (!accessToken || userRole !== "customer") {
-      alert("Please log in to access this service.");
-      navigate("/login?role=customer&from=residentialService"); // Add the from parameter
-      return;
-    }
+    // if (!accessToken || userRole !== "customer") {
+    //   alert("Please log in to access this service.");
+    //   navigate("/login?role=customer&from=residentialService"); // Add the from parameter
+    //   return;
+    // }
     navigate("/residential");
   };
 

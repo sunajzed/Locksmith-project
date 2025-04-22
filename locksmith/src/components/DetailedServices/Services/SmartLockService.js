@@ -12,16 +12,19 @@ const SmartLockService = () => {
   }, []);
 
  
-  const handleViewServicesClick = () => {
-    const accessToken = localStorage.getItem("accessToken");
-    const userRole = localStorage.getItem("userRole");
+  // const handleViewServicesClick = () => {
+  //   const accessToken = localStorage.getItem("accessToken");
+  //   const userRole = localStorage.getItem("userRole");
 
-    if (!accessToken || userRole !== "customer") {
-      alert("Please log in to access this service.");
-      navigate("/login?role=customer&from=smartLockService"); // Add the from parameter
-    } else {
-      navigate("/smart-lock");
-    }
+  //   if (!accessToken || userRole !== "customer") {
+  //     alert("Please log in to access this service.");
+  //     navigate("/login?role=customer&from=smartLockService"); // Add the from parameter
+  //   } else {
+  //     navigate("/smart-lock");
+  //   }
+  // };
+  const handleViewServicesClick = () => {
+    navigate("/smart-lock");
   };
 
   return (

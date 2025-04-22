@@ -23,16 +23,19 @@ const CommercialService = () => {
   //   }
   // };
 
-  const handleViewServicesClick = () => {
-    const accessToken = localStorage.getItem("accessToken");
-    const userRole = localStorage.getItem("userRole");
+  // const handleViewServicesClick = () => {
+  //   const accessToken = localStorage.getItem("accessToken");
+  //   const userRole = localStorage.getItem("userRole");
   
-    if (!accessToken || userRole !== "customer") {
-      alert("Please log in to access this service.");
-      navigate("/login?role=customer&from=commercialService"); // Add the from parameter
-    } else {
-      navigate("/commercial");
-    }
+  //   if (!accessToken || userRole !== "customer") {
+  //     alert("Please log in to access this service.");
+  //     navigate("/login?role=customer&from=commercialService"); // Add the from parameter
+  //   } else {
+  //     navigate("/commercial");
+  //   }
+  // };
+  const handleViewServicesClick = () => {
+    navigate("/commercial");
   };
 
   return (

@@ -56,14 +56,16 @@ function App() {
             <Route path="/usersignup" element={<UserSignup />} />
             <Route path="/login" element={<Login />} />
             <Route path="/contact-form" element={<ContactForm />} />
+            <Route path="/automotive" element={<Automotive />} />
+            <Route path="/residential" element={<Residential />} />
+             
+             <Route path="/commercial" element={<Commercial />} />
+             <Route path="/emergency" element={<Emergency />} />
+             <Route path="/smart-lock" element={<SmartLock />} />
             <Route element={<CustomerRoute />}>
               <Route path="/mybookings" element={<MyBookings />} />
               <Route path="/update-profile" element={<UserProfile />} />
-              <Route path="/residential" element={<Residential />} />
-              <Route path="/automotive" element={<Automotive />} />
-              <Route path="/commercial" element={<Commercial />} />
-              <Route path="/emergency" element={<Emergency />} />
-              <Route path="/smart-lock" element={<SmartLock />} />
+            
             </Route>
             <Route path="/confirm-payment" element={<ConfirmPayment />} />
             <Route path="/success-payment" element={<SuccessPayment />} />
@@ -87,7 +89,6 @@ function App() {
         </main>
         <Footer />
       </Router>
-      
     </div>
   );
 }

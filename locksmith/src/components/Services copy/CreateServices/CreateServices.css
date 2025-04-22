@@ -14,10 +14,19 @@
 .form-control {
   margin-bottom: 15px;
 }
-
-
 .custom-button {
-  width: 50%; /* Adjust this value to your desired width */
-  margin: 0 auto; /* Center the button */
-  display: block; /* Ensure the button is treated as a block element */
+  width: 50%; 
+  margin: 0 auto; 
+  display: block; 
+}
+
+.tooltip-inner {
+  background-color: #333 !important; 
+  color: #fff !important; 
+  border-radius: 8px; 
+  font-size: 1.1em; 
+}
+
+.tooltip-arrow {
+  border-top-color: #333 !important; 
 }

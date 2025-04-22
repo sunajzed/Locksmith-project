@@ -150,7 +150,7 @@ const Footer = () => {
         backgroundPosition: "center",
         color: "white",
       }}
-      
+
     >
       <Container className="footer">
         <Row>
@@ -198,10 +198,10 @@ const Footer = () => {
               <li><a href="/docs/Privacy Policy.pdf" className="text-light" target="_blank" rel="noopener noreferrer">Privacy Policy</a></li>
             </ul>
           </Col>
-
           <Col sm={12} md={2} lg={2} className="footer-column md-mt-5">
             <h5 className="footer-heading">Get in Touch</h5>
-            <p className="text-white">Questions or feedback? <br /> We'd love to hear from youuu.</p>
+            <p className="text-white">Questions or feedback? <br /> We'd love to hear from you.</p>
+            <p className="text-white">ABN: 24 684 285 050</p>
             <div className="message-icon">
               <Link to="/contact-form" className="text-light" onClick={handleLinkClick}>
                 <FaEnvelope className="social-icon" />
@@ -227,6 +227,7 @@ const Footer = () => {
             </div>
           </Col>
         </Row>
+
       </Container>
     </div>
   );

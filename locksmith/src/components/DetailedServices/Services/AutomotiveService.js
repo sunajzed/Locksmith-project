@@ -11,17 +11,21 @@ const AutomotiveService = () => {
     window.scrollTo(0, 0); // Scroll to top when the component loads
   }, []);
 
-  const handleViewServicesClick = () => {
-    const accessToken = localStorage.getItem("accessToken");
-    const userRole = localStorage.getItem("userRole");
+  // const handleViewServicesClick = () => {
+  //   const accessToken = localStorage.getItem("accessToken");
+  //   const userRole = localStorage.getItem("userRole");
   
-    if (!accessToken || userRole !== "customer") {
-      alert("Please log in to access this service.");
-      navigate("/login?role=customer&from=automotiveService"); // Add the from parameter
-    } else {
-      navigate("/automotive");
-    }
+  //   if (!accessToken || userRole !== "customer") {
+  //     alert("Please log in to access this service.");
+  //     navigate("/login?role=customer&from=automotiveService"); // Add the from parameter
+  //   } else {
+  //     navigate("/automotive");
+  //   }
+  // };
+  const handleViewServicesClick = () => {
+    navigate("/automotive");
   };
+  
   return (
     <div className="automotive-service container">
       {/* Section 1: Introduction */}

@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../../../api/api";
@@ -99,15 +98,16 @@ const Commercial = () => {
 
   // Handle booking
   const handleBooking = async (service) => {
-    const isConfirmed = window.confirm("Are you sure you want to book this service?");
-    if (!isConfirmed) return;
-
-    const token = localStorage.getItem("accessToken");
-    if (!token) {
+    if (!localStorage.getItem("accessToken")) {
       alert("Please log in to book a service.");
+      navigate("/login");
       return;
     }
-
+  
+    const isConfirmed = window.confirm("Are you sure you want to book this service?");
+    if (!isConfirmed) return;
+  
+    const token = localStorage.getItem("accessToken");
     const currentTime = new Date().toISOString();
     const bookingData = {
       service_request: service.id,
@@ -116,7 +116,7 @@ const Commercial = () => {
       scheduled_date: currentTime,
       locksmith_service: service.id,
     };
-
+  
     try {
       await api.post("/api/bookings/", bookingData, {
         headers: {
@@ -253,7 +253,40 @@ const Commercial = () => {
 
 
 
-const ServiceCard = ({ service, onBook }) => (
+// const ServiceCard = ({ service, onBook }) => (
+//   <div className="services-card">
+//     <div className="service-header">
+//       <h3>{service.service.admin_service_name}</h3>
+//       <p className="price">${service.service.total_price}</p>
+//     </div>
+//     {/* Availability Status */}
+//     <div
+//       className={`availability-status ${
+//         service.service.is_available ? "available" : "unavailable"
+//       }`}
+//     >
+//       {service.service.is_available ? "Open for Service" : "Currently Unavailable"}
+//     </div>
+//     <p className="text-black">
+//       <strong>Locksmith:</strong> {service.locksmith}
+//     </p>
+//     <p className="text-black">
+//       <strong>Type:</strong> {service.service.service_type}
+//     </p>
+//     <p className="text-black">
+//       <strong>Distance:</strong> {service.distance_km} km
+//     </p>
+//     <p className="details text-black">{service.service.details}</p>
+//     <button
+//       className="book-button"
+//       onClick={() => onBook(service.service)}
+//       disabled={!service.service.is_available} // Disable button if unavailable
+//     >
+//       {service.service.is_available ? "Book Now" : "Unavailable"}
+//     </button>
+//   </div>
+// );
+const ServiceCard = ({ service, onBook, isPaymentConfirmed }) => (
   <div className="services-card">
     <div className="service-header">
       <h3>{service.service.admin_service_name}</h3>
@@ -270,13 +303,17 @@ const ServiceCard = ({ service, onBook }) => (
     <p className="text-black">
       <strong>Locksmith:</strong> {service.locksmith}
     </p>
-    <p className="text-black">
-      <strong>Type:</strong> {service.service.service_type}
-    </p>
-    <p className="text-black">
-      <strong>Distance:</strong> {service.distance_km} km
-    </p>
-    <p className="details text-black">{service.service.details}</p>
+    {isPaymentConfirmed && (
+      <>
+        <p className="text-black">
+          <strong>Type:</strong> {service.service.service_type}
+        </p>
+        <p className="text-black">
+          <strong>Distance:</strong> {service.distance_km} km
+        </p>
+        <p className="details text-black">{service.service.details}</p>
+      </>
+    )}
     <button
       className="book-button"
       onClick={() => onBook(service.service)}
@@ -286,5 +323,4 @@ const ServiceCard = ({ service, onBook }) => (
     </button>
   </div>
 );
-
 export default Commercial;

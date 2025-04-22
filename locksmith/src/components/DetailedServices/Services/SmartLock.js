@@ -99,18 +99,16 @@ const SmartLock = () => {
 
   // Handle booking
   const handleBooking = async (service) => {
-    const isConfirmed = window.confirm("Are you sure you want to book this service?");
-    if (!isConfirmed) return;
-
-    const token = localStorage.getItem("accessToken");
-    const userRole = localStorage.getItem("userRole");
-
-    if (!token || userRole !== "customer") {
-      alert("You need to log in as a customer to book a service.");
-      navigate("/login?role=customer");
+    if (!localStorage.getItem("accessToken")) {
+      alert("Please log in to book a service.");
+      navigate("/login");
       return;
     }
-
+  
+    const isConfirmed = window.confirm("Are you sure you want to book this service?");
+    if (!isConfirmed) return;
+  
+    const token = localStorage.getItem("accessToken");
     const currentTime = new Date().toISOString();
     const bookingData = {
       service_request: service.id,
@@ -119,7 +117,7 @@ const SmartLock = () => {
       scheduled_date: currentTime,
       locksmith_service: service.id,
     };
-
+  
     try {
       await api.post("/api/bookings/", bookingData, {
         headers: {

@@ -124,8 +124,7 @@ const LockSmith = () => {
             </div>
 
             <p>
-              Securing Access to Your Home and Business
-              Your safety is our priority. Whether you need a <b>locked-out-of-house locksmith in Perth, emergency lockout services in Melbourne</b>, or <b>lost house keys replacement in Sydney</b>, we deliver fast and reliable locksmith solutions.
+              Your safety is our priority. Whether you need a  <b>locked-out-of-house locksmith in Perth, emergency lockout services in Melbourne,</b>, or <b>lost house keys replacement in Sydney,</b>, we deliver fast and reliable locksmith solutions.
             </p>
 
             {/* View More Button */}

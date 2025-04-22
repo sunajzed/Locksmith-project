@@ -11,18 +11,20 @@ const EmergencyService = () => {
     window.scrollTo(0, 0); // Scroll to top when the component loads
   }, []);
 
-  const handleViewServicesClick = () => {
-    const accessToken = localStorage.getItem("accessToken");
-    const userRole = localStorage.getItem("userRole");
+  // const handleViewServicesClick = () => {
+  //   const accessToken = localStorage.getItem("accessToken");
+  //   const userRole = localStorage.getItem("userRole");
   
-    if (!accessToken || userRole !== "customer") {
-      alert("Please log in to access this service.");
-      navigate("/login?role=customer&from=emergencyService"); // Add the from parameter
-    } else {
-      navigate("/emergency");
-    }
+  //   if (!accessToken || userRole !== "customer") {
+  //     alert("Please log in to access this service.");
+  //     navigate("/login?role=customer&from=emergencyService"); // Add the from parameter
+  //   } else {
+  //     navigate("/emergency");
+  //   }
+  // };
+  const handleViewServicesClick = () => {
+    navigate("/emergency");
   };
-
   return (
     <div className="emergency-service container">
       {/* Section 1: Introduction */}
