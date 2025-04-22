@@ -1,0 +1,21 @@
+.stripe-status-container {
+    max-width: 800px;
+    margin: 2rem auto;
+    padding: 2rem;
+    text-align: center;
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  
+  .stripe-status-message {
+    color: #28a745;
+  }
+  
+  .stripe-status-loading {
+    color: #17a2b8;
+  }
+  
+  .stripe-status-error {
+    color: #dc3545;
+  }

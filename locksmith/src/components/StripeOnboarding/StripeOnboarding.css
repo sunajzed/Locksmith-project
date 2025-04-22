@@ -1,0 +1,53 @@
+.stripe-onboarding-container {
+    max-width: 450px;
+    margin: 50px auto;
+    padding: 25px;
+    border-radius: 12px;
+    background: #ffffff;
+    text-align: center;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    border: 1px solid #e1e1e1;
+  }
+  
+  .stripe-onboarding-title {
+    font-size: 26px;
+    color: #333;
+    font-weight: 600;
+    margin-bottom: 20px;
+  }
+  
+  .stripe-onboarding-loading {
+    color: #202021;
+    font-weight: bold;
+    font-size: 16px;
+  }
+  
+  .stripe-onboarding-error {
+    color: #dc3545;
+    font-weight: bold;
+    font-size: 16px;
+  }
+  
+  .stripe-onboarding-button {
+    margin-top: 20px;
+    padding: 12px 18px;
+    background-color: #252525;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease-in-out, transform 0.2s;
+  }
+  
+  .stripe-onboarding-button a {
+    color: white;
+    font-size: 16px;
+    font-weight: 500;
+    text-decoration: none;
+    display: inline-block;
+  }
+  
+  .stripe-onboarding-button:hover {
+    background-color: #282829;
+    transform: scale(1.05);
+  }
+  

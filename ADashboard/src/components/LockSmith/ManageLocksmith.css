@@ -1,0 +1,49 @@
+.locksmith-container {
+    padding: 20px;
+    text-align: center;
+  }
+  
+  .locksmith-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+  }
+  
+  .locksmith-table th, .locksmith-table td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: center;
+  }
+  
+  .locksmith-table th {
+    background-color: #343434;
+    color: white;
+  }
+  
+  .photo {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+  }
+  
+  .approve-btn {
+    background-color: green;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    margin-right: 5px;
+    cursor: pointer;
+  }
+  
+  .remove-btn {
+    background-color: red;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    cursor: pointer;
+  }
+  
+  .approve-btn:hover, .remove-btn:hover {
+    opacity: 0.8;
+  }
+  

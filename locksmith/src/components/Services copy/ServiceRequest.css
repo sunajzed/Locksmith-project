@@ -1,0 +1,32 @@
+.table-container {
+    padding: 20px;
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  }
+  
+  .table-responsive {
+    max-width: 100%;
+    overflow-x: auto;
+  }
+  
+  .requests-table th,
+  .requests-table td {
+    vertical-align: middle;
+    text-align: center;
+  }
+  
+  .table-success {
+    background-color: #d4edda !important;
+  }
+  
+  .table-danger {
+    background-color: #f8d7da !important;
+  }
+  
+  @media (max-width: 768px) {
+    .table-container {
+      padding: 10px;
+    }
+  }
+  

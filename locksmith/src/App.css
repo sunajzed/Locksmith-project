@@ -1,0 +1,23 @@
+p {
+  font-size: 1.05rem; /* Correct syntax */
+  color: black;
+}
+b{
+ 
+    font-weight: 500 !important; /* Medium boldness */
+  
+  
+}
+strong{
+  font-weight: 500 !important;
+}
+.app-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background-color: white; /* Ensures a white background */
+}
+
+.content {
+  flex-grow: 1; /* Pushes the footer to the bottom */
+}

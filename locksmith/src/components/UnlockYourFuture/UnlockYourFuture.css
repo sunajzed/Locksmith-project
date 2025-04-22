@@ -1,0 +1,151 @@
+.unlock-section {
+    padding: 50px 0;
+    /* background-image: url('C:\Users\hp\OneDrive\Desktop\LockSmith\locksmith\public\images\dem (3).png');  */
+    background-size: cover; /* Ensures the image covers the entire section */
+    background-position: center; /* Centers the image */
+    background-repeat: no-repeat; /* Prevents the image from repeating */
+    position: relative; /* Needed for overlay */
+    color: #000; /* Default text color */
+  }
+  .unlock-heading{
+padding-top: 50px;
+  }
+  
+  /* Optional: Add an overlay to improve text readability */
+  .unlock-section::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 1;
+  }
+  
+  /* Ensure text and other content are above the overlay */
+  .unlock-text-content, .image-content {
+    position: relative;
+    z-index: 2;
+  }
+  
+  .unlock-text-content {
+    color: #000;
+  }
+  
+  .unlock-services-btn {
+    background-color: rgb(70, 71, 72) !important;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    font-weight: bold;
+    margin-top: 20px;
+    max-width: 150px;
+    padding-bottom: 40px;
+  }
+  
+  .unlock-image {
+    padding-top: 50px;
+  }
+  
+  .contact-box {
+    background: rgb(66, 66, 67);
+    padding: 15px;
+    margin-top: 20px;
+    text-align: center;
+    color: rgb(0, 0, 0);
+  }
+  
+  .transparent-box {
+    padding: 15px;
+    border-radius: 8px;
+    text-align: center;
+    transition: 0.3s;
+    height: 285px;
+  }
+  
+  .transparent-box:hover {
+    background: rgba(91, 90, 90, 0.4);
+  }
+  
+  .icon {
+    font-size: 30px;
+    color: rgb(70, 71, 72);
+    margin-bottom: 10px;
+  }
+  
+  .call-icon {
+    font-size: 30px;
+    color: rgb(0, 0, 0);
+    margin-bottom: 10px;
+  }
+  
+  .phone-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    font-size: 18px;
+    font-weight: bold;
+  }
+  
+  @media (max-width: 768px) {
+    .unlock-text-content {
+      text-align: center;
+    }
+  
+    .transparent-box {
+      margin-bottom: 15px;
+      height: 500px;
+    }
+  }
+  
+  @media (max-width: 500px) {
+    .transparent-box {
+      margin-bottom: 15px;
+      height: 250px;
+    }
+  }
+  
+  p {
+    font-size: 1.05rem;
+  }
+  
+  .benefits-list {
+    list-style-type: none;
+    padding-left: 0;
+    margin-top: 20px;
+  }
+  
+  .benefits-list li {
+    position: relative;
+    padding-left: 25px;
+    margin-bottom: 10px;
+    font-size: 1.05rem; /* Updated font size */
+    line-height: 1.5;
+    text-align: left; /* Ensure text aligns to the left */
+    color: #000; /* Ensure text color is black */
+  }
+  
+  .benefits-list li::before {
+    content: "•";
+    position: absolute;
+    left: 0;
+    color: white; /* Changed to white */
+    font-size: 1.5rem; /* Slightly larger bullet for better visibility */
+    line-height: 1.5;
+    top: 0; /* Align bullet with the text */
+  }
+  
+  .services-btn {
+    background-color: #c6bfcb !important;
+    color: rgb(0, 0, 0);
+    border: none;
+    padding: 10px 20px;
+    font-weight: bold;
+    margin-top: 20px;
+    max-width: 150px;
+  }
+  
+  li {
+    color: #000;
+  }

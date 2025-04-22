@@ -1,0 +1,73 @@
+/* Container styles */
+.profile-container {
+    max-width: 600px;
+    margin: 50px auto;
+    padding: 20px;
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+  }
+  
+  /* Title */
+  .profile-title {
+    text-align: center;
+    color: #333;
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 20px;
+  }
+  
+  /* Form fields */
+  .profile-form input {
+    width: 100%;
+    padding: 10px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    transition: all 0.3s ease;
+  }
+  
+  .profile-form input:focus {
+    border-color: #007bff;
+    outline: none;
+    box-shadow: 0px 0px 5px rgba(0, 123, 255, 0.5);
+  }
+  
+  /* Labels */
+  .profile-form label {
+    font-weight: 600;
+    margin-bottom: 5px;
+    display: block;
+  }
+  
+  /* Button styling */
+  .profile-update-btn {
+    display: block;
+    width: 100%;
+    padding: 12px;
+    background: #343a40;
+    color: white;
+    font-size: 18px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+  
+  .profile-update-btn:hover {
+    background: #212529;
+  }
+  
+  /* Success and error messages */
+  .profile-success {
+    color: green;
+    font-weight: bold;
+    text-align: center;
+  }
+  
+  .profile-error {
+    color: red;
+    font-weight: bold;
+    text-align: center;
+  }
+  

@@ -1,0 +1,52 @@
+/* .table-container {
+    padding: 20px;
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  }
+  
+  .table-responsive {
+    max-width: 100%;
+    overflow-x: auto;
+  }
+  
+  .services-table th,
+  .services-table td {
+    vertical-align: middle;
+    text-align: center;
+  }
+  
+  @media (max-width: 768px) {
+    .table-container {
+      padding: 10px;
+    }
+  }
+   */
+   .table-container {
+    padding: 20px;
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  }
+  
+  .table-responsive {
+    max-width: 100%;
+    overflow-x: auto;
+  }
+  
+  .services-table th,
+  .services-table td {
+    vertical-align: middle;
+    text-align: center;
+  }
+  
+  .policy-card {
+    border-left: 5px solid #007bff;
+  }
+  
+  @media (max-width: 768px) {
+    .table-container {
+      padding: 10px;
+    }
+  }
+  

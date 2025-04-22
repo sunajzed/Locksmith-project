@@ -1,0 +1,71 @@
+/* .card-section {
+    padding: 50px 15px;
+    background: #fff;
+} */
+.card-section {
+    position: relative;
+    /* background: url('C:\Users\hp\OneDrive\Desktop\LockSmith\locksmith\public\images\dark-grey-bg.png') no-repeat center center/cover; */
+    padding: 100px 0; /* Adjust padding as needed */
+    overflow: hidden;
+  }
+  
+
+.card-item {
+    border: none !important;
+    transition: transform 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease;
+    width: 100%; /* Make sure the card takes full width */
+    max-width: 350px; /* Set a max width */
+    box-shadow: 0 8px 16px rgba(255, 255, 255, 0.6);
+
+    background-color: rgb(235, 232, 232); /* Default background color */
+    overflow: hidden; /* Ensure the pseudo-element doesn't overflow */
+    min-height: 230px;
+}
+
+.card-item:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 8px 16px rgba(255, 255, 255, 0.2);
+    background-color: #c9c8c8; /* Lavender background on hover */
+}
+
+.card-icon {
+    text-align: center;
+    padding: 20px 0;
+    color: rgb(70, 71, 72); /* Lavender color for icons */
+}
+
+.card-item .card-body {
+    text-align: center;
+}
+
+.card-item .card-title {
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.card-item .card-text {
+    font-size: 1rem;
+    color: #000000;
+}
+
+h5 {
+    color: rgb(0, 0, 0);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .card-section {
+        padding: 30px 10px;
+    }
+
+    .card-item {
+        max-width: 300px; /* Reduce width for smaller screens */
+    }
+}
+
+@media (max-width: 480px) {
+    .card-item {
+        max-width: 100%; /* Allow full width */
+    }
+}

@@ -1,0 +1,36 @@
+
+.signup-form {
+  background-color: #d6d6d6;
+  
+  border-radius: 8px;
+  margin-bottom: 50px;
+}
+
+.signup-form h2 {
+  color: #333;
+}
+
+.signup-form .form-label {
+  font-weight: bold;
+}
+
+.signup-form .form-control, .signup-form .form-select {
+  border-radius: 4px;
+  border: 1px solid #ddd;
+  padding: 10px;
+}
+
+.signup-form .btn-primary {
+  background-color: #007bff;
+  border: none;
+  padding: 10px;
+  font-size: 16px;
+}
+
+.signup-form .btn-primary:hover {
+  background-color: #0056b3;
+}
+.loginbg{
+  background: linear-gradient(180deg, #4a4a4a 0%, #ffffff 50%, #4a4a4a 100%);
+
+}

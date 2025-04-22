@@ -1,0 +1,49 @@
+/* .statistics-container {
+    padding: 20px;
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  }
+  
+  .table-responsive {
+    max-width: 100%;
+    overflow-x: auto;
+  }
+  
+  .card {
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+  }
+  
+  @media (max-width: 768px) {
+    .statistics-container {
+      padding: 15px;
+      max-width: 95%;
+      margin: 0 auto;
+    }
+  }
+   */
+   .statistics-container {
+    padding: 20px;
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    
+  }
+  
+  .table-responsive {
+    max-width: 100%;
+    overflow-x: auto;
+  }
+  
+  .card {
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+  }
+  
+  @media (max-width: 768px) {
+    .statistics-container {
+      padding: 15px;
+      max-width: 95%;
+      margin: 0 auto;
+    }
+  }
+  

@@ -1,0 +1,426 @@
+/* Tab Container */
+.residential-container {
+    max-width: 1200px;
+    margin: auto;
+    padding: 20px;
+    font-family: Arial, sans-serif;
+    text-align: center;
+  }
+  
+  h2 {
+    color: #333;
+    margin-bottom: 20px;
+    font-size: 2rem;
+    font-weight: 600;
+  }
+  
+  /* Services List */
+  .services-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 30px;
+    justify-content: center;
+    margin-top: 40px;
+  }
+  
+  /* Services Card */
+  /* .services-card {
+    width: 100%;
+    max-width: 350px;
+    min-height: 350px;
+    border-radius: 0;
+    padding: 20px;
+    background: #fff;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+    transition: transform 0.2s ease-in-out;
+    text-align: left;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+  
+  .services-card:hover {
+    transform: translateY(-5px);
+  }
+  
+  .service-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #ddd;
+    padding-bottom: 10px;
+    margin-bottom: 10px;
+  }
+  
+  .Mui-selected {
+    color: rgb(240, 178, 131) !important;
+    background-color: #fff !important;
+  }
+  
+  .MuiTabs-indicator {
+    background-color: rgb(240, 178, 131) !important;
+  }
+  
+  .price {
+    font-weight: bold;
+    color: #e7a030;
+    font-size: 1.2rem;
+  }
+  
+  .details {
+    font-size: 14px;
+    color: #555;
+    line-height: 1.4;
+    flex-grow: 1;
+  }
+  
+  .book-button {
+    background-color: #3c3c3c;
+    color: white;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    width: 100%;
+    font-size: 16px;
+    transition: background-color 0.3s ease;
+  }
+  
+  .book-button:hover {
+    background-color: #000000;
+  }
+  
+  .book-button:focus {
+    outline: none;
+    box-shadow: 0 0 5px rgba(240, 178, 131, 0.5);
+  } */
+  
+  /* Updated CSS for better styling */
+  .services-card {
+    width: 100%;
+    max-width: 380px;
+    min-height: 420px;
+    border-radius: 12px;
+    padding: 20px;
+    background: #fff;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .services-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.12);
+  }
+  
+  .service-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 12px;
+  }
+  
+  .service-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #2d3748;
+    margin: 0;
+    flex: 1;
+  }
+  
+  .price {
+    font-weight: 700;
+    color: #e57e3e;
+    font-size: 1.3rem;
+    margin-left: 12px;
+  }
+  
+  .availability-status {
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-align: center;
+    margin-bottom: 16px;
+    width: fit-content;
+  }
+  
+  .availability-status.available {
+    background-color: #f0fff4;
+    color: #38a169;
+  }
+  
+  .availability-status.unavailable {
+    background-color: #fff5f5;
+    color: #e53e3e;
+  }
+  
+  /* Car Key Details Section */
+  .car-key-details-section {
+    background: #f8fafc;
+    border-radius: 8px;
+    padding: 12px;
+    margin-bottom: 16px;
+    border: 1px solid #edf2f7;
+  }
+  
+  .section-title {
+    font-size: 0.9rem;
+    color: #4a5568;
+    margin: 0 0 10px 0;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  
+  .specs-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+  }
+  
+  .spec-item {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .spec-label {
+    font-size: 0.75rem;
+    color: #718096;
+    font-weight: 500;
+  }
+  
+  .spec-value {
+    font-size: 0.9rem;
+    color: #2d3748;
+    font-weight: 600;
+    margin-top: 2px;
+  }
+  
+  /* Service Meta Information */
+  .service-meta {
+    display: flex;
+    justify-content: space-between;
+    margin: 12px 0;
+  }
+  
+  .meta-item {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .meta-label {
+    font-size: 0.75rem;
+    color: #718096;
+  }
+  
+  .meta-value {
+    font-size: 0.9rem;
+    color: #2d3748;
+    font-weight: 500;
+    margin-top: 2px;
+  }
+  
+  .service-description {
+    font-size: 0.9rem;
+    color: #4a5568;
+    line-height: 1.5;
+    margin: 12px 0;
+    flex-grow: 1;
+  }
+  
+  /* Book Button */
+  .book-button {
+    background-color: #363636;
+    color: white;
+    padding: 12px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    width: 100%;
+    font-size: 1rem;
+    font-weight: 600;
+    transition: all 0.2s ease;
+    margin-top: auto;
+  }
+  
+  .book-button:hover {
+    background-color: #454545;
+    transform: translateY(-1px);
+  }
+  
+  .book-button:active {
+    transform: translateY(0);
+  }
+  
+  .book-button.disabled {
+    background-color: #b7b9bb;
+    cursor: not-allowed;
+  }
+  
+  /* Responsive Adjustments */
+  @media (max-width: 768px) {
+    .services-card {
+      max-width: 100%;
+      min-height: auto;
+    }
+    
+    .specs-grid {
+      grid-template-columns: 1fr;
+    }
+    
+    .service-meta {
+      flex-direction: column;
+      gap: 8px;
+    }
+  }
+  
+  /* Loading Container */
+  .loading-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 450px;
+    background-color: #ffffff;
+  }
+  
+  /* Loading Spinner */
+  .loading-spinner {
+    border: 6px solid #f3f3f3;
+    border-top: 6px solid #424446;
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    animation: spin 1s linear infinite;
+  }
+  
+  @keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+  
+  /* Loading Message */
+  .loading-message {
+    margin-top: 20px;
+    font-size: 1.2rem;
+    color: #333;
+    font-weight: bold;
+  }
+  
+  /* Error Message */
+  .error {
+    color: red;
+    text-align: center;
+    margin-top: 20px;
+    font-size: 1.2rem;
+  }
+  
+  /* Success Message */
+  .success-message {
+    background-color: #4caf50;
+    color: white;
+    padding: 10px;
+    margin-bottom: 20px;
+    border-radius: 5px;
+    text-align: center;
+  }
+  
+  /* No Services Message */
+  .no-services-message {
+    text-align: center;
+    font-size: 1.2rem;
+    color: #555;
+    margin-top: 20px;
+  }
+  
+  /* Filter Container */
+  .filter-container {
+    margin-bottom: 20px;
+    text-align: center;
+  }
+  
+  .filter-dropdown {
+    padding: 8px 12px;
+    font-size: 1rem;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    background-color: #fff;
+    cursor: pointer;
+    transition: border-color 0.3s ease;
+  }
+  
+  .filter-dropdown:hover {
+    border-color: #aaa;
+    background-color: #f9f9f9;
+  }
+  
+  .filter-dropdown:focus {
+    outline: none;
+    border-color: rgb(240, 178, 131);
+    box-shadow: 0 0 5px rgba(240, 178, 131, 0.5);
+  }
+  
+  /* Media Queries for Responsiveness */
+  @media (min-width: 1024px) {
+    .services-list {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+  
+  @media (min-width: 768px) and (max-width: 1023px) {
+    .services-list {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+  
+  @media (max-width: 767px) {
+    .services-list {
+      grid-template-columns: repeat(1, 1fr);
+    }
+  }
+  @media (min-width: 1024px) {
+    .MuiTabs-root {
+      width: 100%;
+    }
+  
+    .MuiTab-root {
+      min-width: 200px !important; /* Ensure minimum width for tabs on larger screens */
+    }
+  }
+  
+  @media (max-width: 1023px) {
+    .MuiTab-root {
+      min-width: 150px !important; /* Adjust for smaller screens */
+    }
+  }
+  /* Availability Status Styles */
+  .availability-status {
+    padding: 6px 12px;
+    border-radius: 4px;
+    font-size: 0.9rem;
+    font-weight: bold;
+    text-align: center;
+    margin: 10px 0;
+  }
+  
+  .availability-status.available {
+    background-color: #e8f5e9; /* Light green background */
+    color: #2e7d32; /* Dark green text */
+  }
+  
+  .availability-status.unavailable {
+    background-color: #ffebee; /* Light red background */
+    color: #c62828; /* Dark red text */
+  }
+  
+  /* Disabled Button Styles */
+  .book-button:disabled {
+    background-color: #b0bec5; /* Gray background */
+    color: #546e7a; /* Dark gray text */
+    cursor: not-allowed;
+  }
+  

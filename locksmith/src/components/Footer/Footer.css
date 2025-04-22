@@ -1,0 +1,269 @@
+/* .custom-list {
+  list-style-type: none;
+  padding-left: 0;
+  text-align: left;
+}
+
+
+.custom-list li {
+  margin-bottom: 10px;
+}
+.footer-column {
+  text-align: left;
+  margin-bottom: 20px;
+  margin-top: 20px;
+  padding-top: 50px;
+}
+
+.logo-container {
+  display: flex;
+  align-items: center;
+  height: 120px;  
+  width: 140px;   
+}
+
+.logo-img {
+  height: 190px;  
+  width: 210px;   
+  
+}
+
+
+.footer-heading {
+  margin-bottom: 15px;
+  font-weight: bold;
+  color: white; 
+}
+
+
+.social-icons {
+  display: flex;
+  gap: 15px;
+  margin-top: 10px;
+}
+
+.social-icon {
+  font-size: 20px;
+  color: white; 
+  cursor: pointer;
+}
+
+
+.email-input {
+  margin-top: 10px;
+  display: flex;
+  align-items: center;
+}
+
+
+.rounded-input {
+  border-radius: 25px;
+  padding: 10px 15px;
+  border: 1px solid #ccc;
+  flex: 1;
+  background-color: rgba(255, 255, 255, 0.8); 
+  color: black;
+}
+
+
+.send-icon {
+  background: rgb(38, 38, 38);
+  color: white;
+  border-radius: 50%;
+  padding: 10px;
+  cursor: pointer;
+}
+
+p {
+  color: white; 
+}
+
+li {
+  color: white; 
+}
+
+.footer {
+  margin-top: 0 !important;
+  padding-top: 0 !important;
+}
+
+body, html {
+  margin: 0;
+  padding: 0;
+}
+
+
+.footer-line {
+  border-top: 1px solid rgba(255, 255, 255); 
+  margin: 20px 0;
+}
+
+
+.social-icons {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  margin-top: 20px;
+}
+
+.social-icon {
+  font-size: 24px;
+  color: white; 
+  cursor: pointer;
+  transition: color 0.3s ease;
+}
+
+.social {
+  padding-bottom: 40px;
+}
+
+.social-icon:hover {
+  color: #007bff; 
+}
+
+.custom-list li a {
+  text-decoration: none;  
+  color: white;
+}
+
+.custom-list li a:hover {
+  text-decoration: underline; 
+}
+
+.social-icons a {
+  text-decoration: none;
+} */
+.custom-list {
+  list-style-type: none;
+  padding-left: 0;
+  text-align: left;
+}
+
+.custom-list li {
+  margin-bottom: 10px;
+}
+
+.footer-column {
+  text-align: left;
+  margin-bottom: 20px;
+  margin-top: 20px;
+  padding-top: 50px;
+}
+
+/* Add specific margin for medium devices */
+@media (min-width: 768px) and (max-width: 991.98px) {
+  .md-mt-5 {
+    margin-top: 80px !important; /* Adjust this value as needed */
+  }
+}
+
+.logo-container {
+  display: flex;
+  align-items: center;
+  height: 120px;  
+  width: 140px;   
+}
+
+.logo-img {
+  height: 190px;  
+  width: 210px;   
+}
+
+.footer-heading {
+  margin-bottom: 15px;
+  font-weight: bold;
+  color: white; 
+}
+
+.social-icons {
+  display: flex;
+  gap: 15px;
+  margin-top: 10px;
+}
+
+.social-icon {
+  font-size: 20px;
+  color: white; 
+  cursor: pointer;
+}
+
+.email-input {
+  margin-top: 10px;
+  display: flex;
+  align-items: center;
+}
+
+.rounded-input {
+  border-radius: 25px;
+  padding: 10px 15px;
+  border: 1px solid #ccc;
+  flex: 1;
+  background-color: rgba(255, 255, 255, 0.8); 
+  color: black;
+}
+
+.send-icon {
+  background: rgb(38, 38, 38);
+  color: white;
+  border-radius: 50%;
+  padding: 10px;
+  cursor: pointer;
+}
+
+p {
+  color: white; 
+}
+
+li {
+  color: white; 
+}
+
+.footer {
+  margin-top: 0 !important;
+  padding-top: 0 !important;
+}
+
+body, html {
+  margin: 0;
+  padding: 0;
+}
+
+.footer-line {
+  border-top: 1px solid rgba(255, 255, 255); 
+  margin: 20px 0;
+}
+
+.social-icons {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  margin-top: 20px;
+}
+
+.social-icon {
+  font-size: 24px;
+  color: white; 
+  cursor: pointer;
+  transition: color 0.3s ease;
+}
+
+.social {
+  padding-bottom: 40px;
+}
+
+.social-icon:hover {
+  color: #d59732; 
+}
+
+.custom-list li a {
+  text-decoration: none;  
+  color: white;
+}
+
+.custom-list li a:hover {
+  text-decoration: underline; 
+}
+
+.social-icons a {
+  text-decoration: none;
+}

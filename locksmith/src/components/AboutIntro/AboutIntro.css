@@ -1,0 +1,63 @@
+/* Background with gradient */
+.about-section {
+    min-height: 600px;
+    display: flex;
+    justify-content: center;
+    /* background: linear-gradient(to bottom, rgb(144, 145, 149),#fff); */
+    
+    padding: 50px 0;
+  }
+  
+  /* Styling for the heading */
+  .about-heading {
+    font-family: "Merriweather", serif; /* Custom serif font */
+    font-size: 3rem;
+    font-weight: bold;
+    color: #ffffff;
+  }
+  
+  /* Styling for the quote */
+  .about-quote {
+    font-size: 1.3rem;
+    font-style: italic;
+    color: #444;
+    margin-top: 10px;
+  }
+  
+  /* Fade-in effect */
+  .fade-in {
+    opacity: 0;
+    transform: translateY(20px);
+    animation: fadeInAnimation 1s ease-out forwards;
+  }
+  
+  @keyframes fadeInAnimation {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  /* Responsive styles */
+  @media (max-width: 768px) {
+    .about-heading {
+      font-size: 2.5rem;
+    }
+    .about-quote {
+      font-size: 1.1rem;
+    }
+  }
+  
+  @media (max-width: 480px) {
+    .about-heading {
+      font-size: 2rem;
+    }
+    .about-quote {
+      font-size: 1rem;
+    }
+  }
+  

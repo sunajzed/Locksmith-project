@@ -1,0 +1,91 @@
+.login-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background: linear-gradient(180deg, #4a4a4a 0%, #ffffff 50%, #4a4a4a 100%);
+  padding: 20px;
+}
+
+.login-card {
+  width: 100%;
+  max-width: 500px; /* Increased from 400px to 500px */
+  padding: 40px; /* Increased padding for more space inside the card */
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+  border-radius: 16px; /* Slightly larger border radius */
+  background-color: #dddddd;
+  border: 1px solid #e0e0e0;
+}
+
+.login-card h2 {
+  text-align: center;
+  margin-bottom: 30px; /* Increased margin for more spacing */
+  color: #333333;
+  font-size: 28px; /* Larger font size for the heading */
+  font-weight: 600;
+}
+
+.form-group {
+  margin-bottom: 40px; /* Increased margin for more spacing between input fields */
+}
+
+.form-group label {
+  font-weight: 500;
+  color: #555555;
+  font-size: 16px; /* Slightly larger font size for labels */
+  margin-bottom: 20px; /* Increased margin-bottom for more space between label and input */
+  display: block; /* Ensure the label is on its own line */
+}
+
+.form-control {
+  border-radius: 10px; /* Larger border radius for inputs */
+  border: 1px solid #cccccc;
+  padding: 12px; /* Increased padding for larger inputs */
+  font-size: 16px; /* Larger font size for input text */
+  transition: border-color 0.3s ease;
+  margin-top: 20px; /* Increased margin-top for more space between label and input */
+}
+
+.form-control:focus {
+  border-color: #007bff;
+  box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+}
+
+.btn-primary {
+  background-color: #6f6f6f;
+  color: white;
+  border: none;
+  border-radius: 10px; /* Larger border radius for the button */
+  padding: 15px; /* Increased padding for a larger button */
+  font-size: 18px; /* Larger font size for button text */
+  font-weight: 600;
+  transition: background-color 0.3s ease;
+  margin-top: 30px; /* Added margin-top for more spacing above the button */
+}
+
+.btn-primary:hover {
+  background-color: #333333;
+}
+
+.alert {
+  margin-bottom: 25px; /* Increased margin for more spacing */
+  border-radius: 10px; /* Larger border radius for alerts */
+  padding: 15px; /* Increased padding for alerts */
+  text-align: center;
+  font-size: 16px; /* Larger font size for alert text */
+}
+
+.alert-success {
+  background-color: #d4edda;
+  border-color: #c3e6cb;
+  color: #155724;
+}
+
+.alert-danger {
+  background-color: #f8d7da;
+  border-color: #f5c6cb;
+  color: #721c24;
+}
+.label{
+  padding-right: 10px;
+}

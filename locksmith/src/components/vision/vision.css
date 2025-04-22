@@ -1,0 +1,75 @@
+/* Updated CSS */
+.vision {
+  padding: 50px 0;
+}
+
+.vision-text-content, .image-content {
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.image-content {
+  padding-left: 15px;
+  padding-right: 15px;
+}
+
+.image-email-wrapper {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.image-container {
+  width: 100%;
+  overflow: hidden;
+  border-radius: 8px 8px 0 0;
+}
+
+.services-btn {
+  background-color: rgb(70, 71, 72) !important;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  font-weight: bold;
+  margin-top: 20px;
+  max-width: 150px;
+  transition: transform 0.3s ease;
+}
+
+.services-btn:hover {
+  transform: translateY(-3px);
+}
+
+.vision-contact-box {
+  background: rgb(66, 66, 67);
+  padding: 20px;
+  text-align: center;
+  color: white;
+  border-radius: 0 0 8px 8px;
+  width: 100%;
+}
+
+.transparent-box {
+  background: rgba(128, 128, 128, 0.2);
+  padding: 20px;
+  border-radius: 8px;
+  text-align: center;
+  transition: all 0.3s ease;
+  height: 285px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.transparent-box:hover {
+  background: rgba(91, 90, 90, 0.4);
+  box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+
+.icon {
+  font-size: 30px;
+  color: rgb(70, 71, 72);}

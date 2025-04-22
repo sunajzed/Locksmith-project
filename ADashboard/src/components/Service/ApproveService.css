@@ -1,0 +1,35 @@
+.approve-service-container {
+    margin-top: 20px;
+  }
+  
+  .table {
+    margin-top: 20px;
+  }
+  
+  .table th,
+  .table td {
+    text-align: center;
+    vertical-align: middle;
+  }
+  
+  .status {
+    font-weight: bold;
+  }
+  
+  .approved {
+    color: green;
+  }
+  
+  .rejected {
+    color: red;
+  }
+  
+  .pending {
+    color: orange;
+  }
+  
+  button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+  

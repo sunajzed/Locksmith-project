@@ -1,0 +1,26 @@
+.car-key-container {
+    padding: 20px;
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  }
+  
+  .table-responsive {
+    max-width: 100%;
+    overflow-x: auto;
+  }
+  
+  .car-key-table th,
+  .car-key-table td {
+    text-align: center;
+    vertical-align: middle;
+  }
+  
+  @media (max-width: 768px) {
+    .car-key-container {
+      padding: 15px;
+      max-width: 95%;
+      margin: 0 auto;
+    }
+  }
+  
