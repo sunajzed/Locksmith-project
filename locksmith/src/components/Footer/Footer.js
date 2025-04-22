@@ -201,7 +201,7 @@ const Footer = () => {
 
           <Col sm={12} md={2} lg={2} className="footer-column md-mt-5">
             <h5 className="footer-heading">Get in Touch</h5>
-            <p className="text-white">Questions or feedback? <br /> We'd love to hear from you.</p>
+            <p className="text-white">Questions or feedback? <br /> We'd love to hear from youuu.</p>
             <div className="message-icon">
               <Link to="/contact-form" className="text-light" onClick={handleLinkClick}>
                 <FaEnvelope className="social-icon" />
