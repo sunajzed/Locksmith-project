@@ -122,6 +122,17 @@ const SecurityInfoSection = () => {
               gateway to locksmiths dedicated to ensuring the safety and security of homes, businesses, and vehicles 
               with <b>fast, reliable, legal, and affordable locksmith solutions</b>.
             </motion.p>
+            <motion.p
+              className="description text-dark"
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 1, delay: 0.3 }}
+              data-aos="fade-up"
+            >
+  
+              <b> Lock Quick is an online-only marketplace for connecting locksmiths and customers, designed to make finding trusted locksmith services quick, simple, and hassle-free. no matter where you are.</b>.
+            </motion.p>
+
 
             <motion.p
               className="text-dark"

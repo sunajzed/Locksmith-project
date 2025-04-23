@@ -121,6 +121,13 @@ const ServiceIntroPara = () => {
               >
                 We proudly serve Brisbane, Canberra, Sydney, Melbourne, Adelaide, and Perth, offering 24/7 emergency assistance and expert locksmith solutions tailored to your needs.
               </p>
+              <p 
+                className="text-black"
+                data-aos="fade-up"
+                data-aos-delay="300"
+              >
+                Lock Quick is an online-only marketplace for connecting locksmiths and customers, designed to make finding trusted locksmith services quick, simple, and hassle-free—no matter where you are.
+              </p>
             </motion.div>
           </Col>
         </Row>
