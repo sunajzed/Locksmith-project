@@ -120,7 +120,7 @@ const SecurityInfoSection = () => {
               Lock Quick is the one and only place to find <b>professional locksmith services</b> in 
               <b> Brisbane, Canberra, Sydney, Melbourne, Adelaide, and Perth</b>. Lock Quick's online world is the 
               gateway to locksmiths dedicated to ensuring the safety and security of homes, businesses, and vehicles 
-              with <b>fast, reliable, legal, and affordable locksmith solutions</b>.
+              with <b>fast, reliable, legal, and affordable locksmith solutions </b>.
             </motion.p>
             <motion.p
               className="description text-dark"
