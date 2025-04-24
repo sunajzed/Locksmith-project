@@ -231,7 +231,7 @@ export default function Login() {
       setError(err.response?.data?.message || 'Login failed. Please try again.');
       console.error('Error:', err);
     }
-  };
+  };                                                
 
   const handleGoogleSignIn = async () => {
     try {
@@ -240,9 +240,8 @@ export default function Login() {
       const idToken = await user.getIdToken();
   
       console.log('Firebase ID Token:', idToken);  
-  
+
       const response = await api.post('/api/google-login/', { idToken, role: selectedRole });
-  
       console.log('Backend Response:', response.data); 
       const { access, refresh, role, username } = response.data;
   
@@ -262,7 +261,8 @@ export default function Login() {
         setError('Google login failed. Please try again. ' + (error.message || ''));
       }
     }
-  };
+  };  
+  
   
   return (
     <div className="container-fluid loginbg d-flex align-items-center justify-content-center py-5">
