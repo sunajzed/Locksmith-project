@@ -254,6 +254,7 @@ export default function Login() {
       navigate(role === 'customer' ? '/' : '/locksmith');
     } catch (error) {
       console.error('Google login failed:', error);
+      setError('Google login failed. Please try again.');
   
       if (error.response) {
         setError(`Backend error: ${error.response.data.message || 'Google login failed. Please try again.'}`);
