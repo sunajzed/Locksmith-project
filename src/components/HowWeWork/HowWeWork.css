@@ -1,0 +1,92 @@
+.how-we-work-section {
+  padding: 100px 0;
+}
+
+.carousel-container {
+  display: flex;
+  overflow-x: auto;
+  scroll-behavior: smooth;
+  padding: 20px 0;
+  justify-content: flex-start;
+  scroll-snap-type: x mandatory;
+  overflow-y: hidden; 
+  -ms-overflow-style: none; 
+  scrollbar-width: none; 
+}
+
+.carousel-container::-webkit-scrollbar {
+  display: none; 
+}
+
+.step-card {
+  min-width: 350px;
+  max-width: 400px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2); 
+  border-radius: 20px;
+  text-align: center;
+  padding: 25px;
+  background: linear-gradient(to right, #d3d3d3, #808080);
+  transition: transform 0.3s ease-in-out;
+  margin-right: 20px;
+  flex: 0 0 auto;
+  position: relative;
+  overflow: visible; 
+  transform: skew(-5deg);
+  scroll-snap-align: center;
+  color: black;
+}
+
+.step-card:hover {
+  transform: skew(0) scale(1.05); 
+}
+
+.step-icon {
+  color: #202020; 
+}
+
+.carousel-control-prev,
+.carousel-control-next {
+  color: rgb(70, 71, 71);
+  cursor: pointer;
+  background-color: transparent; 
+  border: none; 
+  outline: none; 
+  padding: 0; 
+  margin: 0;
+}
+
+.carousel-control-prev:hover,
+.carousel-control-next:hover {
+  background-color: transparent; 
+  color: rgb(70, 71, 71); 
+  opacity: 1; 
+}
+
+@media (max-width: 768px) {
+  .carousel-container {
+    justify-content: center;
+  }
+
+  .step-card {
+    min-width: 90%;
+    max-width: 90%;
+    margin-right: 0;
+    transform: none;
+  }
+
+  .step-card::before {
+    transform: none;
+  }
+
+  .step-card .card-body {
+    transform: none;
+  }
+
+  .carousel-control-prev {
+    left: 10px;
+  }
+
+  .carousel-control-next {
+    right: 10px;
+  }
+}

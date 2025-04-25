@@ -1,0 +1,32 @@
+.choose-service-container {
+  max-width: 500px;
+  margin: auto;
+  padding: 20px;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.choose-service-container h2 {
+  margin-bottom: 20px;
+}
+
+.form-control {
+  margin-bottom: 15px;
+}
+.custom-button {
+  width: 50%; 
+  margin: 0 auto; 
+  display: block; 
+}
+
+.tooltip-inner {
+  background-color: #333 !important; 
+  color: #fff !important; 
+  border-radius: 8px; 
+  font-size: 1.1em; 
+}
+
+.tooltip-arrow {
+  border-top-color: #333 !important; 
+}

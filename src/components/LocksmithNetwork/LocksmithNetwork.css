@@ -1,0 +1,88 @@
+/* Container Styling */
+.locksmith-container {
+    padding: 20px;
+    margin-top: 20px;
+  }
+  
+  /* Left Content Styling */
+  .left-content .heading {
+    font-size: 2rem;
+    font-weight: bold;
+    color: #000000;
+    margin-bottom: 20px;
+  }
+  
+  .left-content .description {
+    font-size: 1.1rem;
+    color: #000000;
+    margin-bottom: 20px;
+  }
+  
+  .left-content .points-list {
+    list-style-type: disc;
+    padding-left: 20px;
+    font-size: 1rem;
+    color: #000000;
+    display: inline-block;
+    text-align: left; /* Align list items to the left within the centered container */
+  }
+  
+  .left-content .points-list li {
+    margin-bottom: 10px;
+  }
+  
+  /* Right Content Styling */
+  .right-content .network-image {
+    width: 100%;
+    max-width: 400px; /* Limit image width */
+    height: auto;
+    border-radius: 8px;
+    margin-bottom: 20px;
+  }
+  
+  /* Centered Content Styling */
+  .centered-content {
+    margin-top: 30px;
+  }
+  
+  .centered-content .image-description {
+    font-size: 1.1rem;
+    color: #000000;
+    margin-bottom: 20px;
+  }
+  
+  .centered-content .subheading {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #000000;
+    margin-bottom: 15px;
+  }
+  
+  .centered-content .sub-description {
+    font-size: 1rem;
+    color: #000000;
+    margin-bottom: 15px;
+  }
+  
+  /* Responsive Styling */
+  @media (max-width: 768px) {
+    .left-content .heading {
+      font-size: 1.8rem;
+    }
+  
+    .left-content .description,
+    .centered-content .image-description {
+      font-size: 1rem;
+    }
+  
+    .centered-content .subheading {
+      font-size: 1.3rem;
+    }
+  
+    .centered-content .sub-description {
+      font-size: 0.9rem;
+    }
+  }
+  .view-more-btn {
+    pointer-events: auto !important;
+  }

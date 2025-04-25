@@ -1,0 +1,72 @@
+.LockSmith-section {
+    padding: 50px 0;
+  }
+  
+  /* .lock-image-content img {
+    max-width: 100%;
+    height: auto;
+  }
+   */
+   /* Image Styling */
+.image-content img,
+.lock-image-content img {
+  width: 85%; /* Reduced size */
+  height: auto;
+  background-color: #ffffff; /* Optional: Light background for contrast */
+}
+
+  /* Default: Left align text */
+  .lock-text-content {
+    text-align: left;
+  }
+  
+  .lock-text-content h5 {
+    color: rgb(0, 0, 0);
+  }
+  
+  .lock-text-content h1 {
+    font-size: 2.5rem;
+    font-weight: bold;
+    margin-bottom: 20px;
+  }
+  
+  .lock-text-content p {
+    font-size: 1.05rem;
+    color: #000000;
+    margin-bottom: 20px;
+  }
+  
+  /* View More Button Styling */
+  .view-more-btn {
+    background-color: rgb(70, 71, 72);
+    border: none;
+    color: white;
+    padding: 10px 20px;
+    border-radius: 5px;
+    font-size: 1rem;
+    transition: background-color 0.3s ease, color 0.3s ease;
+  }
+  
+  .view-more-btn:hover {
+    background-color: white;
+    color: rgb(70, 71, 72);
+    border: 1px solid rgb(70, 71, 72);
+  }
+  
+  /* Medium Screens: Center align text, image & button */
+  @media (max-width: 991px) {
+    .lock-text-content {
+      text-align: center;
+    }
+  
+    .lock-image-content {
+      text-align: center;
+      margin: 20px auto;
+    }
+  
+    /* Center "View More" button */
+    .text-md-center {
+      text-align: center !important;
+    }
+  }
+  

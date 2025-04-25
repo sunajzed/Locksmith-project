@@ -1,0 +1,59 @@
+.locksmith-section {
+  /* background-color: #bcbcbc; */
+}
+
+/* Image Styling */
+.service-intro-image {
+width: 85%; /* Reduced size */
+height: auto;
+padding: 20px; /* Added inner padding */
+background-color: #ffffff; /* Optional: Add a light background for better visibility */
+}
+
+/* Text Styling */
+.welcome-text {
+color: rgb(0, 0, 0);
+font-size: 14px;
+text-transform: uppercase;
+font-weight: bold;
+margin-bottom: 5px;
+}
+
+/* Brown Tick Styling */
+.brown-tick {
+color: #8B4513; /* Brown color */
+margin-right: 8px;
+}
+
+/* Testimonial */
+.testimonial {
+background-color: #f8f8f8;
+border-left: 4px solid rgb(70, 71, 72);
+}
+
+/* Button */
+.more-btn {
+background-color: rgb(70, 71, 72) !important;
+border: none;
+padding: 10px 20px;
+font-weight: bold;
+color: white;
+}
+
+/* Responsive Styles */
+@media (max-width: 992px) {
+.text-container {
+  text-align: center;
+}
+
+.service-intro-image {
+  width: 70%;
+  margin-bottom: 30px;
+}
+}
+
+@media (max-width: 768px) {
+.service-intro-image {
+  width: 80%;
+}
+}

@@ -1,0 +1,42 @@
+/* Custom styles for the confirmation container */
+.confirmation-container {
+    max-width: 600px;
+    margin: 0 auto;
+  }
+  
+  /* Card styling */
+  .card {
+    border: 1px solid #e0e0e0;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+  
+  /* Button styling */
+  .confirm-button {
+    background-color: #3e3f40;
+    border: none;
+    padding: 10px 20px;
+    font-size: 1.1rem;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+  }
+  
+  .confirm-button:hover {
+    background-color: #000000;
+  }
+  
+  /* Responsive adjustments */
+  @media (max-width: 768px) {
+    .confirmation-container {
+      padding: 0 15px;
+    }
+  
+    .card {
+      padding: 20px;
+    }
+  
+    .confirm-button {
+      width: 100%;
+      font-size: 1rem;
+    }
+  }

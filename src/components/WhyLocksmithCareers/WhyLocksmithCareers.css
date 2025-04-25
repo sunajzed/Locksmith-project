@@ -1,0 +1,85 @@
+.lock-career-section {
+  padding: 50px 0;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  position: relative;
+}
+
+.lock-career-section::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 1;
+}
+
+.unlock-heading {
+  padding-top: 50px;
+}
+
+.unlock-text-content {
+  position: relative;
+  z-index: 2;
+  color: #fff;
+}
+
+.career-list {
+  padding-left: 0;
+  margin-top: 20px;
+  list-style-type: none;
+}
+
+.career-list li {
+  position: relative;
+  padding-left: 25px;
+  margin-bottom: 10px;
+  font-size: 1.05rem;
+  line-height: 1.5;
+  text-align: left;
+}
+
+.career-list li::before {
+  content: "•";
+  position: absolute;
+  left: 0;
+  color: white;
+  font-size: 1.5rem;
+  line-height: 1.5;
+}
+
+/* Medium devices (tablets, 768px and below) */
+@media (max-width: 992px) {
+  .unlock-text-content {
+      text-align: left;
+  }
+  
+  .career-list li {
+      text-align: left;
+      padding-left: 25px; /* Maintain same padding as desktop */
+  }
+  
+  /* Keep bullet points visible with same spacing */
+  .career-list li::before {
+      display: inline;
+  }
+}
+
+/* Small devices (landscape phones, 576px and below) */
+@media (max-width: 576px) {
+  .unlock-heading {
+      font-size: 1.8rem;
+      padding-top: 30px;
+  }
+  
+  p {
+      font-size: 1rem;
+  }
+  
+  .career-list li {
+      font-size: 1rem;
+  }
+}

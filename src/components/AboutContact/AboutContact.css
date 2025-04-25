@@ -1,0 +1,65 @@
+/* .banner-section {
+    background-color: grey; 
+    color: white;
+    padding: 100px 0;
+    text-align: center;
+    position: relative;
+  }
+   */
+   .banner-section {
+    background: linear-gradient(to bottom, #ffffff, rgb(144, 145, 149));
+    color: rgb(8, 8, 8);
+    padding: 100px 0;
+    text-align: center;
+    position: relative;
+  }
+  .video-btn {
+    width: 60px;
+    height: 60px;
+    background: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 20px;
+    cursor: pointer;
+  }
+  
+  .play-icon {
+    font-size: 24px;
+    color: yellow;
+  }
+  
+  .banner-title {
+    font-size: 28px;
+    font-weight: bold;
+    margin-bottom: 15px;
+  }
+  
+  .banner-text {
+    font-size: 16px;
+    max-width: 600px;
+    margin: 0 auto 20px;
+    
+  }
+  
+  .contact-btn {
+    background-color: rgb(97, 97, 97);
+    border: none;
+    padding: 10px 20px;
+    font-weight: bold;
+    color: black;
+    max-width: 150px; /* Prevent excessive width */
+
+  }
+  
+  @media (max-width: 768px) {
+    .banner-title {
+      font-size: 24px;
+    }
+  
+    .banner-text {
+      font-size: 14px;
+    }
+  }
+  

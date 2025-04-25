@@ -1,0 +1,107 @@
+.automotive-service,
+.residential-service,
+.commercial-service, .emergency-service, .smart-lock-service {
+  margin-top: 40px;
+  padding: 20px;
+}
+
+.service-intro-section {
+  background-color: #f8f9fa;
+  padding: 30px;
+  border-radius: 10px;
+}
+
+.intro-section h2 {
+  color: #333;
+}
+
+/* Centering and Reducing Image Width */
+.image-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 20px 0;
+}
+
+.image-placeholder {
+  width: 60%; /* Adjust width */
+  background-color: #ddd;
+  border-radius: 10px;
+  text-align: center;
+  overflow: hidden; /* Ensure no overflow */
+}
+
+.image-placeholder img {
+  max-width: 100%;
+  height: auto; /* Maintain aspect ratio */
+  display: block;
+}
+
+
+/* Ensuring Button Visibility */
+.view-locksmiths-btn {
+  display: block;
+  margin: 15px auto; /* Reduce margin */
+  padding: 8px 16px; /* Reduce padding */
+  font-size: 1rem; /* Slightly smaller font */
+  font-weight: bold;
+  background-color: #474747; /* Primary Blue */
+  border: none;
+  border-radius: 6px;
+  color: white;
+  transition: background-color 0.3s ease-in-out;
+  max-width: 200px; /* Prevent excessive width */
+  text-align: center;
+}
+
+.view-locksmiths-btn:hover {
+  background-color: #262626; /* Darker Blue on Hover */
+}
+
+
+/* Services Section */
+.services-section {
+  margin-top: 40px;
+}
+
+.service-box {
+  background: #fff;
+  padding: 20px;
+  margin: 10px 0;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.service-box h4 {
+  color: #000000;
+}
+
+.why-choose-section {
+  background-color: #e9ecef;
+  padding: 20px;
+  border-radius: 8px;
+  margin-top: 40px;
+}
+
+.why-choose-section h3 {
+  color: #007bff;
+}
+
+.why-choose-section ul {
+  padding: 0;
+}
+
+.why-choose-section li {
+  font-size: 1.2rem;
+  margin: 10px 0;
+  color: #333;
+}
+
+/* Responsive Styles */
+@media (max-width: 768px) {
+  .image-placeholder {
+    width: 80%;
+    height: 180px;
+    line-height: 180px;
+  }
+}

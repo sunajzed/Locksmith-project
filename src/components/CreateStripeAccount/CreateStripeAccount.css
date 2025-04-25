@@ -1,0 +1,46 @@
+/* CreateStripeAccount.css */
+
+.stripe-account-container {
+  max-width: 500px;
+  margin: 50px auto;
+  padding: 30px;
+  background: #f8f9fa;
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  text-align: center;
+}
+
+.stripe-account-container h2 {
+  margin-bottom: 25px;
+  color: #343a40;
+  font-weight: bold;
+}
+
+.form-control {
+  margin-bottom: 20px;
+  padding: 12px;
+  border-radius: 8px;
+  border: 1px solid #ced4da;
+  font-size: 16px;
+}
+
+button {
+  width: 100%;
+  padding: 12px;
+  font-size: 18px;
+  font-weight: bold;
+  border-radius: 8px;
+  background-color: #343a40;
+  color: white;
+  transition: background 0.3s ease;
+}
+
+button:hover {
+  background-color: #212529;
+}
+
+.alert {
+  padding: 12px;
+  font-size: 14px;
+  border-radius: 8px;
+}

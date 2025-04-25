@@ -1,0 +1,233 @@
+
+
+  .dashboard-container {
+    display: flex;
+    height: 100vh;
+    background-color: #f8f9fa;
+    overflow: hidden;
+  }
+  
+  .sidebar {
+    width: 250px;
+    background-color: #343434;
+    color: white;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    transition: all 0.3s ease-in-out;
+    overflow-y: auto; /* Enable scrolling in sidebar */
+    max-height: 100vh;
+  }
+  
+  .brand {
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin-bottom: 20px;
+  }
+  
+  .menu {
+    flex-grow: 1;
+  }
+  
+  .menu-item {
+    width: 100%;
+    background: none;
+    border: none;
+    color: white;
+    padding: 10px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background 0.3s;
+  }
+  
+  .menu-item:hover,
+  .menu-item.active {
+    background-color: #d5d4d4;
+    color: #000;
+  }
+  
+  .submenu {
+    margin-left: 20px;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .submenu-item {
+    background: none;
+    border: none;
+    color: white;
+    padding: 8px;
+    text-align: left;
+    cursor: pointer;
+  }
+  
+  .submenu-item:hover,
+  .submenu-item.active {
+    background-color: #d5d4d4;
+    color: #000;
+  }
+  
+  .main-content {
+    flex: 1;
+    padding: 20px;
+    text-align: center;
+    overflow-y: auto; /* Enable vertical scrolling */
+    max-height: 100vh;
+  }
+  
+  .card {
+    background: white;
+    padding: 20px;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    overflow-x: auto;
+  }
+  
+  .footer {
+    margin-top: 20px;
+    color: #6c757d;
+  }
+  
+  /* Responsive Design */
+  @media (max-width: 768px) {
+    .dashboard-container {
+      flex-direction: column;
+      overflow-y: auto; /* Enable scrolling for smaller screens */
+    }
+  
+    .sidebar {
+      width: 100%;
+      text-align: center;
+      padding: 10px;
+      max-height: none;
+    }
+  
+    .menu-item {
+      justify-content: center;
+    }
+  
+    .submenu {
+      margin-left: 0;
+      text-align: center;
+    }
+  
+    .main-content {
+      padding: 10px;
+    }
+  }
+  
+  @media (max-width: 1024px) {
+    .dashboard-container {
+      flex-direction: row;
+      overflow-y: auto;
+    }
+  
+    .sidebar {
+      width: 200px;
+      padding: 15px;
+    }
+  
+    .menu-item {
+      font-size: 0.9rem;
+      padding: 8px;
+    }
+  
+    .submenu-item {
+      padding: 6px;
+    }
+  
+    .main-content {
+      padding: 15px;
+    }
+  
+    .card {
+      padding: 15px;
+    }
+  }
+  
+  @media (max-width: 992px) {
+    .sidebar {
+      width: 180px;
+      padding: 10px;
+    }
+  
+    .menu-item {
+      font-size: 0.85rem;
+    }
+  
+    .submenu {
+      margin-left: 10px;
+    }
+  
+    .main-content {
+      padding: 10px;
+    }
+  
+    .card {
+      padding: 10px;
+    }
+  }
+  
+  .close-sidebar-btn {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 1.5rem;
+    cursor: pointer;
+    align-self: flex-end;
+    margin-bottom: 10px;
+  }
+  
+  .open-sidebar-btn {
+    background-color: #343434;
+    border: none;
+    color: white;
+    font-size: 1rem;
+    cursor: pointer;
+    padding: 8px 16px;
+    border-radius: 5px;
+    margin-bottom: 10px;
+    display: inline-block;
+    transition: background-color 0.3s ease;
+  }
+  
+  .open-sidebar-btn:hover {
+    background-color: #555;
+  }
+  
+  /* Hide open/close buttons on larger screens */
+  @media (min-width: 1025px) {
+    .close-sidebar-btn,
+    .open-sidebar-btn {
+      display: none;
+    }
+  }
+  
+  /* Hide scrollbar for Chrome, Safari, and Opera */
+  .dashboard-container::-webkit-scrollbar,
+  .sidebar::-webkit-scrollbar,
+  .main-content::-webkit-scrollbar,
+  .card::-webkit-scrollbar {
+    display: none;
+  }
+  
+  /* Hide scrollbar for IE, Edge, and Firefox */
+  .dashboard-container,
+  .sidebar,
+  .main-content,
+  .card {
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
+  }
+  
+  /* Ensure the content is still scrollable */
+  .dashboard-container,
+  .sidebar,
+  .main-content,
+  .card {
+    overflow-y: auto;
+  }
