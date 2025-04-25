@@ -241,7 +241,7 @@ export default function Login() {
   
       console.log('Firebase ID Token:', idToken);  
 
-      const response = await api.post('/api/google-login/', { idToken, role: selectedRole });
+      const response = await api.post('/api/google-login/', { token : idToken, role: selectedRole });
       console.log('Backend Response:', response.data); 
       const { access, refresh, role, username } = response.data;
   
