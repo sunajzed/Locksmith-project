@@ -1,95 +1,72 @@
-/* /* Background gradient */
+/* Background */
 .loginbg {
-  background: linear-gradient(135deg, #dff1ff, #ffffff, #e2e2e2);
+  background: linear-gradient(120deg, #e0e5ec, #ffffff); /* Subtle, light gradient */
   min-height: 100vh;
-  padding: 30px 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 40px 0;
 }
 
-/* Wrapper */
+/* Form Wrapper */
 .form-wrapper {
-  max-width: 600px;
+  max-width: 420px; /* Optimized width for focus */
   width: 100%;
   background-color: #ffffff;
-  border-radius: 20px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-  transition: all 0.3s ease-in-out;
-  padding: 40px;
+  border-radius: 15px; /* Soft rounded corners */
+  box-shadow: 0 10px 50px rgba(0, 0, 0, 0.1); /* High-end shadow for depth */
+  padding: 40px 30px; /* Generous padding for comfort */
+  transition: transform 0.3s ease-in-out, box-shadow 0.3s ease;
+  overflow: hidden;
 }
 
-/* Form base styles */
-.signup-form {
-  font-family: 'Segoe UI', sans-serif;
+.form-wrapper:hover {
+  transform: translateY(-8px); /* Smooth elevation */
+  box-shadow: 0 12px 60px rgba(0, 0, 0, 0.15); /* Enhanced shadow on hover */
 }
 
-.signup-form h2 {
+/* Header Styling */
+.form-wrapper h2 {
+  font-family: 'Roboto', sans-serif;
   font-weight: 700;
-  font-size: 28px;
-  color: #333;
+  font-size: 26px;
+  color: #2f2f2f;
+  text-align: center;
+  margin-bottom: 24px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
 }
 
-/* Labels and inputs */
-.signup-form .form-label {
+/* Labels */
+.form-label {
   font-weight: 500;
-  font-size: 15px;
-  color: #2c3e50;
+  font-size: 14px;
+  color: #757575;
+  margin-bottom: 8px;
 }
 
-.signup-form .form-control {
-  border-radius: 12px;
-  padding: 14px 45px 14px 14px; 
+/* Input Fields */
+.form-control {
+  border-radius: 12px; /* Smooth rounded inputs */
+  padding: 16px 18px; /* Ample padding for comfort */
   font-size: 16px;
-  border: 1px solid #ccc;
-  transition: all 0.2s ease;
-  position: relative;
+  border: 1px solid #ddd; /* Light grey border */
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  margin-bottom: 18px; /* Consistent spacing between inputs */
+  background-color: #f7f8fa; /* Light grey background for inputs */
 }
 
-
-/* Fix parent container to relative for proper positioning */
-.signup-form .position-relative {
-  position: relative;
+.form-control:focus {
+  border-color: #5c6bc0; /* Sophisticated blue for focus */
+  box-shadow: 0 0 8px rgba(92, 107, 192, 0.3); /* Soft focus glow */
+  outline: none;
 }
 
-
-
-/* Form base styles */
-.login-form {
-  font-family: 'Segoe UI', sans-serif;
-}
-
-.login-form h2 {
-  font-weight: 700;
-  font-size: 28px;
-  color: #333;
-}
-
-/* Labels and inputs */
-.login-form .form-label {
-  font-weight: 500;
-  font-size: 15px;
-  color: #2c3e50;
-}
-
-.login-form .form-control {
-  border-radius: 12px;
-  padding: 14px 45px 14px 14px; 
-  font-size: 16px;
-  border: 1px solid #ccc;
-  transition: all 0.2s ease;
-  position: relative;
-}
-
-
-/* Fix parent container to relative for proper positioning */
-.login-form .position-relative {
-  position: relative;
-}
-
-
-/* Password toggle */
+/* Password Toggle */
 .password-toggle {
   position: absolute;
   top: 50%;
-  right: 16px;
+  right: 18px;
   transform: translateY(-50%);
   cursor: pointer;
   color: #777;
@@ -97,47 +74,75 @@
   z-index: 2;
 }
 
-
-/* Button styling */
+/* Buttons Styling */
 .btn-dark {
-  padding: 14px;
+  padding: 16px 0;
   font-size: 16px;
   font-weight: 600;
-  border-radius: 12px;
+  border-radius: 30px; /* Fully curved sides for premium feel */
+  background-color: #5c6bc0; /* Soft, refined blue */
+  color: white;
+  width: 100%;
+  border: none;
+  text-transform: uppercase;
+  transition: background-color 0.3s ease, transform 0.2s ease;
 }
 
 .btn-dark:hover {
-  background-color: #1f1f1f;
+  background-color: #3f51b5; /* Darker blue on hover */
+  transform: translateY(-4px); /* Smooth elevation on hover */
 }
 
 /* Social Media Buttons */
 .social-login .btn-google,
 .social-login .btn-facebook {
-  padding: 12px;
+  padding: 14px 0;
   font-size: 16px;
   font-weight: 600;
-  border-radius: 12px;
+  border-radius: 30px; /* Smooth, rounded sides for both buttons */
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: all 0.3s;
+  transition: background-color 0.3s ease, transform 0.3s ease;
+  width: 100%;
   border: none;
 }
 
-.social-login .btn-google:hover,
-.social-login .btn-facebook:hover {
-  background-color: #f1f1f1;
-  transform: translateY(-2px);
+.social-login .btn-google {
+  background-color: white;
+  color: #333;
+  border: 1px solid #ddd; /* Subtle border to distinguish Google button */
 }
 
+.social-login .btn-facebook {
+  background-color: #1877f2; /* Facebook blue */
+  color: white;
+}
+
+.social-login .btn-google:hover {
+  background-color: #f1f1f1; /* Light grey on hover */
+}
+
+.social-login .btn-facebook:hover {
+  background-color: #1558a2; /* Darker Facebook blue */
+}
+
+/* Icon Styling for Google and Facebook Buttons */
 .social-login .btn-google svg,
 .social-login .btn-facebook svg {
-  margin-right: 8px;
+  margin-right: 12px; /* Added space between icon and text */
+  height: 20px;
 }
 
-/* Fade in animation */
+/* Subtle Hover Transitions */
+.social-login .btn-google:hover,
+.social-login .btn-facebook:hover {
+  transform: translateY(-4px); /* Elegant hover elevation */
+}
+
+/* Fade-in Animation */
 .animate-fadein {
-  animation: fadeIn 0.5s ease-out;
+  animation: fadeIn 0.6s ease-out;
 }
 
 @keyframes fadeIn {
@@ -145,18 +150,30 @@
   to { opacity: 1; transform: translateY(0); }
 }
 
-/* Responsive tweaks */
+/* Responsive Adjustments */
 @media (max-width: 768px) {
   .form-wrapper {
     padding: 30px 20px;
   }
 
-  .signup-form h2 {
-    font-size: 24px;
+  .form-wrapper h2 {
+    font-size: 22px;
   }
 
   .btn-dark {
     font-size: 14px;
-    padding: 12px;
+    padding: 14px;
   }
+
+  .social-login .btn-google,
+  .social-login .btn-facebook {
+    padding: 14px;
+  }
+}
+
+/* Focus & Hover Effects for Inputs */
+input:focus, textarea:focus {
+  outline: none;
+  box-shadow: 0 0 8px rgba(92, 107, 192, 0.3);
+  border-color: #5c6bc0;
 }

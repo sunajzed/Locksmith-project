@@ -146,7 +146,6 @@
   font-weight: 500;
 }
 
-/* Mobile Responsive Styles */
 @media only screen and (max-width: 768px) {
   .intro-carousel {
     height: auto;
@@ -175,11 +174,11 @@
     margin-bottom: 20px;
   }
   
-  .intro-description {
+  /* .intro-description {
     font-size: 16px;
     line-height: 1.6;
     margin-bottom: 20px;
-  }
+  } */
   
   .search-bar {
     flex-direction: column;
@@ -222,3 +221,8 @@
 } 
 
 
+/* Add this to your existing IntroPage.css without modifying anything else */
+.intro-lead {
+  font-weight: 500;
+  margin-bottom: 1.5em;
+}
