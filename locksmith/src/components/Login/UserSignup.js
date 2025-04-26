@@ -146,7 +146,7 @@
 
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { FaEye, FaEyeSlash } from 'react-icons/fa'; // Facebook icon
+import { FaEye, FaEyeSlash, FaFacebookF, FaGoogle } from 'react-icons/fa'; // Facebook icon
 import {Facebook, Google} from '@icon-park/react';
 import api from '../../api/api';
 import './Signup.css';
@@ -291,17 +291,20 @@ export default function UserSignup() {
               <button type="submit" className="btn btn-dark w-100" disabled={!agreeTerms}>Register</button>
     
               {/* Social Login Section */}
-              <div className="social-login mt-3 text-center">
-                <div className="text-center text-muted mb-3">or SignUp with</div>
-                <div className="d-flex gap-2">
-                 <button type="button" className="btn btn-google w-50" onClick={handleGoogleSignIn}>
-                               <Google theme="outline" size="24" fill="#333"/> Google
-                             </button>
-                  <button type="button" className="btn btn-facebook w-50" onClick={() => alert('Facebook login coming soon!')}>
-                  <Facebook theme="outline" size="24" fill="#333"/> Facebook
-                  </button>
-                </div>
-              </div>
+               <div className="social-login mt-3 text-center">
+                         <div className="text-center text-muted mb-3">or login with</div>
+                         <div className="d-flex gap-2">
+                           <button type="button" className="btn btn-google w-50" onClick={handleGoogleSignIn}>
+                             <FaGoogle size={24} color="#4285F4" /> {/* Google color */}
+                             Google
+                           </button>
+             
+                           <button type="button" className="btn btn-facebook w-50" onClick={() => alert('Facebook login coming soon!')}>
+                             <FaFacebookF size={24} color="#FFFFFF" /> {/* Facebook color */}
+                             Facebook
+                           </button>
+                         </div>
+                       </div>
 
 
       

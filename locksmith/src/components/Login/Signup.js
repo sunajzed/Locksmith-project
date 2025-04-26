@@ -148,7 +148,7 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import api from '../../api/api';
 import './Signup.css';
-import { FaEye, FaEyeSlash } from 'react-icons/fa'; 
+import { FaEye, FaEyeSlash, FaFacebookF, FaGoogle } from 'react-icons/fa'; 
 import { Facebook, Google } from '@icon-park/react';
 import { auth, provider } from '../../firebase';
 import { signInWithPopup } from 'firebase/auth';
@@ -304,16 +304,19 @@ export default function Signup() {
 
           {/* Social Login Section */}
           <div className="social-login mt-3 text-center">
-            <div className="text-center text-muted mb-3">or SignUp with</div>
-            <div className="d-flex gap-2">
-              <button type="button" className="btn btn-google w-50" onClick={handleGoogleSignIn}>
-                <Google theme="outline" size="24" fill="#333"/> Google
-              </button>
-              <button type="button" className="btn btn-facebook w-50" onClick={() => alert('Facebook login coming soon!')}>
-                <Facebook theme="outline" size="24" fill="#333"/> Facebook
-              </button>
-            </div>
-          </div>
+                    <div className="text-center text-muted mb-3">or login with</div>
+                    <div className="d-flex gap-2">
+                      <button type="button" className="btn btn-google w-50" onClick={handleGoogleSignIn}>
+                        <FaGoogle size={24} color="#4285F4" /> {/* Google color */}
+                        Google
+                      </button>
+        
+                      <button type="button" className="btn btn-facebook w-50" onClick={() => alert('Facebook login coming soon!')}>
+                        <FaFacebookF size={24} color="#FFFFFF" /> {/* Facebook color */}
+                        Facebook
+                      </button>
+                    </div>
+                  </div>
           <div className="text-center mt-4">
             <small className="text-muted">
               Already have an account?
