@@ -162,8 +162,9 @@ const Footer = () => {
                 className="d-inline-block align-top logo-img"
               />
             </div>
+            <p className="text-white">ABN: 24 684 285 050</p>
             <p className="text-light">
-              Lock Quick offers fast, reliable locksmith services across Australia. From lock repairs to emergency lockouts, our certified experts are available 24/7 to keep you secure.
+            Lock Quick is an online-only marketplace connecting customers with trusted locksmiths across Australia. We offer fast, reliable locksmith services—from lock repairs to emergency lockouts—available 24/7 to keep you secure, wherever you are.
             </p>
           </Col>
 
@@ -201,7 +202,6 @@ const Footer = () => {
           <Col sm={12} md={2} lg={2} className="footer-column md-mt-5">
             <h5 className="footer-heading">Get in Touch</h5>
             <p className="text-white">Questions or feedback? <br /> We'd love to hear from you.</p>
-            <p className="text-white">ABN: 24 684 285 050</p>
             <div className="message-icon">
               <Link to="/contact-form" className="text-light" onClick={handleLinkClick}>
                 <FaEnvelope className="social-icon" />

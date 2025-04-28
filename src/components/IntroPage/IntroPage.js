@@ -10,6 +10,7 @@ const services = [
   { label: 'Smart Lock', path: '/smart-lock' },
 ];
 
+
 const IntroPage = () => {
   const [selectedService, setSelectedService] = useState('');
   const [error, setError] = useState('');
@@ -35,18 +36,15 @@ const IntroPage = () => {
       </div>
 
       <div className="blur-box">
-        <h1><span className="orange">LOCK QUICK</span> – FAST & RELIABLE LOCKSMITH SERVICES IN AUSTRALIA</h1>
+        <h1><span className="orange">LOCK QUICK</span> – Fast & Reliable Locksmith Services in Australia</h1>
         <h3>24/7 Emergency Locksmith Services – Anytime, Anywhere!</h3>
-        
+
         <div className="intro-description">
-          <p>
-            Locked out of your home, office, or car? Need urgent lock repairs or key replacements? 
-            <strong> Lock Quick</strong> is your go-to locksmith service provider, offering affordable locksmith services, 
-            24-hour support, and fast mobile locksmith solutions across Australia.
+          <p className="intro-lead">
+            <strong>LOCK QUICK</strong> IS AN ONLINE-ONLY MARKETPLACE CONNECTING CUSTOMERS WITH TRUSTED LOCKSMITHS ACROSS AUSTRALIA
           </p>
           <p>
-            Whether it’s an emergency lockout or a security upgrade, our certified professionals are always ready to assist. 
-            Lock Quick is an online-only marketplace that connects locksmiths and customers—fast, secure, and hassle-free.
+            Whether you're locked out or need urgent repairs, we offer fast, affordable, and 24/7 locksmith services—anytime, anywhere.
           </p>
         </div>
 
@@ -67,7 +65,7 @@ const IntroPage = () => {
           </select>
           <button onClick={handleSearch}>Search</button>
         </div>
-        
+
         {error && <div className="error-message">{error}</div>}
       </div>
     </div>
@@ -75,4 +73,3 @@ const IntroPage = () => {
 };
 
 export default IntroPage;
-
