@@ -1,11 +1,10 @@
-
 // import React, { useEffect, useState } from "react";
 // import { useNavigate } from "react-router-dom";
 // import api from "../../../api/api";
 // import Box from "@mui/material/Box";
 // import Tabs from "@mui/material/Tabs";
 // import Tab from "@mui/material/Tab";
-// import "./style.css";
+// import "./automotivestyle.css";
 
 // const Automotive = () => {
 //   const [services, setServices] = useState([]);
@@ -15,8 +14,8 @@
 //   const [latitude, setLatitude] = useState(null);
 //   const [longitude, setLongitude] = useState(null);
 //   const [bookingSuccess, setBookingSuccess] = useState(false);
-//   const [selectedService, setSelectedService] = useState(0); // Default to the first service
-//   const [filterValue, setFilterValue] = useState(""); // Default to the first service name
+//   const [selectedService, setSelectedService] = useState(0);
+//   const [filterValue, setFilterValue] = useState("");
 //   const navigate = useNavigate();
 
 //   // Fetch geolocation
@@ -58,6 +57,7 @@
 //             Authorization: token ? `Bearer ${token}` : "",
 //           },
 //         });
+//         console.log('API Response:', response.data); // Debugging log
 //         setServices(response.data);
 //         if (response.data.length > 0) {
 //           setFilterValue(response.data[0].service.admin_service_name);
@@ -74,7 +74,7 @@
 //       if (latitude !== null && longitude !== null && !geoLoading) {
 //         fetchServices();
 //       }
-//     }, 500); // Debounce for 500ms
+//     }, 500);
 
 //     return () => clearTimeout(debounceTimer);
 //   }, [latitude, longitude, geoLoading]);
@@ -82,7 +82,8 @@
 //   // Handle tab change
 //   const handleTabChange = (event, newValue) => {
 //     setSelectedService(newValue);
-//     setFilterValue(serviceNames[newValue]); // Sync filter dropdown with selected tab
+//     const serviceNames = [...new Set(services.map((service) => service.service.admin_service_name))];
+//     setFilterValue(serviceNames[newValue]);
 //   };
 
 //   // Handle filter change
@@ -90,24 +91,26 @@
 //     const selectedName = event.target.value;
 //     setFilterValue(selectedName);
 //     if (selectedName === "") {
-//       setSelectedService(-1); // Reset selected tab for "All Services"
+//       setSelectedService(-1);
 //     } else {
+//       const serviceNames = [...new Set(services.map((service) => service.service.admin_service_name))];
 //       const index = serviceNames.indexOf(selectedName);
-//       setSelectedService(index); // Sync selected tab with filter dropdown
+//       setSelectedService(index);
 //     }
 //   };
 
 //   // Handle booking
 //   const handleBooking = async (service) => {
-//     const isConfirmed = window.confirm("Are you sure you want to book this service?");
-//     if (!isConfirmed) return;
-
-//     const token = localStorage.getItem("accessToken");
-//     if (!token) {
+//     if (!localStorage.getItem("accessToken")) {
 //       alert("Please log in to book a service.");
+//       navigate("/login");
 //       return;
 //     }
-
+  
+//     const isConfirmed = window.confirm("Are you sure you want to book this service?");
+//     if (!isConfirmed) return;
+  
+//     const token = localStorage.getItem("accessToken");
 //     const currentTime = new Date().toISOString();
 //     const bookingData = {
 //       service_request: service.id,
@@ -116,7 +119,7 @@
 //       scheduled_date: currentTime,
 //       locksmith_service: service.id,
 //     };
-
+  
 //     try {
 //       await api.post("/api/bookings/", bookingData, {
 //         headers: {
@@ -139,7 +142,7 @@
 
 //   // Filter services based on the selected tab or filter dropdown
 //   const filteredServices = filterValue === ""
-//     ? services // Show all services when "All Services" is selected
+//     ? services
 //     : services.filter((service) => service.service.admin_service_name === filterValue);
 
 //   if (loading || geoLoading) {
@@ -191,55 +194,55 @@
 
 //       {/* Tabs for service names */}
 //       <Box
-//   sx={{
-//     width: "100%", // Ensure the container takes full width
-//     maxWidth: "1200px", // Limit maximum width for larger screens
-//     margin: "0 auto", // Center the container
-//     backgroundColor: "#f5f5f5",
-//     borderRadius: "10px",
-//     padding: "10px",
-//     boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
-//     marginBottom: "30px",
-//   }}
-// >
-//   <Tabs
-//     value={selectedService === -1 ? false : selectedService} // No tab selected for "All Services"
-//     onChange={handleTabChange}
-//     variant="scrollable"
-//     scrollButtons="auto"
-//     allowScrollButtonsMobile
-//     aria-label="service tabs"
-//     sx={{
-//       width: "100%", // Ensure Tabs take full width of the container
-//       "& .MuiTab-root": {
-//         fontSize: "1rem",
-//         fontWeight: "bold",
-//         color: "#333",
-//         textTransform: "none",
-//         minWidth: "200px", // Set a fixed minimum width for each tab
-//         flex: 1, // Allow tabs to grow and fill available space
-//         padding: "6px 8px",
-//         margin: "0 4px",
-//         "&:hover": {
-//           backgroundColor: "#f0f0f0",
-//         },
-//       },
-//       "& .Mui-selected": {
-//         color: "rgb(240, 178, 131)",
-//         backgroundColor: "#fff",
-//         borderRadius: "8px",
-//       },
-//       "& .MuiTabs-indicator": {
-//         backgroundColor: "rgb(240, 178, 131)",
-//         height: "3px",
-//       },
-//     }}
-//   >
-//     {serviceNames.map((name, index) => (
-//       <Tab key={index} label={name} />
-//     ))}
-//   </Tabs>
-// </Box>
+//         sx={{
+//           width: "100%",
+//           maxWidth: "1200px",
+//           margin: "0 auto",
+//           backgroundColor: "#f5f5f5",
+//           borderRadius: "10px",
+//           padding: "10px",
+//           boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
+//           marginBottom: "30px",
+//         }}
+//       >
+//         <Tabs
+//           value={selectedService === -1 ? false : selectedService}
+//           onChange={handleTabChange}
+//           variant="scrollable"
+//           scrollButtons="auto"
+//           allowScrollButtonsMobile
+//           aria-label="service tabs"
+//           sx={{
+//             width: "100%",
+//             "& .MuiTab-root": {
+//               fontSize: "1rem",
+//               fontWeight: "bold",
+//               color: "#333",
+//               textTransform: "none",
+//               minWidth: "200px",
+//               flex: 1,
+//               padding: "6px 8px",
+//               margin: "0 4px",
+//               "&:hover": {
+//                 backgroundColor: "#f0f0f0",
+//               },
+//             },
+//             "& .Mui-selected": {
+//               color: "rgb(240, 178, 131)",
+//               backgroundColor: "#fff",
+//               borderRadius: "8px",
+//             },
+//             "& .MuiTabs-indicator": {
+//               backgroundColor: "rgb(240, 178, 131)",
+//               height: "3px",
+//             },
+//           }}
+//         >
+//           {serviceNames.map((name, index) => (
+//             <Tab key={index} label={name} />
+//           ))}
+//         </Tabs>
+//       </Box>
 
 //       {/* Services List */}
 //       <div className="services-list">
@@ -251,42 +254,69 @@
 //   );
 // };
 
-// // Reusable ServiceCard Component
-// const ServiceCard = ({ service, onBook }) => (
-//   <div className="services-card">
-//     <div className="service-header">
-//       <h3>{service.service.admin_service_name}</h3>
-//       <p className="price">${service.service.total_price}</p>
+// const ServiceCard = ({ service, onBook }) => {
+//   const carKeyDetails = service.car_key_details || service.service?.car_key_details || {};
+
+//   return (
+//     <div className="services-card">
+//       <div className="service-header">
+//         <h3 className="service-title">{service.service.admin_service_name}</h3>
+//         <p className="price">${service.service.total_price}</p>
+//       </div>
+
+//       <div className={`availability-status ${service.service.is_available ? "available" : "unavailable"}`}>
+//         {service.service.is_available ? "Available Now" : "Currently Unavailable"}
+//       </div>
+
+//       {/* Improved Car Key Details Section */}
+//       <div className="car-key-details-section">
+//         <h4 className="section-title">Key Specifications</h4>
+//         <div className="specs-grid">
+//           <div className="spec-item">
+//             <span className="spec-label">Make:</span>
+//             <span className="spec-value">{carKeyDetails.manufacturer || "N/A"}</span>
+//           </div>
+//           <div className="spec-item">
+//             <span className="spec-label">Model:</span>
+//             <span className="spec-value">{carKeyDetails.model || "N/A"}</span>
+//           </div>
+//           <div className="spec-item">
+//             <span className="spec-label">Year:</span>
+//             <span className="spec-value">{carKeyDetails.year || "N/A"}</span>
+//           </div>
+//           <div className="spec-item">
+//             <span className="spec-label">Buttons:</span>
+//             <span className="spec-value">{carKeyDetails.number_of_buttons || "N/A"}</span>
+//           </div>
+//         </div>
+//       </div>
+
+//       <div className="service-meta">
+//         <div className="meta-item">
+//           <span className="meta-label">Locksmith:</span>
+//           <span className="meta-value">{service.locksmith}</span>
+//         </div>
+//         <div className="meta-item">
+//           <span className="meta-label">Distance:</span>
+//           <span className="meta-value">{service.distance_km} km</span>
+//         </div>
+//       </div>
+
+//       <p className="service-description">{service.service.details}</p>
+
+//       <button
+//         className={`book-button ${service.service.is_available ? "" : "disabled"}`}
+//         onClick={() => onBook(service)} 
+//         disabled={!service.service.is_available}
+//       >
+//         {service.service.is_available ? "Book Now" : "Unavailable"}
+//       </button>
 //     </div>
-//     {/* Availability Status */}
-//     <div
-//       className={`availability-status ${
-//         service.service.is_available ? "available" : "unavailable"
-//       }`}
-//     >
-//       {service.service.is_available ? "Open for Service" : "Currently Unavailable"}
-//     </div>
-//     <p className="text-black">
-//       <strong>Locksmith:</strong> {service.locksmith}
-//     </p>
-//     <p className="text-black">
-//       <strong>Type:</strong> {service.service.service_type}
-//     </p>
-//     <p className="text-black">
-//       <strong>Distance:</strong> {service.distance_km} km
-//     </p>
-//     <p className="details text-black">{service.service.details}</p>
-//     <button
-//       className="book-button"
-//       onClick={() => onBook(service.service)}
-//       disabled={!service.service.is_available} // Disable button if unavailable
-//     >
-//       {service.service.is_available ? "Book Now" : "Unavailable"}
-//     </button>
-//   </div>
-// );
+//   );
+// };
 
 // export default Automotive;
+
 
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -295,6 +325,7 @@ import Box from "@mui/material/Box";
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
 import "./automotivestyle.css";
+import debounce from "lodash/debounce";
 
 const Automotive = () => {
   const [services, setServices] = useState([]);
@@ -306,6 +337,9 @@ const Automotive = () => {
   const [bookingSuccess, setBookingSuccess] = useState(false);
   const [selectedService, setSelectedService] = useState(0);
   const [filterValue, setFilterValue] = useState("");
+  const [searchQuery, setSearchQuery] = useState("");
+  const [searchResults, setSearchResults] = useState([]);
+  const [isSearching, setIsSearching] = useState(false);
   const navigate = useNavigate();
 
   // Fetch geolocation
@@ -347,7 +381,7 @@ const Automotive = () => {
             Authorization: token ? `Bearer ${token}` : "",
           },
         });
-        console.log('API Response:', response.data); // Debugging log
+        console.log('API Response:', response.data);
         setServices(response.data);
         if (response.data.length > 0) {
           setFilterValue(response.data[0].service.admin_service_name);
@@ -427,10 +461,50 @@ const Automotive = () => {
     }
   };
 
-  // Get unique service names for tabs and dropdown
+  // Debounced search handler
+  const debouncedSearch = debounce(async (query) => {
+    if (!query) {
+      setSearchResults([]);
+      return;
+    }
+    setIsSearching(true);
+    try {
+      const token = localStorage.getItem("accessToken");
+      const response = await api.get("/api/car-key-details/", {
+        params: { search: query },
+        headers: {
+          Authorization: token ? `Bearer ${token}` : "",
+        },
+      });
+      console.log('Search API Response:', response.data);
+
+      const matchingServices = services.filter((service) => {
+        const carKey = service.car_key_details || service.service?.car_key_details || {};
+        return (
+          (carKey.model && carKey.model.toLowerCase().includes(query.toLowerCase())) ||
+          (carKey.manufacturer && carKey.manufacturer.toLowerCase().includes(query.toLowerCase())) ||
+          (carKey.year && carKey.year.toString().includes(query)) ||
+          (carKey.number_of_buttons && carKey.number_of_buttons.toString().includes(query))
+        );
+      });
+
+      setSearchResults(matchingServices);
+    } catch (err) {
+      console.error("Search API Error:", err.response?.data || err.message);
+      setSearchResults([]);
+    } finally {
+      setIsSearching(false);
+    }
+  }, 500);  // debounce delay of 500ms
+
+  const handleSearchInputChange = (event) => {
+    const query = event.target.value;
+    setSearchQuery(query);
+    debouncedSearch(query);
+  };
+
   const serviceNames = [...new Set(services.map((service) => service.service.admin_service_name))];
 
-  // Filter services based on the selected tab or filter dropdown
   const filteredServices = filterValue === ""
     ? services
     : services.filter((service) => service.service.admin_service_name === filterValue);
@@ -446,13 +520,16 @@ const Automotive = () => {
 
   if (error) return <p className="error">{error}</p>;
 
-  if (!loading && !geoLoading && filteredServices.length === 0) {
+  if (!loading && !geoLoading && services.length === 0) {
     return (
       <div className="no-services-message">
         <p>No services available in your area. Please try again later.</p>
       </div>
     );
   }
+
+  // Check if no results are found
+  const noResultsFound = searchQuery && searchResults.length === 0;
 
   return (
     <Box className="residential-container">
@@ -462,6 +539,17 @@ const Automotive = () => {
           <p className="text-white">Booking Initialized! Redirecting to confirmation page...</p>
         </div>
       )}
+
+      {/* Search Input */}
+      <div className="search-container">
+        <input
+          type="text"
+          placeholder="Search by model, manufacturer, year, or number of buttons"
+          value={searchQuery}
+          onChange={handleSearchInputChange}
+          className="search-input"
+        />
+      </div>
 
       {/* Filter Dropdown */}
       <div className="filter-container">
@@ -482,7 +570,7 @@ const Automotive = () => {
         </select>
       </div>
 
-      {/* Tabs for service names */}
+      {/* Tabs */}
       <Box
         sx={{
           width: "100%",
@@ -534,9 +622,16 @@ const Automotive = () => {
         </Tabs>
       </Box>
 
+      {/* No Results Found Message */}
+      {noResultsFound && (
+        <div className="no-results-message">
+          <p>No results found. Try searching with different keywords.</p>
+        </div>
+      )}
+
       {/* Services List */}
       <div className="services-list">
-        {filteredServices.map((service, index) => (
+        {(searchQuery && searchResults.length > 0 ? searchResults : filteredServices).map((service, index) => (
           <ServiceCard key={index} service={service} onBook={handleBooking} />
         ))}
       </div>
@@ -544,71 +639,6 @@ const Automotive = () => {
   );
 };
 
-// const ServiceCard = ({ service, onBook }) => {
-//   // Check multiple possible locations for car_key_details
-//   const carKeyDetails = service.car_key_details || 
-//                        service.service?.car_key_details || 
-//                        {};
-
-//   console.log('Service data in card:', service); // Debugging log
-  
-//   return (
-//     <div className="services-card">
-//       <div className="service-header">
-//         <h3>{service.service.admin_service_name}</h3>
-//         <p className="price">${service.service.total_price}</p>
-//       </div>
-//       <div
-//         className={`availability-status ${
-//           service.service.is_available ? "available" : "unavailable"
-//         }`}
-//       >
-//         {service.service.is_available ? "Open for Service" : "Currently Unavailable"}
-//       </div>
-      
-//       {/* Car Key Details Section */}
-//       <div className="car-key-details">
-//         <h4>Car Key Specifications:</h4>
-//         <div className="detail-row">
-//           <span className="detail-label">Manufacturer:</span>
-//           <span className="detail-value">{carKeyDetails.manufacturer || "N/A"}</span>
-//         </div>
-//         <div className="detail-row">
-//           <span className="detail-label">Model:</span>
-//           <span className="detail-value">{carKeyDetails.model || "N/A"}</span>
-//         </div>
-//         <div className="detail-row">
-//           <span className="detail-label">Year:</span>
-//           <span className="detail-value">{carKeyDetails.year || "N/A"}</span>
-//         </div>
-//         <div className="detail-row">
-//           <span className="detail-label">Buttons:</span>
-//           <span className="detail-value">{carKeyDetails.number_of_buttons || "N/A"}</span>
-//         </div>
-//       </div>
-      
-//       <p className="text-black">
-//         <strong>Locksmith:</strong> {service.locksmith}
-//       </p>
-//       <p className="text-black">
-//         <strong>Type:</strong> {service.service.service_type}
-//       </p>
-//       <p className="text-black">
-//         <strong>Distance:</strong> {service.distance_km} km
-//       </p>
-//       <p className="details text-black">{service.service.details}</p>
-//       <button
-//         className="book-button"
-//         onClick={() => onBook(service)}
-//         disabled={!service.service.is_available}
-//       >
-//         {service.service.is_available ? "Book Now" : "Unavailable"}
-//       </button>
-//     </div>
-//   );
-// };
-
-// ServiceCard component with improved styling
 const ServiceCard = ({ service, onBook }) => {
   const carKeyDetails = service.car_key_details || service.service?.car_key_details || {};
 
@@ -623,7 +653,6 @@ const ServiceCard = ({ service, onBook }) => {
         {service.service.is_available ? "Available Now" : "Currently Unavailable"}
       </div>
 
-      {/* Improved Car Key Details Section */}
       <div className="car-key-details-section">
         <h4 className="section-title">Key Specifications</h4>
         <div className="specs-grid">
@@ -661,7 +690,7 @@ const ServiceCard = ({ service, onBook }) => {
 
       <button
         className={`book-button ${service.service.is_available ? "" : "disabled"}`}
-        onClick={() => onBook(service)} 
+        onClick={() => onBook(service)}
         disabled={!service.service.is_available}
       >
         {service.service.is_available ? "Book Now" : "Unavailable"}
