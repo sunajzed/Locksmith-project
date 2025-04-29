@@ -1,4 +1,3 @@
-/* Tab Container */
 .residential-container {
     max-width: 1200px;
     margin: auto;
@@ -13,8 +12,6 @@
     font-size: 2rem;
     font-weight: 600;
   }
-  
-  /* Services List */
   .services-list {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
@@ -23,79 +20,6 @@
     margin-top: 40px;
   }
   
-  /* Services Card */
-  /* .services-card {
-    width: 100%;
-    max-width: 350px;
-    min-height: 350px;
-    border-radius: 0;
-    padding: 20px;
-    background: #fff;
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
-    transition: transform 0.2s ease-in-out;
-    text-align: left;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-  }
-  
-  .services-card:hover {
-    transform: translateY(-5px);
-  }
-  
-  .service-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    border-bottom: 1px solid #ddd;
-    padding-bottom: 10px;
-    margin-bottom: 10px;
-  }
-  
-  .Mui-selected {
-    color: rgb(240, 178, 131) !important;
-    background-color: #fff !important;
-  }
-  
-  .MuiTabs-indicator {
-    background-color: rgb(240, 178, 131) !important;
-  }
-  
-  .price {
-    font-weight: bold;
-    color: #e7a030;
-    font-size: 1.2rem;
-  }
-  
-  .details {
-    font-size: 14px;
-    color: #555;
-    line-height: 1.4;
-    flex-grow: 1;
-  }
-  
-  .book-button {
-    background-color: #3c3c3c;
-    color: white;
-    padding: 10px 15px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    width: 100%;
-    font-size: 16px;
-    transition: background-color 0.3s ease;
-  }
-  
-  .book-button:hover {
-    background-color: #000000;
-  }
-  
-  .book-button:focus {
-    outline: none;
-    box-shadow: 0 0 5px rgba(240, 178, 131, 0.5);
-  } */
-  
-  /* Updated CSS for better styling */
   .services-card {
     width: 100%;
     max-width: 380px;
@@ -158,7 +82,6 @@
     color: #e53e3e;
   }
   
-  /* Car Key Details Section */
   .car-key-details-section {
     background: #f8fafc;
     border-radius: 8px;
@@ -200,7 +123,6 @@
     margin-top: 2px;
   }
   
-  /* Service Meta Information */
   .service-meta {
     display: flex;
     justify-content: space-between;
@@ -231,8 +153,7 @@
     margin: 12px 0;
     flex-grow: 1;
   }
-  
-  /* Book Button */
+
   .book-button {
     background-color: #363636;
     color: white;
@@ -261,7 +182,6 @@
     cursor: not-allowed;
   }
   
-  /* Responsive Adjustments */
   @media (max-width: 768px) {
     .services-card {
       max-width: 100%;
@@ -277,8 +197,7 @@
       gap: 8px;
     }
   }
-  
-  /* Loading Container */
+
   .loading-container {
     display: flex;
     flex-direction: column;
@@ -287,8 +206,6 @@
     height: 450px;
     background-color: #ffffff;
   }
-  
-  /* Loading Spinner */
   .loading-spinner {
     border: 6px solid #f3f3f3;
     border-top: 6px solid #424446;
@@ -303,7 +220,6 @@
     100% { transform: rotate(360deg); }
   }
   
-  /* Loading Message */
   .loading-message {
     margin-top: 20px;
     font-size: 1.2rem;
@@ -311,7 +227,6 @@
     font-weight: bold;
   }
   
-  /* Error Message */
   .error {
     color: red;
     text-align: center;
@@ -319,7 +234,6 @@
     font-size: 1.2rem;
   }
   
-  /* Success Message */
   .success-message {
     background-color: #4caf50;
     color: white;
@@ -329,15 +243,13 @@
     text-align: center;
   }
   
-  /* No Services Message */
   .no-services-message {
     text-align: center;
     font-size: 1.2rem;
     color: #555;
     margin-top: 20px;
   }
-  
-  /* Filter Container */
+ 
   .filter-container {
     margin-bottom: 20px;
     text-align: center;
@@ -388,16 +300,15 @@
     }
   
     .MuiTab-root {
-      min-width: 200px !important; /* Ensure minimum width for tabs on larger screens */
+      min-width: 200px !important; 
     }
   }
   
   @media (max-width: 1023px) {
     .MuiTab-root {
-      min-width: 150px !important; /* Adjust for smaller screens */
+      min-width: 150px !important;
     }
   }
-  /* Availability Status Styles */
   .availability-status {
     padding: 6px 12px;
     border-radius: 4px;
@@ -417,29 +328,12 @@
     color: #c62828; /* Dark red text */
   }
   
-  /* Disabled Button Styles */
   .book-button:disabled {
     background-color: #b0bec5; /* Gray background */
     color: #546e7a; /* Dark gray text */
     cursor: not-allowed;
   }
   
-
-  .search-container {
-  display: flex;
-  justify-content: center;
-  margin-bottom: 20px;
-}
-
-.search-input {
-  padding: 8px;
-  font-size: 16px;
-  width: 300px;
-  margin-right: 8px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-}
-
 .search-button {
   padding: 8px 16px;
   background-color: rgb(240, 178, 131);
@@ -448,4 +342,36 @@
   font-weight: bold;
   border-radius: 4px;
   cursor: pointer;
+}
+
+
+.search-container {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 30px;
+  max-width: 500px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.search-input {
+  padding: 12px 20px;
+  font-size: 14px;
+  width: 100%;
+  border: 1px solid #e0e0e0;
+  border-radius: 30px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+  transition: all 0.3s ease;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+}
+
+.search-input:focus {
+  outline: none;
+  border-color: #4a90e2;
+  box-shadow: 0 2px 15px rgba(74, 144, 226, 0.2);
+}
+
+.search-input::placeholder {
+  color: #aaa;
+  font-weight: 300;
 }

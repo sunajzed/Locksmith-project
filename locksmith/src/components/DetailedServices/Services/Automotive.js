@@ -106,10 +106,10 @@
 //       navigate("/login");
 //       return;
 //     }
-  
+
 //     const isConfirmed = window.confirm("Are you sure you want to book this service?");
 //     if (!isConfirmed) return;
-  
+
 //     const token = localStorage.getItem("accessToken");
 //     const currentTime = new Date().toISOString();
 //     const bookingData = {
@@ -119,7 +119,7 @@
 //       scheduled_date: currentTime,
 //       locksmith_service: service.id,
 //     };
-  
+
 //     try {
 //       await api.post("/api/bookings/", bookingData, {
 //         headers: {
@@ -430,10 +430,10 @@ const Automotive = () => {
       navigate("/login");
       return;
     }
-  
+
     const isConfirmed = window.confirm("Are you sure you want to book this service?");
     if (!isConfirmed) return;
-  
+
     const token = localStorage.getItem("accessToken");
     const currentTime = new Date().toISOString();
     const bookingData = {
@@ -443,7 +443,7 @@ const Automotive = () => {
       scheduled_date: currentTime,
       locksmith_service: service.id,
     };
-  
+
     try {
       await api.post("/api/bookings/", bookingData, {
         headers: {
@@ -540,7 +540,6 @@ const Automotive = () => {
         </div>
       )}
 
-      {/* Search Input */}
       <div className="search-container">
         <input
           type="text"

@@ -108,7 +108,7 @@ export default function NavBar() {
   to={userRole === 'locksmith' ? '#' : '/'}
   style={userRole === 'locksmith' ? { cursor: 'default', pointerEvents: 'none' } : {}}
 >
-<a href="/">
+ <a href="/">
   <img
     alt="Logo"
     src="images/logo.webp"

@@ -1,5 +1,3 @@
-
-
 .action-btn, .dropdown-toggle.action-btn {
   background: #b8b8b8 !important;
   border: none !important;
@@ -129,7 +127,6 @@
   transition: height 0.2s ease-in-out !important; 
 }
 
-/* Welcome message for small and medium devices */
 .welcome-message {
   background-color: #333;
   color: white;
@@ -138,7 +135,6 @@
   font-weight: bold;
 }
 
-/* Ensure the welcome message is only visible on small and medium devices */
 @media (min-width: 992px) {
   .welcome-message {
     display: none;
@@ -162,14 +158,12 @@
   color: rgb(240, 178, 131) !important;
 }
 
-/* .nav-link.dropdown-toggle {
-  background-color: transparent !important;
-} */
+
 .nav-link.dropdown-toggle {
   background-color: transparent !important;
-  border: none !important; /* Remove border */
-  outline: none !important; /* Remove any focus outline */
-  box-shadow: none !important; /* Ensure no shadow appears */
+  border: none !important; 
+  outline: none !important; 
+  box-shadow: none !important; 
 }
 
 
