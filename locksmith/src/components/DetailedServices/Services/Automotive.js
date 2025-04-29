@@ -341,8 +341,6 @@ const Automotive = () => {
   const [searchResults, setSearchResults] = useState([]);
   const [isSearching, setIsSearching] = useState(false);
   const navigate = useNavigate();
-
-  // Fetch geolocation
   useEffect(() => {
     if (!navigator.geolocation) {
       setError("Geolocation is not supported by your browser.");
@@ -365,8 +363,6 @@ const Automotive = () => {
       }
     );
   }, []);
-
-  // Fetch services based on geolocation
   useEffect(() => {
     const fetchServices = async () => {
       try {
@@ -402,15 +398,11 @@ const Automotive = () => {
 
     return () => clearTimeout(debounceTimer);
   }, [latitude, longitude, geoLoading]);
-
-  // Handle tab change
   const handleTabChange = (event, newValue) => {
     setSelectedService(newValue);
     const serviceNames = [...new Set(services.map((service) => service.service.admin_service_name))];
     setFilterValue(serviceNames[newValue]);
   };
-
-  // Handle filter change
   const handleFilterChange = (event) => {
     const selectedName = event.target.value;
     setFilterValue(selectedName);
@@ -422,27 +414,31 @@ const Automotive = () => {
       setSelectedService(index);
     }
   };
-
-  // Handle booking
   const handleBooking = async (service) => {
     if (!localStorage.getItem("accessToken")) {
       alert("Please log in to book a service.");
       navigate("/login");
       return;
     }
-
     const isConfirmed = window.confirm("Are you sure you want to book this service?");
     if (!isConfirmed) return;
-
     const token = localStorage.getItem("accessToken");
     const currentTime = new Date().toISOString();
+    // const bookingData = {
+    //   service_request: service.id,
+    //   locksmith: service.locksmith_id,
+    //   scheduled_time: currentTime,
+    //   scheduled_date: currentTime,
+    //   locksmith_service: service.id,
+    // };
     const bookingData = {
-      service_request: service.id,
+      service_request: service.service.id,  // <- use nested id
       locksmith: service.locksmith_id,
       scheduled_time: currentTime,
       scheduled_date: currentTime,
-      locksmith_service: service.id,
+      locksmith_service: service.service.id,  // <- use nested id
     };
+    
 
     try {
       await api.post("/api/bookings/", bookingData, {
@@ -460,8 +456,6 @@ const Automotive = () => {
       alert("Booking failed. Please try again.");
     }
   };
-
-  // Debounced search handler
   const debouncedSearch = debounce(async (query) => {
     if (!query) {
       setSearchResults([]);
@@ -477,7 +471,6 @@ const Automotive = () => {
         },
       });
       console.log('Search API Response:', response.data);
-
       const matchingServices = services.filter((service) => {
         const carKey = service.car_key_details || service.service?.car_key_details || {};
         return (
@@ -495,7 +488,7 @@ const Automotive = () => {
     } finally {
       setIsSearching(false);
     }
-  }, 500);  // debounce delay of 500ms
+  }, 500);
 
   const handleSearchInputChange = (event) => {
     const query = event.target.value;
@@ -528,7 +521,6 @@ const Automotive = () => {
     );
   }
 
-  // Check if no results are found
   const noResultsFound = searchQuery && searchResults.length === 0;
 
   return (
@@ -539,7 +531,6 @@ const Automotive = () => {
           <p className="text-white">Booking Initialized! Redirecting to confirmation page...</p>
         </div>
       )}
-
       <div className="search-container">
         <input
           type="text"
@@ -549,8 +540,6 @@ const Automotive = () => {
           className="search-input"
         />
       </div>
-
-      {/* Filter Dropdown */}
       <div className="filter-container">
         <label htmlFor="service-filter">Filter by Service: </label>
         <select
@@ -568,8 +557,6 @@ const Automotive = () => {
           ))}
         </select>
       </div>
-
-      {/* Tabs */}
       <Box
         sx={{
           width: "100%",
@@ -620,15 +607,11 @@ const Automotive = () => {
           ))}
         </Tabs>
       </Box>
-
-      {/* No Results Found Message */}
       {noResultsFound && (
         <div className="no-results-message">
           <p>No results found. Try searching with different keywords.</p>
         </div>
       )}
-
-      {/* Services List */}
       <div className="services-list">
         {(searchQuery && searchResults.length > 0 ? searchResults : filteredServices).map((service, index) => (
           <ServiceCard key={index} service={service} onBook={handleBooking} />
@@ -639,6 +622,8 @@ const Automotive = () => {
 };
 
 const ServiceCard = ({ service, onBook }) => {
+  console.log("Service ID:", service.service?.id);
+
   const carKeyDetails = service.car_key_details || service.service?.car_key_details || {};
 
   return (
@@ -684,9 +669,7 @@ const ServiceCard = ({ service, onBook }) => {
           <span className="meta-value">{service.distance_km} km</span>
         </div>
       </div>
-
       <p className="service-description">{service.service.details}</p>
-
       <button
         className={`book-button ${service.service.is_available ? "" : "disabled"}`}
         onClick={() => onBook(service)}

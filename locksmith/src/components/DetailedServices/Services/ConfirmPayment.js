@@ -186,6 +186,9 @@
 // };
 
 // export default ConfirmPayment;
+
+
+
 import React, { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import api from "../../../api/api";
@@ -211,11 +214,14 @@ const ConfirmPayment = () => {
     try {
       // Prepare booking data with automatic current date
       const bookingData = {
-        service_id: service.id,
-        locksmith_service: service.id, // Assuming same as service_id
-        scheduled_date: new Date().toISOString(), // Current date/time in ISO format
-        // Add any other optional fields if needed
+        service_id: service.service?.id,
+        locksmith_service: service.service?.id,
+        scheduled_date: new Date().toISOString(),
+        details: service.service?.details,
+        total_price: service.service?.total_price,
       };
+      
+      
 
       // 1. Create the booking
       const bookingResponse = await api.post(
@@ -261,12 +267,12 @@ const ConfirmPayment = () => {
       <div className="card p-4">
         <h2 className="text-center mb-4">Confirm Your Booking</h2>
         <div className="booking-details mb-4">
-          <h3 className="text-black">{service.admin_service_name}</h3>
+          <h3 className="text-black">{service.service.admin_service_name}</h3>
           <p className="mb-2 text-black">
-            <strong>Price:</strong> ${service.total_price}
+          <strong>Price:</strong> ${service.service.total_price}
           </p>
           <p className="text-black">
-            <strong>Details:</strong> {service.details}
+          <strong>Details:</strong> {service.service.details}
           </p>
           <p className="text-black">
             <strong>Service will be scheduled for:</strong> Now (immediate processing)

@@ -111,11 +111,11 @@ const SmartLock = () => {
     const token = localStorage.getItem("accessToken");
     const currentTime = new Date().toISOString();
     const bookingData = {
-      service_request: service.id,
+      service_request: service.service.id,  
       locksmith: service.locksmith_id,
       scheduled_time: currentTime,
       scheduled_date: currentTime,
-      locksmith_service: service.id,
+      locksmith_service: service.service.id,  
     };
   
     try {
