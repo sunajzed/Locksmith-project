@@ -1,5 +1,3 @@
-
-
 import React, { useState, useEffect } from 'react'; 
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import Container from 'react-bootstrap/Container';
@@ -110,6 +108,7 @@ export default function NavBar() {
   to={userRole === 'locksmith' ? '#' : '/'}
   style={userRole === 'locksmith' ? { cursor: 'default', pointerEvents: 'none' } : {}}
 >
+<a href="/">
   <img
     alt="Logo"
     src="images/logo.webp"
@@ -117,6 +116,8 @@ export default function NavBar() {
     height="40"
     className="d-inline-block align-top logo"
   />
+</a>
+
 </Navbar.Brand>
 
           <Navbar.Toggle className='toggle-button' aria-controls="basic-navbar-nav" />

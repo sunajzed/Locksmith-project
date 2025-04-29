@@ -676,10 +676,10 @@ const ServiceCard = ({ service, onBook }) => {
       </div>
 
       <div className="service-meta">
-        <div className="meta-item">
+        {/* <div className="meta-item">
           <span className="meta-label">Locksmith:</span>
           <span className="meta-value">{service.locksmith}</span>
-        </div>
+        </div> */}
         <div className="meta-item">
           <span className="meta-label">Distance:</span>
           <span className="meta-value">{service.distance_km} km</span>

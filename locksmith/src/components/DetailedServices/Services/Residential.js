@@ -267,9 +267,9 @@ const ServiceCard = ({ service, onBook }) => (
     >
       {service.service.is_available ? "Open for Service" : "Currently Unavailable"}
     </div>
-    <p className="text-black">
+    {/* <p className="text-black">
       <strong>Locksmith:</strong> {service.locksmith}
-    </p>
+    </p> */}
     <p className="text-black">
       <strong>Type:</strong> {service.service.service_type}
     </p>

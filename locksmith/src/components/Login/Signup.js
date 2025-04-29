@@ -1,9 +1,156 @@
+// import React, { useState } from 'react';
+// import { Link, useNavigate } from 'react-router-dom';
+// import api from '../../api/api';
+// import './Signup.css';
+// import { FaEye, FaEyeSlash } from 'react-icons/fa'; 
+// import {Facebook, Google} from '@icon-park/react';
+
+// export default function Signup() {
+//   const [formData, setFormData] = useState({
+//     username: '',
+//     email: '',
+//     password: '',
+//     role: 'locksmith',
+//     totp_enabled: true,
+//   });
+//   const [agreeTerms, setAgreeTerms] = useState(false);
+//   const [error, setError] = useState('');
+//   const [success, setSuccess] = useState('');
+//   const [totpData, setTotpData] = useState(null);
+//   const [showPassword, setShowPassword] = useState(false);
+//   const navigate = useNavigate();
+
+//   const handleChange = (e) => {
+//     const { name, value } = e.target;
+//     setFormData({
+//       ...formData,
+//       [name]: value,
+//     });
+//   };
+
+//   const handleCheckboxChange = (e) => {
+//     setAgreeTerms(e.target.checked);
+//   };
+
+//   const togglePasswordVisibility = () => {
+//     setShowPassword(!showPassword);
+//   };
+
+//   const handleSubmit = async (e) => {
+//     e.preventDefault();
+//     setError('');
+//     setSuccess('');
+//     setTotpData(null);
+
+//     if (!agreeTerms) {
+//       setError('You must agree to the terms and policies to register.');
+//       return;
+//     }
+
+//     try {
+//       const response = await api.post('/register/locksmith/', formData);
+
+//       setSuccess('Signup successful! Please login.');
+//       setTotpData({
+//         secret: response.data.user.totp_secret,
+//         qrCode: response.data.user.totp_qr_code,
+//         qrCodeUrl: response.data.user.totp_qr_code_url,
+//       });
+
+//       setFormData({
+//         username: '',
+//         email: '',
+//         password: '',
+//         role: 'locksmith',
+//         totp_enabled: true,
+//       });
+//       setAgreeTerms(false);
+//     } catch (err) {
+//       setError(err.response?.data?.message || 'Signup failed. Please try again.');
+//       console.error('Error:', err);
+//     }
+//   };
+
+//   return (
+//     <div className="container-fluid loginbg d-flex align-items-center justify-content-center py-5">
+//       <div className="form-wrapper bg-white shadow-lg p-5 rounded-4 w-100 mx-3" style={{ maxWidth: '600px' }}>
+//         <form onSubmit={handleSubmit} className="signup-form animate-fadein">
+//           <h2 className="text-center mb-4">Sign Up as Locksmith</h2>
+//           {error && <p className="text-danger text-center">{error}</p>}
+//           {success && <p className="text-success text-center">{success}</p>}
+//           {totpData && (
+//             <div className="text-center mb-3">
+//               <h4>TOTP Setup</h4>
+//               <p className='text-black'><strong>Secret Key:</strong> {totpData.secret}</p>
+//               <img src={totpData.qrCode} alt="TOTP QR Code" className="img-fluid" style={{ width: '150px', height: '150px' }} />
+//               <p className='text-black'>Scan the QR code using your authenticator app.</p>
+//             </div>
+//           )}
+//           <div className="mb-3">
+//             <label htmlFor="username" className="form-label">Username:</label>
+//             <input type="text" id="username" name="username" value={formData.username} onChange={handleChange} className="form-control" required />
+//           </div>
+//           <div className="mb-3">
+//             <label htmlFor="email" className="form-label">Email:</label>
+//             <input type="email" id="email" name="email" value={formData.email} onChange={handleChange} className="form-control" required />
+//           </div>
+//           <div className="mb-3 position-relative">
+//             <label htmlFor="password" className="form-label">Password:</label>
+//             <input
+//               type={showPassword ? "text" : "password"}
+//               id="password"
+//               name="password"
+//               value={formData.password}
+//               onChange={handleChange}
+//               className="form-control"
+//               required
+//             />
+//             <span
+//               className="position-absolute end-0 top-50 mt-2 me-2 password-toggle"
+//               onClick={togglePasswordVisibility}
+//             >
+//               {showPassword ? <FaEyeSlash /> : <FaEye />}
+//             </span>
+//           </div>
+//           <div className="mb-3 form-check">
+//             <input type="checkbox" id="agreeTerms" className="form-check-input" checked={agreeTerms} onChange={handleCheckboxChange} />
+//             <label htmlFor="agreeTerms" className="form-check-label">
+//               I agree to the <a href="/docs/Terms of Use.pdf" target="_blank" rel="noopener noreferrer">Terms of use</a> and <a href="/docs/Privacy Policy.pdf" target="_blank" rel="noopener noreferrer">Privacy policy</a>
+//             </label>
+//           </div>
+//           <button type="submit" className="btn btn-dark w-100" disabled={!agreeTerms}>Register</button>
+
+//           {/* Social Login Section */}
+//           <div className="social-login mt-3 text-center">
+//             <div className="text-center text-muted mb-3">or SignUp with</div>
+//             <div className="d-flex gap-2">
+//               <button type="button" className="btn btn-google w-50" onClick={() => alert('Google login coming soon!')}>
+//               <Google theme="outline" size="24" fill="#333"/>Google
+//               </button>
+//               <button type="button" className="btn btn-facebook w-50" onClick={() => alert('Facebook login coming soon!')}>
+//               <Facebook theme="outline" size="24" fill="#333"/> Facebook
+//               </button>
+//             </div>
+//           </div>
+//           <div className="text-center mt-4">
+//             <small className="text-muted">
+//               Already have an account?
+//               <Link to="/login?role=locksmith">Login</Link>
+//             </small>
+//           </div>
+//         </form>
+//       </div>
+//     </div>
+//   );
+// }
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import api from '../../api/api';
 import './Signup.css';
 import { FaEye, FaEyeSlash } from 'react-icons/fa'; 
 import {Facebook, Google} from '@icon-park/react';
+import { auth, provider } from '../../firebase';
+import { signInWithPopup } from 'firebase/auth';
 
 export default function Signup() {
   const [formData, setFormData] = useState({
@@ -70,6 +217,43 @@ export default function Signup() {
       console.error('Error:', err);
     }
   };
+  const handleGoogleSignIn = async () => {
+    try {
+      const result = await signInWithPopup(auth, provider);
+      const user = result.user;
+      const idToken = await user.getIdToken();
+
+      let username = user.displayName;
+
+      if (!username) {
+        const newUsername = prompt("Please enter your name:");
+        if (!newUsername) {
+          alert("Name is required! Please try again.");
+          return;
+        }
+        username = newUsername;
+      }
+
+      const response = await api.post('/api/google-login/', {
+        token: idToken,
+        role: 'locksmith'  // 👈 Role is locksmith here
+      });
+
+      const access = response.data.access_token;
+      const refresh = response.data.refresh_token;
+      const role = response.data.user.role;
+
+      localStorage.setItem('accessToken', access);
+      localStorage.setItem('refreshToken', refresh);
+      localStorage.setItem('userRole', role);
+      localStorage.setItem('username', username);
+
+      navigate('/locksmith');
+    } catch (error) {
+      console.error('Google login failed:', error);
+      setError('Google login failed. Please try again.');
+    }
+  };
 
   return (
     <div className="container-fluid loginbg d-flex align-items-center justify-content-center py-5">
@@ -124,9 +308,15 @@ export default function Signup() {
           <div className="social-login mt-3 text-center">
             <div className="text-center text-muted mb-3">or SignUp with</div>
             <div className="d-flex gap-2">
-              <button type="button" className="btn btn-google w-50" onClick={() => alert('Google login coming soon!')}>
-              <Google theme="outline" size="24" fill="#333"/>Google
-              </button>
+            <button type="button" className="btn btn-google w-100" onClick={handleGoogleSignIn}>
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+          <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
+          <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" />
+          <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" />
+          <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" />
+        </svg>
+        Sign in with Google
+      </button>
               <button type="button" className="btn btn-facebook w-50" onClick={() => alert('Facebook login coming soon!')}>
               <Facebook theme="outline" size="24" fill="#333"/> Facebook
               </button>

@@ -300,9 +300,9 @@ const ServiceCard = ({ service, onBook, isPaymentConfirmed }) => (
     >
       {service.service.is_available ? "Open for Service" : "Currently Unavailable"}
     </div>
-    <p className="text-black">
+    {/* <p className="text-black">
       <strong>Locksmith:</strong> {service.locksmith}
-    </p>
+    </p> */}
     {isPaymentConfirmed && (
       <>
         <p className="text-black">
