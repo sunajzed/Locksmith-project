@@ -5,6 +5,11 @@ import Box from "@mui/material/Box";
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
 import "./style.css";
+import Modal from "@mui/material/Modal";
+import TextField from "@mui/material/TextField";
+import Button from "@mui/material/Button";
+import CircularProgress from '@mui/material/CircularProgress';
+import Typography from '@mui/material/Typography';
 
 const Commercial = () => {
   const [services, setServices] = useState([]);
@@ -16,7 +21,35 @@ const Commercial = () => {
   const [bookingSuccess, setBookingSuccess] = useState(false);
   const [selectedService, setSelectedService] = useState(0); // Default to the first service
   const [filterValue, setFilterValue] = useState(""); // Default to the first service name
+  const [openModal, setOpenModal] = useState(false);
+const [currentService, setCurrentService] = useState(null);
+const [address, setAddress] = useState("");
+const [contactNumber, setContactNumber] = useState("");
+const [bookingError, setBookingError] = useState("");
   const navigate = useNavigate();
+  const modalStyle = {
+  position: 'absolute',
+  top: '50%',
+  left: '50%',
+  transform: 'translate(-50%, -50%)',
+  width: { xs: '90%', sm: '80%', md: 500 },
+  bgcolor: 'background.paper',
+  border: 'none',
+  boxShadow: '0px 24px 48px rgba(0, 0, 0, 0.16)',
+  p: 4,
+  borderRadius: '12px',
+  outline: 'none',
+  maxHeight: '90vh',
+  overflowY: 'auto',
+  '&::-webkit-scrollbar': {
+    width: '6px',
+  },
+  '&::-webkit-scrollbar-thumb': {
+    backgroundColor: 'rgba(0,0,0,0.2)',
+    borderRadius: '3px',
+  }
+};
+  
 
   // Fetch geolocation
   useEffect(() => {
@@ -81,7 +114,7 @@ const Commercial = () => {
   // Handle tab change
   const handleTabChange = (event, newValue) => {
     setSelectedService(newValue);
-    setFilterValue(serviceNames[newValue]); // Sync filter dropdown with selected tab
+    setFilterValue(serviceNames[newValue]);
   };
 
   // Handle filter change
@@ -96,11 +129,24 @@ const Commercial = () => {
     }
   };
 
-  // Handle booking
-  const handleBooking = async (service) => {
+  
+  const handleOpenModal = (service) => {
     if (!localStorage.getItem("accessToken")) {
       alert("Please log in to book a service.");
       navigate("/login");
+      return;
+    }
+    setCurrentService(service);
+    setOpenModal(true);
+  };
+  
+  const handleCloseModal = () => {
+    setOpenModal(false);
+    setBookingError("");
+  };
+  const handleBooking = async () => {
+    if (!address || !contactNumber) {
+      setBookingError("Please fill in all fields");
       return;
     }
   
@@ -109,28 +155,37 @@ const Commercial = () => {
   
     const token = localStorage.getItem("accessToken");
     const currentTime = new Date().toISOString();
+    
     const bookingData = {
-      service_request: service.service.id,  
-      locksmith: service.locksmith_id,
+      service_request: currentService.service.id,  
+      locksmith: currentService.locksmith_id,
       scheduled_time: currentTime,
       scheduled_date: currentTime,
-      locksmith_service: service.service.id,  
+      locksmith_service: currentService.service.id, 
+      customer_address: address,
+      customer_contact_number: contactNumber
     };
   
     try {
-      await api.post("/api/bookings/", bookingData, {
+      setLoading(true);
+      const response = await api.post("/api/bookings/", bookingData, {
         headers: {
           Authorization: `Bearer ${token}`,
           "Content-Type": "application/json",
         },
       });
+      console.log("Booking response:", response.data); // Log the response for debugging
       setBookingSuccess(true);
+      handleCloseModal();
       setTimeout(() => {
-        navigate("/confirm-payment", { state: { service } });
+        navigate("/confirm-payment", { state: { service: currentService } });
       }, 2000);
     } catch (error) {
       console.error("Booking failed:", error);
-      alert("Booking failed. Please try again.");
+      console.error("Error details:", error.response?.data); // Log detailed error
+      setBookingError(error.response?.data?.message || "Booking failed. Please try again.");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -240,52 +295,129 @@ const Commercial = () => {
     ))}
   </Tabs>
 </Box>
+{/* Booking Modal */}
+<Modal
+  open={openModal}
+  onClose={handleCloseModal}
+  aria-labelledby="premium-booking-modal"
+  sx={{
+    backdropFilter: 'blur(4px)',
+    backgroundColor: 'rgba(0,0,0,0.5)'
+  }}
+>
+  <Box sx={modalStyle}>
+    <Box sx={{ 
+      mb: 3,
+      borderBottom: '1px solid',
+      borderColor: 'divider',
+      pb: 2
+    }}>
+      <Typography 
+        id="premium-booking-modal" 
+        variant="h5" 
+        component="h2"
+        sx={{ 
+          fontWeight: 600,
+          color: 'text.primary'
+        }}
+      >
+        Complete Your Booking
+      </Typography>
+      <Typography variant="body2" sx={{ mt: 1, color: 'text.secondary' }}>
+        Please provide your details to secure your service
+      </Typography>
+    </Box>
+
+    <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+      <TextField
+        fullWidth
+        label="Address"
+        variant="outlined"
+        size="small"
+        value={address}
+        onChange={(e) => setAddress(e.target.value)}
+        sx={{
+          '& .MuiOutlinedInput-root': {
+            borderRadius: '8px',
+          }
+        }}
+      />
+      
+      <TextField
+        fullWidth
+        label="Contact Number"
+        variant="outlined"
+        size="small"
+        value={contactNumber}
+        onChange={(e) => setContactNumber(e.target.value)}
+        sx={{
+          '& .MuiOutlinedInput-root': {
+            borderRadius: '8px',
+          }
+        }}
+      />
+      
+      {bookingError && (
+        <Typography color="error" variant="body2" sx={{ mt: 1 }}>
+          {bookingError}
+        </Typography>
+      )}
+    </Box>
+
+    <Box sx={{ 
+      display: 'flex', 
+      justifyContent: 'flex-end', 
+      gap: 2,
+      mt: 4,
+      pt: 2,
+      borderTop: '1px solid',
+      borderColor: 'divider'
+    }}>
+      <Button 
+        onClick={handleCloseModal}
+        variant="text"
+        sx={{
+          textTransform: 'none',
+          px: 3,
+          borderRadius: '8px'
+        }}
+      >
+        Cancel
+      </Button>
+      <Button 
+        variant="contained" 
+        onClick={handleBooking}
+        disabled={loading}
+        sx={{
+          textTransform: 'none',
+          px: 3,
+          borderRadius: '8px',
+          boxShadow: 'none',
+          '&:hover': {
+            boxShadow: 'none'
+          }
+        }}
+      >
+        {loading ? (
+          <>
+            <CircularProgress size={20} sx={{ mr: 1 }} />
+            Processing...
+          </>
+        ) : 'Confirm Booking'}
+      </Button>
+    </Box>
+  </Box>
+</Modal>
 
       {/* Services List */}
       <div className="services-list">
         {filteredServices.map((service, index) => (
-          <ServiceCard key={index} service={service} onBook={handleBooking} />
+         <ServiceCard key={index} service={service} onBook={handleOpenModal} />
         ))}
       </div>
     </Box>
   );
 };
-
-
-
-// const ServiceCard = ({ service, onBook }) => (
-//   <div className="services-card">
-//     <div className="service-header">
-//       <h3>{service.service.admin_service_name}</h3>
-//       <p className="price">${service.service.total_price}</p>
-//     </div>
-//     {/* Availability Status */}
-//     <div
-//       className={`availability-status ${
-//         service.service.is_available ? "available" : "unavailable"
-//       }`}
-//     >
-//       {service.service.is_available ? "Open for Service" : "Currently Unavailable"}
-//     </div>
-//     <p className="text-black">
-//       <strong>Locksmith:</strong> {service.locksmith}
-//     </p>
-//     <p className="text-black">
-//       <strong>Type:</strong> {service.service.service_type}
-//     </p>
-//     <p className="text-black">
-//       <strong>Distance:</strong> {service.distance_km} km
-//     </p>
-//     <p className="details text-black">{service.service.details}</p>
-//     <button
-//       className="book-button"
-//       onClick={() => onBook(service.service)}
-//       disabled={!service.service.is_available} // Disable button if unavailable
-//     >
-//       {service.service.is_available ? "Book Now" : "Unavailable"}
-//     </button>
-//   </div>
-// );
 const ServiceCard = ({ service, onBook, isPaymentConfirmed }) => (
   <div className="services-card">
     <div className="service-header">
@@ -314,10 +446,10 @@ const ServiceCard = ({ service, onBook, isPaymentConfirmed }) => (
         <p className="details text-black">{service.service.details}</p>
       </>
     )}
-    <button
+  <button
       className="book-button"
-      onClick={() => onBook(service.service)}
-      disabled={!service.service.is_available} // Disable button if unavailable
+      onClick={() => onBook(service)}  // Changed to pass the whole service object
+      disabled={!service.service.is_available}
     >
       {service.service.is_available ? "Book Now" : "Unavailable"}
     </button>

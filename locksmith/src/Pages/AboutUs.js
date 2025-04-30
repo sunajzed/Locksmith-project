@@ -8,10 +8,10 @@ import AboutContact from '../components/AboutContact/AboutContact';
 export default function AboutUs() {
   return (
     <div>
-        <AboutIntro/>
-        <SecurityInfoSection/>
-        <WhyChooseUs/>
-<AboutContact/>
-        </div>
+      <AboutIntro />
+      <SecurityInfoSection />
+      <WhyChooseUs />
+      <AboutContact />
+    </div>
   )
 }

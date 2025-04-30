@@ -233,11 +233,11 @@ export default function UserProfile() {
         });
 
         if (Array.isArray(response.data) && response.data.length > 0) {
-          const userData = response.data[0]; // Assuming the first object is the correct profile
+          const userData = response.data[0]; 
           setProfile(userData);
           setUpdatedProfile({
             id: userData.id || "",
-            username: userData.username || "", // Directly from API response
+            username: userData.username || "", 
             address: userData.address || "",
             contact_number: userData.contact_number || "",
             latitude: userData.latitude || "",

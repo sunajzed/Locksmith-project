@@ -38,7 +38,7 @@ const SetCommission = () => {
         const settings = response.data[0];
         setCommissionAmount(settings.commission_amount);
         setPercentage(settings.percentage);
-        setIsNew(false); // Existing data, show update button
+        setIsNew(false); 
       }
     } catch (error) {
       console.error("Error fetching commission settings:", error);
@@ -75,7 +75,7 @@ const SetCommission = () => {
             },
           }
         );
-        setIsNew(false); // Switch to update mode
+        setIsNew(false);
         setMessage("Commission settings added successfully.");
       } else {
         await api.put(

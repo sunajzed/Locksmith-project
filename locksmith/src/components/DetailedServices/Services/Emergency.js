@@ -8,6 +8,11 @@ import Box from "@mui/material/Box";
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
 import "./style.css";
+import Modal from "@mui/material/Modal";
+import TextField from "@mui/material/TextField";
+import Button from "@mui/material/Button";
+import CircularProgress from '@mui/material/CircularProgress';
+import Typography from '@mui/material/Typography';
 
 const Emergency = () => {
   const [services, setServices] = useState([]);
@@ -17,9 +22,36 @@ const Emergency = () => {
   const [latitude, setLatitude] = useState(null);
   const [longitude, setLongitude] = useState(null);
   const [bookingSuccess, setBookingSuccess] = useState(false);
-  const [selectedService, setSelectedService] = useState(0); // Default to the first service
-  const [filterValue, setFilterValue] = useState(""); // Default to the first service name
+  const [selectedService, setSelectedService] = useState(0); 
+  const [filterValue, setFilterValue] = useState(""); 
+  const [openModal, setOpenModal] = useState(false);
+const [currentService, setCurrentService] = useState(null);
+const [address, setAddress] = useState("");
+const [contactNumber, setContactNumber] = useState("");
+const [bookingError, setBookingError] = useState("");
   const navigate = useNavigate();
+  const modalStyle = {
+  position: 'absolute',
+  top: '50%',
+  left: '50%',
+  transform: 'translate(-50%, -50%)',
+  width: { xs: '90%', sm: '80%', md: 500 },
+  bgcolor: 'background.paper',
+  border: 'none',
+  boxShadow: '0px 24px 48px rgba(0, 0, 0, 0.16)',
+  p: 4,
+  borderRadius: '12px',
+  outline: 'none',
+  maxHeight: '90vh',
+  overflowY: 'auto',
+  '&::-webkit-scrollbar': {
+    width: '6px',
+  },
+  '&::-webkit-scrollbar-thumb': {
+    backgroundColor: 'rgba(0,0,0,0.2)',
+    borderRadius: '3px',
+  }
+};
 
   // Fetch geolocation
   useEffect(() => {
@@ -92,18 +124,30 @@ const Emergency = () => {
     const selectedName = event.target.value;
     setFilterValue(selectedName);
     if (selectedName === "") {
-      setSelectedService(-1); // Reset selected tab for "All Services"
+      setSelectedService(-1); 
     } else {
       const index = serviceNames.indexOf(selectedName);
-      setSelectedService(index); // Sync selected tab with filter dropdown
+      setSelectedService(index); 
     }
   };
 
-  // Handle booking
-  const handleBooking = async (service) => {
+  const handleOpenModal = (service) => {
     if (!localStorage.getItem("accessToken")) {
       alert("Please log in to book a service.");
       navigate("/login");
+      return;
+    }
+    setCurrentService(service);
+    setOpenModal(true);
+  };
+  
+  const handleCloseModal = () => {
+    setOpenModal(false);
+    setBookingError("");
+  };
+  const handleBooking = async () => {
+    if (!address || !contactNumber) {
+      setBookingError("Please fill in all fields");
       return;
     }
   
@@ -112,31 +156,41 @@ const Emergency = () => {
   
     const token = localStorage.getItem("accessToken");
     const currentTime = new Date().toISOString();
+    
     const bookingData = {
-      service_request: service.service.id,  
-      locksmith: service.locksmith_id,
+      service_request: currentService.service.id,  
+      locksmith: currentService.locksmith_id,
       scheduled_time: currentTime,
       scheduled_date: currentTime,
-      locksmith_service: service.service.id, 
+      locksmith_service: currentService.service.id, 
+      customer_address: address,
+      customer_contact_number: contactNumber
     };
+  
     try {
-      await api.post("/api/bookings/", bookingData, {
+      setLoading(true);
+      const response = await api.post("/api/bookings/", bookingData, {
         headers: {
           Authorization: `Bearer ${token}`,
           "Content-Type": "application/json",
         },
       });
+      console.log("Booking response:", response.data);
       setBookingSuccess(true);
+      handleCloseModal();
       setTimeout(() => {
-        navigate("/confirm-payment", { state: { service } });
+        navigate("/confirm-payment", { state: { service: currentService } });
       }, 2000);
     } catch (error) {
       console.error("Booking failed:", error);
-      alert("Booking failed. Please try again.");
+      console.error("Error details:", error.response?.data); 
+      setBookingError(error.response?.data?.message || "Booking failed. Please try again.");
+    } finally {
+      setLoading(false);
     }
   };
 
-  // Get unique service names for tabs and dropdown
+
   const serviceNames = [...new Set(services.map((service) => service.service.admin_service_name))];
 
   // Filter services based on the selected tab or filter dropdown
@@ -242,11 +296,124 @@ const Emergency = () => {
     ))}
   </Tabs>
 </Box>  
+{/* Booking Modal */}
+<Modal
+  open={openModal}
+  onClose={handleCloseModal}
+  aria-labelledby="premium-booking-modal"
+  sx={{
+    backdropFilter: 'blur(4px)',
+    backgroundColor: 'rgba(0,0,0,0.5)'
+  }}
+>
+  <Box sx={modalStyle}>
+    <Box sx={{ 
+      mb: 3,
+      borderBottom: '1px solid',
+      borderColor: 'divider',
+      pb: 2
+    }}>
+      <Typography 
+        id="premium-booking-modal" 
+        variant="h5" 
+        component="h2"
+        sx={{ 
+          fontWeight: 600,
+          color: 'text.primary'
+        }}
+      >
+        Complete Your Booking
+      </Typography>
+      <Typography variant="body2" sx={{ mt: 1, color: 'text.secondary' }}>
+        Please provide your details to secure your service
+      </Typography>
+    </Box>
+
+    <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+      <TextField
+        fullWidth
+        label="Address"
+        variant="outlined"
+        size="small"
+        value={address}
+        onChange={(e) => setAddress(e.target.value)}
+        sx={{
+          '& .MuiOutlinedInput-root': {
+            borderRadius: '8px',
+          }
+        }}
+      />
+      
+      <TextField
+        fullWidth
+        label="Contact Number"
+        variant="outlined"
+        size="small"
+        value={contactNumber}
+        onChange={(e) => setContactNumber(e.target.value)}
+        sx={{
+          '& .MuiOutlinedInput-root': {
+            borderRadius: '8px',
+          }
+        }}
+      />
+      
+      {bookingError && (
+        <Typography color="error" variant="body2" sx={{ mt: 1 }}>
+          {bookingError}
+        </Typography>
+      )}
+    </Box>
+
+    <Box sx={{ 
+      display: 'flex', 
+      justifyContent: 'flex-end', 
+      gap: 2,
+      mt: 4,
+      pt: 2,
+      borderTop: '1px solid',
+      borderColor: 'divider'
+    }}>
+      <Button 
+        onClick={handleCloseModal}
+        variant="text"
+        sx={{
+          textTransform: 'none',
+          px: 3,
+          borderRadius: '8px'
+        }}
+      >
+        Cancel
+      </Button>
+      <Button 
+        variant="contained" 
+        onClick={handleBooking}
+        disabled={loading}
+        sx={{
+          textTransform: 'none',
+          px: 3,
+          borderRadius: '8px',
+          boxShadow: 'none',
+          '&:hover': {
+            boxShadow: 'none'
+          }
+        }}
+      >
+        {loading ? (
+          <>
+            <CircularProgress size={20} sx={{ mr: 1 }} />
+            Processing...
+          </>
+        ) : 'Confirm Booking'}
+      </Button>
+    </Box>
+  </Box>
+</Modal>
 
       {/* Services List */}
       <div className="services-list">
         {filteredServices.map((service, index) => (
-          <ServiceCard key={index} service={service} onBook={handleBooking} />
+        <ServiceCard key={index} service={service} onBook={handleOpenModal} />
         ))}
       </div>
     </Box>
@@ -280,8 +447,8 @@ const ServiceCard = ({ service, onBook }) => (
     <p className="details text-black">{service.service.details}</p>
     <button
       className="book-button"
-      onClick={() => onBook(service.service)}
-      disabled={!service.service.is_available} // Disable button if unavailable
+      onClick={() => onBook(service)}  // Changed to pass the whole service object
+      disabled={!service.service.is_available}
     >
       {service.service.is_available ? "Book Now" : "Unavailable"}
     </button>
