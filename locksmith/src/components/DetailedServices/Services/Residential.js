@@ -111,11 +111,11 @@ const Residential = () => {
     const token = localStorage.getItem("accessToken");
     const currentTime = new Date().toISOString();
     const bookingData = {
-      service_request: service.service.id,  // <- use nested id
+      service_request: service.service.id,  
       locksmith: service.locksmith_id,
       scheduled_time: currentTime,
       scheduled_date: currentTime,
-      locksmith_service: service.service.id,  // <- use nested id
+      locksmith_service: service.service.id,  
     };
   
     try {

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'; 
+import React, { useState, useEffect } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import Container from 'react-bootstrap/Container';
 import Navbar from 'react-bootstrap/Navbar';
@@ -72,8 +72,8 @@ export default function NavBar() {
         </div>
       )}
 
-      <Navbar 
-        className="custom-navbar-bg" 
+      <Navbar
+        className="custom-navbar-bg"
         expand="lg"
         // style={{
         //   backgroundImage: "url('/images/dark-grey-bg.webp')",
@@ -91,7 +91,7 @@ export default function NavBar() {
           padding: "4px 0",
           height: `${navHeight}px`,
         }}
-        
+
       >
         <Container>
           {/* <Navbar.Brand as={Link} to="/">
@@ -104,25 +104,25 @@ export default function NavBar() {
             />
           </Navbar.Brand> */}
           <Navbar.Brand
-  as={userRole === 'locksmith' ? 'div' : Link}
-  to={userRole === 'locksmith' ? '#' : '/'}
-  style={userRole === 'locksmith' ? { cursor: 'default', pointerEvents: 'none' } : {}}
->
- <a href="/">
-  <img
-    alt="Logo"
-    src="images/logo.webp"
-    width="40"
-    height="40"
-    className="d-inline-block align-top logo"
-  />
-</a>
+            as={userRole === 'locksmith' ? 'div' : Link}
+            to={userRole === 'locksmith' ? '#' : '/'}
+            style={userRole === 'locksmith' ? { cursor: 'default', pointerEvents: 'none' } : {}}
+          >
+            <a href="/">
+              <img
+                alt="Logo"
+                src="images/logo.webp"
+                width="40"
+                height="40"
+                className="d-inline-block align-top logo"
+              />
+            </a>
 
-</Navbar.Brand>
+          </Navbar.Brand>
 
           <Navbar.Toggle className='toggle-button' aria-controls="basic-navbar-nav" />
           <Navbar.Collapse id="basic-navbar-nav" className="navbar-collapse-overlay">
-            
+
             {!isAuthenticated || userRole !== 'locksmith' ? (
               <Nav className="custom-nav mx-auto text-center">
                 <Nav.Link as={Link} to="/" className={`me-lg-3 fw-bold text-light ${location.pathname === '/' ? 'active' : ''}`}>Home</Nav.Link>
@@ -139,27 +139,27 @@ export default function NavBar() {
                   </Dropdown.Menu>
                 </Dropdown> */}
 
-<Dropdown as={Nav.Item} className="me-lg-3">
-  <div 
-    onClick={() => navigate('/services')} 
-    style={{ cursor: 'pointer' }}
-  >
-    <Dropdown.Toggle 
-      as={Nav.Link} 
-      className={`fw-bold text-light ${location.pathname.includes('/services') ? 'active' : ''}`} 
-      style={{ backgroundColor: 'transparent' }}
-    >
-      Services
-    </Dropdown.Toggle>
-  </div>
-  <Dropdown.Menu className="custom-dropdown-menu">
-    <Dropdown.Item as={Link} to="/residential-service" className="dropdown-item-custom">Residential</Dropdown.Item>
-    <Dropdown.Item as={Link} to="/automotive-service" className="dropdown-item-custom">Automotive</Dropdown.Item>
-    <Dropdown.Item as={Link} to="/commercial-service" className="dropdown-item-custom">Commercial</Dropdown.Item>
-    <Dropdown.Item as={Link} to="/emergency-service" className="dropdown-item-custom">Emergency</Dropdown.Item>
-    <Dropdown.Item as={Link} to="/smart-lock-service" className="dropdown-item-custom">Smart Lock</Dropdown.Item>
-  </Dropdown.Menu>
-</Dropdown>
+                <Dropdown as={Nav.Item} className="me-lg-3">
+                  <div
+                    onClick={() => navigate('/services')}
+                    style={{ cursor: 'pointer' }}
+                  >
+                    <Dropdown.Toggle
+                      as={Nav.Link}
+                      className={`fw-bold text-light ${location.pathname.includes('/services') ? 'active' : ''}`}
+                      style={{ backgroundColor: 'transparent' }}
+                    >
+                      Services
+                    </Dropdown.Toggle>
+                  </div>
+                  <Dropdown.Menu className="custom-dropdown-menu">
+                    <Dropdown.Item as={Link} to="/residential-service" className="dropdown-item-custom">Residential</Dropdown.Item>
+                    <Dropdown.Item as={Link} to="/automotive-service" className="dropdown-item-custom">Automotive</Dropdown.Item>
+                    <Dropdown.Item as={Link} to="/commercial-service" className="dropdown-item-custom">Commercial</Dropdown.Item>
+                    <Dropdown.Item as={Link} to="/emergency-service" className="dropdown-item-custom">Emergency</Dropdown.Item>
+                    <Dropdown.Item as={Link} to="/smart-lock-service" className="dropdown-item-custom">Smart Lock</Dropdown.Item>
+                  </Dropdown.Menu>
+                </Dropdown>
 
                 <Nav.Link as={Link} to="/about-us" className={`me-lg-3 fw-bold text-light ${location.pathname === '/about-us' ? 'active' : ''}`}>About Us</Nav.Link>
                 <Nav.Link as={Link} to="/careers" className={`me-lg-3 fw-bold text-light ${location.pathname === '/careers' ? 'active' : ''}`}>Careers</Nav.Link>
