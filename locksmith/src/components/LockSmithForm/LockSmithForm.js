@@ -2,6 +2,9 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import "./LockSmithForm.css";
 import api from "../../api/api";
+import Autocomplete from '@mui/material/Autocomplete';
+import TextField from '@mui/material/TextField';
+import CircularProgress from '@mui/material/CircularProgress';;
 
 const LockSmithForm = () => {
   const navigate = useNavigate();
@@ -19,6 +22,83 @@ const LockSmithForm = () => {
   const [message, setMessage] = useState(null);
   const [error, setError] = useState(null);
   const [fileError, setFileError] = useState(null);
+  const [addressInput, setAddressInput] = useState("");
+  const [addressOptions, setAddressOptions] = useState([]);
+  const [loadingAddress, setLoadingAddress] = useState(false);
+  const debounce = (func, delay) => {
+    let timer;
+    return function(...args) {
+      clearTimeout(timer);
+      timer = setTimeout(() => func.apply(this, args), delay);
+    };
+  };
+
+  // Fetch address suggestions
+  const fetchAddressSuggestions = async (query) => {
+    if (!query || query.trim().length === 0) {  
+      setAddressOptions([]);
+      return;
+    }
+
+    setLoadingAddress(true);
+    try {
+      const token = localStorage.getItem("accessToken");
+      const response = await api.get("/api/get-address-suggestions/", {
+        params: { query },
+        headers: {
+          Authorization: token ? `Bearer ${token}` : "",
+        },
+      });
+
+      // Handle different response formats
+      let suggestions = [];
+      if (response.data.predictions) {
+        // Google Places API format
+        suggestions = response.data.predictions.map(prediction => ({
+          label: prediction.description,
+          value: prediction.description,
+          id: prediction.place_id
+        }));
+      } else if (Array.isArray(response.data)) {
+        // Simple array format
+        suggestions = response.data.map(item => ({
+          label: item,
+          value: item
+        }));
+      }
+
+      setAddressOptions(suggestions);
+    } catch (error) {
+      console.error("Error fetching address suggestions:", error);
+      setAddressOptions([]);
+    } finally {
+      setLoadingAddress(false);
+    }
+  };
+
+  // Debounced version of fetch function
+  const debouncedFetch = debounce(fetchAddressSuggestions, 500);
+
+  // Update the address field in the form
+  const handleAddressChange = (event, newValue) => {
+    if (typeof newValue === 'string') {
+      setFormData(prev => ({
+        ...prev,
+        address: newValue
+      }));
+    } else if (newValue && newValue.value) {
+      setFormData(prev => ({
+        ...prev,
+        address: newValue.value
+      }));
+    }
+  };
+
+  // Update the input field
+  const handleInputChange = (event, newInputValue) => {
+    setAddressInput(newInputValue);
+    debouncedFetch(newInputValue);
+  };
 
   useEffect(() => {
     const accessToken = localStorage.getItem("accessToken");
@@ -176,10 +256,48 @@ const LockSmithForm = () => {
       {fileError && <div className="alert alert-warning">{fileError}</div>}
 
       <form onSubmit={handleSubmit} encType="multipart/form-data">
-        <div className="form-group">
+      <div className="form-group">
           <label>Address</label>
-          <input type="text" name="address" value={formData.address} onChange={handleChange} className="form-control" />
+          <Autocomplete
+            freeSolo
+            options={addressOptions}
+            getOptionLabel={(option) => option.label || option}
+            loading={loadingAddress}
+            value={formData.address}
+            onChange={handleAddressChange}
+            inputValue={addressInput}
+            onInputChange={handleInputChange}
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                variant="outlined"
+                size="small"
+                fullWidth
+                required
+                className="form-control"
+                placeholder="Start typing your address..."
+                InputProps={{
+                  ...params.InputProps,
+                  endAdornment: (
+                    <>
+                      {loadingAddress ? (
+                        <CircularProgress color="inherit" size={20} />
+                      ) : null}
+                      {params.InputProps.endAdornment}
+                    </>
+                  ),
+                }}
+              />
+            )}
+            renderOption={(props, option) => (
+              <li {...props} key={option.id || option.value}>
+                {option.label}
+              </li>
+            )}
+            filterOptions={(x) => x} // Bypass client-side filtering
+          />
         </div>
+
 
         <div className="form-group">
           <label>Contact Number</label>
@@ -191,15 +309,15 @@ const LockSmithForm = () => {
           <input type="text" name="service_area" value={formData.service_area} onChange={handleChange} className="form-control" />
         </div>
 
-        <div className="form-group">
+        {/* <div className="form-group">
           <label>Longitude</label>
           <input type="text" name="longitude" value={formData.longitude} onChange={handleChange} className="form-control" />
-        </div>
+        </div> */}
 
-        <div className="form-group">
+        {/* <div className="form-group">
           <label>Latitude</label>
           <input type="text" name="latitude" value={formData.latitude} onChange={handleChange} className="form-control" />
-        </div>
+        </div> */}
 
         <div className="form-group">
           <label>PCC File (Max 150KB)</label>

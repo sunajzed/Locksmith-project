@@ -437,9 +437,9 @@ const ServiceCard = ({ service, onBook }) => (
     <p className="text-black">
       <strong>Type:</strong> {service.service.service_type}
     </p>
-    <p className="text-black">
+    {/* <p className="text-black">
       <strong>Distance:</strong> {service.distance_km} km
-    </p>
+    </p> */}
     <p className="details text-black">{service.service.details}</p>
     <button
       className="book-button"

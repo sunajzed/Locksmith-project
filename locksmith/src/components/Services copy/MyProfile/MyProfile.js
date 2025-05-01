@@ -211,13 +211,13 @@ const MyProfile = () => {
             className="form-control-file" 
             accept=".pdf,.jpg,.jpeg,.png" 
           />
-          {fileURLs.pcc_file && !formData.pcc_file && (
+          {/* {fileURLs.pcc_file && !formData.pcc_file && (
             <div className="mt-2">
               <a href={fileURLs.pcc_file} target="_blank" rel="noopener noreferrer" className="btn btn-sm btn-outline-secondary">
                 View Current PCC
               </a>
             </div>
-          )}
+          )} */}
         </div>
 
         <div className="form-group">
@@ -229,13 +229,13 @@ const MyProfile = () => {
             className="form-control-file" 
             accept=".pdf,.jpg,.jpeg,.png" 
           />
-          {fileURLs.license_file && !formData.license_file && (
+          {/* {fileURLs.license_file && !formData.license_file && (
             <div className="mt-2">
               <a href={fileURLs.license_file} target="_blank" rel="noopener noreferrer" className="btn btn-sm btn-outline-secondary">
                 View Current License
               </a>
             </div>
-          )}
+          )} */}
         </div>
 
         <div className="form-group">
@@ -247,13 +247,13 @@ const MyProfile = () => {
             className="form-control-file" 
             accept=".jpg,.jpeg,.png" 
           />
-          {fileURLs.photo && !formData.photo && (
+          {/* {fileURLs.photo && !formData.photo && (
             <div className="mt-2">
               <a href={fileURLs.photo} target="_blank" rel="noopener noreferrer" className="btn btn-sm btn-outline-secondary">
                 View Current Photo
               </a>
             </div>
-          )}
+          )} */}
         </div>
 
         <div className="text-center mt-4">

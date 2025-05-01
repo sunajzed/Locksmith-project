@@ -158,8 +158,8 @@ const Automotive = () => {
       scheduled_time: currentTime,
       scheduled_date: currentTime,
       locksmith_service: currentService.service.id,
-      customer_address: address,  // Changed from 'address' to 'customer_address'
-      customer_contact_number: contactNumber  // Changed from 'contact_number' to 'customer_contact_number'
+      customer_address: address,  
+      customer_contact_number: contactNumber
     };
 
     try {
@@ -506,10 +506,10 @@ const ServiceCard = ({ service, onBook }) => {
           <span className="meta-label">Locksmith:</span>
           <span className="meta-value">{service.locksmith}</span>
         </div> */}
-        <div className="meta-item">
+        {/* <div className="meta-item">
           <span className="meta-label">Distance:</span>
           <span className="meta-value">{service.distance_km} km</span>
-        </div>
+        </div> */}
       </div>
       <p className="service-description">{service.service.details}</p>
       <button
