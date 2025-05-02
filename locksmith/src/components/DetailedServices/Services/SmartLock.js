@@ -137,7 +137,7 @@
 //     setCurrentService(service);
 //     setOpenModal(true);
 //   };
-  
+
 //   const handleCloseModal = () => {
 //     setOpenModal(false);
 //     setBookingError("");
@@ -147,13 +147,13 @@
 //       setBookingError("Please fill in all fields");
 //       return;
 //     }
-  
+
 //     const isConfirmed = window.confirm("Are you sure you want to book this service?");
 //     if (!isConfirmed) return;
-  
+
 //     const token = localStorage.getItem("accessToken");
 //     const currentTime = new Date().toISOString();
-    
+
 //     const bookingData = {
 //       service_request: currentService.service.id,  
 //       locksmith: currentService.locksmith_id,
@@ -163,7 +163,7 @@
 //       customer_address: address,
 //       customer_contact_number: contactNumber
 //     };
-  
+
 //     try {
 //       setLoading(true);
 //       const response = await api.post("/api/bookings/", bookingData, {
@@ -340,7 +340,7 @@
 //           }
 //         }}
 //       />
-      
+
 //       <TextField
 //         fullWidth
 //         label="Contact Number"
@@ -354,7 +354,7 @@
 //           }
 //         }}
 //       />
-      
+
 //       {bookingError && (
 //         <Typography color="error" variant="body2" sx={{ mt: 1 }}>
 //           {bookingError}
@@ -452,6 +452,8 @@
 // );
 
 // export default SmartLock;
+
+
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../../../api/api";
@@ -467,7 +469,6 @@ import Typography from '@mui/material/Typography';
 import Autocomplete from '@mui/material/Autocomplete';
 import { CiLocationArrow1 } from "react-icons/ci";
 import debounce from "lodash/debounce";
-
 const SmartLock = () => {
   const [services, setServices] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -476,8 +477,8 @@ const SmartLock = () => {
   const [latitude, setLatitude] = useState(null);
   const [longitude, setLongitude] = useState(null);
   const [bookingSuccess, setBookingSuccess] = useState(false);
-  const [selectedService, setSelectedService] = useState(0);
-  const [filterValue, setFilterValue] = useState("");
+  const [selectedService, setSelectedService] = useState(0); // Default to the first service
+  const [filterValue, setFilterValue] = useState(""); // Default to the first service name
   const [openModal, setOpenModal] = useState(false);
   const [currentService, setCurrentService] = useState(null);
   const [address, setAddress] = useState("");
@@ -487,7 +488,6 @@ const SmartLock = () => {
   const [addressInputValue, setAddressInputValue] = useState("");
   const [isFetchingSuggestions, setIsFetchingSuggestions] = useState(false);
   const navigate = useNavigate();
-
   const modalStyle = {
     position: 'absolute',
     top: '50%',
@@ -566,12 +566,115 @@ const SmartLock = () => {
       if (latitude !== null && longitude !== null && !geoLoading) {
         fetchServices();
       }
-    }, 500);
+    }, 500); // Debounce for 500ms
 
     return () => clearTimeout(debounceTimer);
   }, [latitude, longitude, geoLoading]);
 
-  // Address suggestion functions
+  // Handle tab change
+  const handleTabChange = (event, newValue) => {
+    setSelectedService(newValue);
+    setFilterValue(serviceNames[newValue]); // Sync filter dropdown with selected tab
+  };
+
+  // Handle filter change
+  const handleFilterChange = (event) => {
+    const selectedName = event.target.value;
+    setFilterValue(selectedName);
+    if (selectedName === "") {
+      setSelectedService(-1); // Reset selected tab for "All Services"
+    } else {
+      const index = serviceNames.indexOf(selectedName);
+      setSelectedService(index); // Sync selected tab with filter dropdown
+    }
+  };
+
+  const handleOpenModal = (service) => {
+    if (!localStorage.getItem("accessToken")) {
+      alert("Please log in to book a service.");
+      navigate("/login");
+      return;
+    }
+    setCurrentService(service);
+    setOpenModal(true);
+  };
+
+  const handleCloseModal = () => {
+    setOpenModal(false);
+    setBookingError("");
+  };
+  const handleBooking = async () => {
+    if (!address || !contactNumber) {
+      setBookingError("Please fill in all fields");
+      return;
+    }
+
+    const isConfirmed = window.confirm("Are you sure you want to book this service?");
+    if (!isConfirmed) return;
+
+    const token = localStorage.getItem("accessToken");
+    const currentTime = new Date().toISOString();
+
+    const bookingData = {
+      service_request: currentService.service.id,
+      locksmith: currentService.locksmith_id,
+      scheduled_time: currentTime,
+      scheduled_date: currentTime,
+      locksmith_service: currentService.service.id,
+      customer_address: address,
+      customer_contact_number: contactNumber
+    };
+
+    try {
+      setLoading(true);
+      const response = await api.post("/api/bookings/", bookingData, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      });
+      console.log("Booking response:", response.data); // Log the response for debugging
+      setBookingSuccess(true);
+      handleCloseModal();
+      setTimeout(() => {
+        navigate("/confirm-payment", { state: { service: currentService } });
+      }, 2000);
+    } catch (error) {
+      console.error("Booking failed:", error);
+      console.error("Error details:", error.response?.data); // Log detailed error
+      setBookingError(error.response?.data?.message || "Booking failed. Please try again.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Get unique service names for tabs and dropdown
+  const serviceNames = [...new Set(services.map((service) => service.service.admin_service_name))];
+
+  // Filter services based on the selected tab or filter dropdown
+  const filteredServices = filterValue === ""
+    ? services // Show all services when "All Services" is selected
+    : services.filter((service) => service.service.admin_service_name === filterValue);
+
+  if (loading || geoLoading) {
+    return (
+      <div className="loading-container">
+        <div className="loading-spinner"></div>
+        <p className="loading-message">Fetching services near you...</p>
+      </div>
+    );
+  }
+
+  if (error) return <p className="error">{error}</p>;
+
+  if (!loading && !geoLoading && filteredServices.length === 0) {
+    return (
+      <div className="no-services-message">
+        <p>No services available in your area. Please try again later.</p>
+      </div>
+    );
+  }
+
   const fetchAddressSuggestions = async (query) => {
     if (!query || query.length < 3) {
       setAddressSuggestions([]);
@@ -625,116 +728,12 @@ const SmartLock = () => {
     setAddressInputValue(location);
   };
 
-  // Handle tab change
-  const handleTabChange = (event, newValue) => {
-    setSelectedService(newValue);
-    setFilterValue(serviceNames[newValue]);
-  };
-
-  // Handle filter change
-  const handleFilterChange = (event) => {
-    const selectedName = event.target.value;
-    setFilterValue(selectedName);
-    if (selectedName === "") {
-      setSelectedService(-1);
-    } else {
-      const index = serviceNames.indexOf(selectedName);
-      setSelectedService(index);
-    }
-  };
-
-  const handleOpenModal = (service) => {
-    if (!localStorage.getItem("accessToken")) {
-      alert("Please log in to book a service.");
-      navigate("/login");
-      return;
-    }
-    setCurrentService(service);
-    setOpenModal(true);
-  };
-
-  const handleCloseModal = () => {
-    setOpenModal(false);
-    setBookingError("");
-  };
-
-  const handleBooking = async () => {
-    if (!address || !contactNumber) {
-      setBookingError("Please fill in all fields");
-      return;
-    }
-
-    const isConfirmed = window.confirm("Are you sure you want to book this smart lock service?");
-    if (!isConfirmed) return;
-
-    const token = localStorage.getItem("accessToken");
-    const currentTime = new Date().toISOString();
-    
-    const bookingData = {
-      service_request: currentService.service.id,
-      locksmith: currentService.locksmith_id,
-      scheduled_time: currentTime,
-      scheduled_date: currentTime,
-      locksmith_service: currentService.service.id,
-      customer_address: address,
-      customer_contact_number: contactNumber,
-      smart_lock_details: currentService.smart_lock_details || {}
-    };
-
-    try {
-      setLoading(true);
-      await api.post("/api/bookings/", bookingData, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
-        },
-      });
-      setBookingSuccess(true);
-      handleCloseModal();
-      setTimeout(() => {
-        navigate("/confirm-payment", { state: { service: currentService } });
-      }, 2000);
-    } catch (error) {
-      console.error("Booking failed:", error);
-      setBookingError(error.response?.data?.message || "Booking failed. Please try again.");
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  // Get unique service names for tabs and dropdown
-  const serviceNames = [...new Set(services.map((service) => service.service.admin_service_name))];
-
-  // Filter services based on the selected tab or filter dropdown
-  const filteredServices = filterValue === ""
-    ? services
-    : services.filter((service) => service.service.admin_service_name === filterValue);
-
-  if (loading || geoLoading) {
-    return (
-      <div className="loading-container">
-        <div className="loading-spinner"></div>
-        <p className="loading-message">Finding smart lock specialists near you...</p>
-      </div>
-    );
-  }
-
-  if (error) return <p className="error">{error}</p>;
-
-  if (!loading && !geoLoading && filteredServices.length === 0) {
-    return (
-      <div className="no-services-message">
-        <p>No smart lock services available in your area. Please try again later.</p>
-      </div>
-    );
-  }
-
   return (
     <Box className="residential-container">
       <h2>SmartLock Services</h2>
       {bookingSuccess && (
         <div className="success-message">
-          <p className="text-white">Booking confirmed! Redirecting to payment...</p>
+          <p className="text-white">Booking Initialized! Redirecting to confirmation page...</p>
         </div>
       )}
 
@@ -760,9 +759,9 @@ const SmartLock = () => {
       {/* Tabs for service names */}
       <Box
         sx={{
-          width: "100%",
-          maxWidth: "1200px",
-          margin: "0 auto",
+          width: "100%", // Ensure the container takes full width
+          maxWidth: "1200px", // Limit maximum width for larger screens
+          margin: "0 auto", // Center the container
           backgroundColor: "#f5f5f5",
           borderRadius: "10px",
           padding: "10px",
@@ -771,21 +770,21 @@ const SmartLock = () => {
         }}
       >
         <Tabs
-          value={selectedService === -1 ? false : selectedService}
+          value={selectedService === -1 ? false : selectedService} // No tab selected for "All Services"
           onChange={handleTabChange}
           variant="scrollable"
           scrollButtons="auto"
           allowScrollButtonsMobile
           aria-label="service tabs"
           sx={{
-            width: "100%",
+            width: "100%", // Ensure Tabs take full width of the container
             "& .MuiTab-root": {
               fontSize: "1rem",
               fontWeight: "bold",
               color: "#333",
               textTransform: "none",
-              minWidth: "200px",
-              flex: 1,
+              minWidth: "200px", // Set a fixed minimum width for each tab
+              flex: 1, // Allow tabs to grow and fill available space
               padding: "6px 8px",
               margin: "0 4px",
               "&:hover": {
@@ -808,37 +807,36 @@ const SmartLock = () => {
           ))}
         </Tabs>
       </Box>
-
       {/* Booking Modal */}
       <Modal
         open={openModal}
         onClose={handleCloseModal}
-        aria-labelledby="smartlock-booking-modal"
+        aria-labelledby="premium-booking-modal"
         sx={{
           backdropFilter: 'blur(4px)',
           backgroundColor: 'rgba(0,0,0,0.5)'
         }}
       >
         <Box sx={modalStyle}>
-          <Box sx={{ 
+          <Box sx={{
             mb: 3,
             borderBottom: '1px solid',
             borderColor: 'divider',
             pb: 2
           }}>
-            <Typography 
-              id="smartlock-booking-modal" 
-              variant="h5" 
+            <Typography
+              id="premium-booking-modal"
+              variant="h5"
               component="h2"
-              sx={{ 
+              sx={{
                 fontWeight: 600,
                 color: 'text.primary'
               }}
             >
-              SmartLock Service Request
+              Complete Your Booking
             </Typography>
             <Typography variant="body2" sx={{ mt: 1, color: 'text.secondary' }}>
-              Provide your details for smart lock installation/repair
+              Please provide your details to secure your service
             </Typography>
           </Box>
 
@@ -863,7 +861,7 @@ const SmartLock = () => {
               renderInput={(params) => (
                 <TextField
                   {...params}
-                  label="Installation Address"
+                  label="Address"
                   variant="outlined"
                   size="small"
                   fullWidth
@@ -892,20 +890,6 @@ const SmartLock = () => {
                 </li>
               )}
               filterOptions={(x) => x}
-            />
-
-            <TextField
-              fullWidth
-              label="Contact Number"
-              variant="outlined"
-              size="small"
-              value={contactNumber}
-              onChange={(e) => setContactNumber(e.target.value)}
-              sx={{
-                '& .MuiOutlinedInput-root': {
-                  borderRadius: '8px',
-                }
-              }}
             />
 
             <Button
@@ -952,6 +936,21 @@ const SmartLock = () => {
               {navigator.geolocation ? "Use My Current Location" : "Detect Nearby Location"}
             </Button>
 
+            <TextField
+              fullWidth
+              label="Contact Number"
+              variant="outlined"
+              size="small"
+              value={contactNumber}
+              onChange={(e) => setContactNumber(e.target.value)}
+              sx={{
+                '& .MuiOutlinedInput-root': {
+                  borderRadius: '8px',
+                }
+              }}
+            />
+
+
             {bookingError && (
               <Typography color="error" variant="body2" sx={{ mt: 1 }}>
                 {bookingError}
@@ -959,16 +958,16 @@ const SmartLock = () => {
             )}
           </Box>
 
-          <Box sx={{ 
-            display: 'flex', 
-            justifyContent: 'flex-end', 
+          <Box sx={{
+            display: 'flex',
+            justifyContent: 'flex-end',
             gap: 2,
             mt: 4,
             pt: 2,
             borderTop: '1px solid',
             borderColor: 'divider'
           }}>
-            <Button 
+            <Button
               onClick={handleCloseModal}
               variant="text"
               sx={{
@@ -979,8 +978,8 @@ const SmartLock = () => {
             >
               Cancel
             </Button>
-            <Button 
-              variant="contained" 
+            <Button
+              variant="contained"
               onClick={handleBooking}
               disabled={loading}
               sx={{
@@ -988,24 +987,21 @@ const SmartLock = () => {
                 px: 3,
                 borderRadius: '8px',
                 boxShadow: 'none',
-                backgroundColor: '#1976d2',
                 '&:hover': {
-                  backgroundColor: '#1565c0',
                   boxShadow: 'none'
                 }
               }}
             >
               {loading ? (
                 <>
-                  <CircularProgress size={20} sx={{ mr: 1, color: 'white' }} />
+                  <CircularProgress size={20} sx={{ mr: 1 }} />
                   Processing...
                 </>
-              ) : 'Book SmartLock Service'}
+              ) : 'Confirm Booking'}
             </Button>
           </Box>
         </Box>
       </Modal>
-
       {/* Services List */}
       <div className="services-list">
         {filteredServices.map((service, index) => (
@@ -1016,53 +1012,38 @@ const SmartLock = () => {
   );
 };
 
-const ServiceCard = ({ service, onBook }) => {
-  const smartLockDetails = service.smart_lock_details || service.service?.smart_lock_details || {};
-  
-  return (
-    <div className="services-card smartlock-card">
-      <div className="service-header">
-        <h3>{service.service.admin_service_name}</h3>
-        <p className="price">${service.service.total_price}</p>
-      </div>
-      
-      <div className={`availability-status ${service.service.is_available ? "available" : "unavailable"}`}>
-        {service.service.is_available ? "Available Now" : "Currently Unavailable"}
-      </div>
-
-      <div className="smartlock-details-section">
-        <h4 className="section-title">SmartLock Details</h4>
-        <div className="specs-grid">
-          <div className="spec-item">
-            <span className="spec-label">Brand:</span>
-            <span className="spec-value">{smartLockDetails.brand || "N/A"}</span>
-          </div>
-          <div className="spec-item">
-            <span className="spec-label">Model:</span>
-            <span className="spec-value">{smartLockDetails.model || "N/A"}</span>
-          </div>
-          <div className="spec-item">
-            <span className="spec-label">Type:</span>
-            <span className="spec-value">{smartLockDetails.lock_type || "N/A"}</span>
-          </div>
-          <div className="spec-item">
-            <span className="spec-label">Connectivity:</span>
-            <span className="spec-value">{smartLockDetails.connectivity || "N/A"}</span>
-          </div>
-        </div>
-      </div>
-
-      <p className="service-description">{service.service.details}</p>
-      
-      <button
-        className={`book-button ${service.service.is_available ? "smartlock" : "disabled"}`}
-        onClick={() => onBook(service)}
-        disabled={!service.service.is_available}
-      >
-        {service.service.is_available ? "Book Installation" : "Unavailable"}
-      </button>
+// Reusable ServiceCard Component
+const ServiceCard = ({ service, onBook }) => (
+  <div className="services-card">
+    <div className="service-header">
+      <h3>{service.service.admin_service_name}</h3>
+      <p className="price">${service.service.total_price}</p>
     </div>
-  );
-};
+    {/* Availability Status */}
+    <div
+      className={`availability-status ${service.service.is_available ? "available" : "unavailable"
+        }`}
+    >
+      {service.service.is_available ? "Open for Service" : "Currently Unavailable"}
+    </div>
+    {/* <p className="text-black">
+      <strong>Locksmith:</strong> {service.locksmith}
+    </p> */}
+    <p className="text-black">
+      <strong>Type:</strong> {service.service.service_type}
+    </p>
+    {/* <p className="text-black">
+      <strong>Distance:</strong> {service.distance_km} km
+    </p> */}
+    <p className="details text-black">{service.service.details}</p>
+    <button
+      className="book-button"
+      onClick={() => onBook(service)}  // Changed to pass the whole service object
+      disabled={!service.service.is_available}
+    >
+      {service.service.is_available ? "Book Now" : "Unavailable"}
+    </button>
+  </div>
+);
 
 export default SmartLock;
