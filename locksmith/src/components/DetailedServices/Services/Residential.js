@@ -13,7 +13,6 @@ import Typography from '@mui/material/Typography';
 import Autocomplete from '@mui/material/Autocomplete';
 import { CiLocationArrow1 } from "react-icons/ci";
 
-
 const Residential = () => {
   const [services, setServices] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -110,14 +109,14 @@ const Residential = () => {
       if (latitude !== null && longitude !== null && !geoLoading) {
         fetchServices();
       }
-    }, 500); 
+    }, 500);
 
     return () => clearTimeout(debounceTimer);
   }, [latitude, longitude, geoLoading]);
 
   const handleTabChange = (event, newValue) => {
     setSelectedService(newValue);
-    setFilterValue(serviceNames[newValue]); 
+    setFilterValue(serviceNames[newValue]);
   };
 
   const handleFilterChange = (event) => {
@@ -127,7 +126,7 @@ const Residential = () => {
       setSelectedService(-1);
     } else {
       const index = serviceNames.indexOf(selectedName);
-      setSelectedService(index); 
+      setSelectedService(index);
     }
   };
 
@@ -146,7 +145,7 @@ const Residential = () => {
     setBookingError("");
   };
   const handleBooking = async () => {
-    if (!address || !houseNumber || !contactNumber) { 
+    if (!address || !houseNumber || !contactNumber) {
       setBookingError("Please fill in all fields");
       return;
     }
@@ -157,7 +156,7 @@ const Residential = () => {
     const token = localStorage.getItem("accessToken");
     const currentTime = new Date().toISOString();
 
-    const bookingData = {  
+    const bookingData = {
       service_request: currentService.service.id,
       locksmith: currentService.locksmith_id,
       scheduled_time: currentTime,
@@ -165,9 +164,9 @@ const Residential = () => {
       locksmith_service: currentService.service.id,
       customer_address: address,
       customer_contact_number: contactNumber,
-      house_number: houseNumber 
+      house_number: houseNumber
     };
-    
+
 
     try {
       setLoading(true);
@@ -191,7 +190,7 @@ const Residential = () => {
       setLoading(false);
     }
   };
- 
+
   const serviceNames = [...new Set(services.map((service) => service.service.admin_service_name))];
 
   const filteredServices = filterValue === ""
@@ -240,7 +239,7 @@ const Residential = () => {
           Authorization: token ? `Bearer ${token}` : "",
         },
       });
-      
+
       // Assuming the API returns data in Google's format:
       // response.data.predictions array with description fields
       setAddressSuggestions(response.data.predictions || []);
@@ -257,7 +256,7 @@ const Residential = () => {
   const getApproximateLocation = async (lat, lng) => {
     try {
       setIsFetchingSuggestions(true);
-      
+
       // First try to get timezone name
       const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
       if (timezone) {
@@ -265,7 +264,7 @@ const Residential = () => {
         const city = timezone.split('/')[1]?.replace(/_/g, ' ') || '';
         if (city) return city;
       }
-      
+
       // Fallback to coordinates if no timezone info
       return `Near coordinates: ${lat.toFixed(4)}, ${lng.toFixed(4)}`;
     } catch (error) {
@@ -281,7 +280,7 @@ const Residential = () => {
       alert("Location not available. Please enable location services.");
       return;
     }
-    
+
     const location = await getApproximateLocation(latitude, longitude);
     setAddress(location);
     setAddressInputValue(location);
@@ -293,7 +292,7 @@ const Residential = () => {
         `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}`
       );
       const data = await response.json();
-      
+
       if (data.display_name) {
         setAddress(data.display_name);
         setAddressInputValue(data.display_name);
@@ -345,9 +344,9 @@ const Residential = () => {
       </div>
       <Box
         sx={{
-          width: "100%", 
-          maxWidth: "1200px", 
-          margin: "0 auto", 
+          width: "100%",
+          maxWidth: "1200px",
+          margin: "0 auto",
           backgroundColor: "#f5f5f5",
           borderRadius: "10px",
           padding: "10px",
@@ -356,21 +355,21 @@ const Residential = () => {
         }}
       >
         <Tabs
-          value={selectedService === -1 ? false : selectedService} 
+          value={selectedService === -1 ? false : selectedService}
           onChange={handleTabChange}
           variant="scrollable"
           scrollButtons="auto"
           allowScrollButtonsMobile
           aria-label="service tabs"
           sx={{
-            width: "100%", 
+            width: "100%",
             "& .MuiTab-root": {
               fontSize: "1rem",
               fontWeight: "bold",
               color: "#333",
               textTransform: "none",
-              minWidth: "200px", 
-              flex: 1, 
+              minWidth: "200px",
+              flex: 1,
               padding: "6px 8px",
               margin: "0 4px",
               "&:hover": {
@@ -393,7 +392,7 @@ const Residential = () => {
           ))}
         </Tabs>
       </Box>
-    
+
       <Modal
         open={openModal}
         onClose={handleCloseModal}
@@ -441,57 +440,57 @@ const Residential = () => {
               }}
             />
 
-<Autocomplete
-    freeSolo
-    disableClearable
-    options={addressSuggestions}
-    getOptionLabel={(option) => 
-      typeof option === 'string' ? option : option.description
-    }
-    loading={isFetchingSuggestions}
-    value={address}
-    onChange={(event, newValue) => {
-      setAddress(typeof newValue === 'string' ? newValue : newValue.description);
-    }}
-    inputValue={addressInputValue}
-    onInputChange={(event, newInputValue) => {
-      setAddressInputValue(newInputValue);
-      debouncedFetchSuggestions(newInputValue);
-    }}
-    renderInput={(params) => (
-      <TextField
-        {...params}
-        label="Street Address"
-        variant="outlined"
-        size="small"
-        fullWidth
-        required
-        sx={{
-          '& .MuiOutlinedInput-root': {
-            borderRadius: '8px',
-          }
-        }}
-        InputProps={{
-          ...params.InputProps,
-          endAdornment: (
-            <>
-              {isFetchingSuggestions ? (
-                <CircularProgress color="inherit" size={20} />
-              ) : null}
-              {params.InputProps.endAdornment}
-            </>
-          ),
-        }}
-      />
-      
-    )}
-    renderOption={(props, option) => (
-      <li {...props} key={option.place_id}>
-        {option.description}
-      </li>
-    )}
-    filterOptions={(x) => x} // Bypass client-side filtering
-  />
+            <Autocomplete
+              freeSolo
+              disableClearable
+              options={addressSuggestions}
+              getOptionLabel={(option) =>
+                typeof option === 'string' ? option : option.description
+              }
+              loading={isFetchingSuggestions}
+              value={address}
+              onChange={(event, newValue) => {
+                setAddress(typeof newValue === 'string' ? newValue : newValue.description);
+              }}
+              inputValue={addressInputValue}
+              onInputChange={(event, newInputValue) => {
+                setAddressInputValue(newInputValue);
+                debouncedFetchSuggestions(newInputValue);
+              }}
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  label="Street Address"
+                  variant="outlined"
+                  size="small"
+                  fullWidth
+                  required
+                  sx={{
+                    '& .MuiOutlinedInput-root': {
+                      borderRadius: '8px',
+                    }
+                  }}
+                  InputProps={{
+                    ...params.InputProps,
+                    endAdornment: (
+                      <>
+                        {isFetchingSuggestions ? (
+                          <CircularProgress color="inherit" size={20} />
+                        ) : null}
+                        {params.InputProps.endAdornment}
+                      </>
+                    ),
+                  }}
+                />
+
+              )}
+              renderOption={(props, option) => (
+                <li {...props} key={option.place_id}>
+                  {option.description}
+                </li>
+              )}
+              filterOptions={(x) => x} // Bypass client-side filtering
+            />
 
             <TextField
               fullWidth
@@ -512,32 +511,49 @@ const Residential = () => {
                 {bookingError}
               </Typography>
             )}
-
-<Button
-  variant="outlined"
-  onClick={() => getAccurateAddress(latitude, longitude)}
-  disabled={!latitude || !longitude || isFetchingSuggestions}
-  sx={{
-    textTransform: 'none',
-    borderRadius: '8px',
-    height: '40px',
-    whiteSpace: 'nowrap',
-    minWidth: '200px',
-    display: 'flex',
-    alignItems: 'center',
-    gap: 1,
-  }}
-  startIcon={<CiLocationArrow1 size={20} />}
->
-  {isFetchingSuggestions ? (
-    <CircularProgress size={20} />
-  ) : (
-    <>
-    <span role="img" aria-label="location"></span>
-    {navigator.geolocation ? "Use Exact Location" : "Use Approx. Location"}
-  </>
-  )}
-</Button>
+            <Button
+              variant="text"
+              onClick={() => getAccurateAddress(latitude, longitude)}
+              disabled={!latitude || !longitude || isFetchingSuggestions}
+              sx={{
+                textTransform: 'none',
+                borderRadius: '8px',
+                height: '40px',
+                minWidth: 'auto',
+                px: 3,
+                fontSize: '0.875rem',
+                fontWeight: 500,
+                color: 'primary.main',
+                bgcolor: 'transparent',
+                border: '1px solid',
+                borderColor: 'primary.main',
+                transition: 'all 0.2s ease',
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: 1.5,
+                '&:hover': {
+                  bgcolor: 'rgba(25, 118, 210, 0.04)',
+                  boxShadow: '0 2px 8px rgba(25, 118, 210, 0.1)'
+                },
+                '&:active': {
+                  bgcolor: 'rgba(25, 118, 210, 0.08)'
+                },
+                '&:disabled': {
+                  color: 'text.disabled',
+                  borderColor: 'action.disabled',
+                  boxShadow: 'none'
+                }
+              }}
+              startIcon={
+                isFetchingSuggestions ? (
+                  <CircularProgress size={18} thickness={4} color="inherit" />
+                ) : (
+                  <CiLocationArrow1 size={18} style={{ strokeWidth: 1.5 }} />
+                )
+              }
+            >
+              {navigator.geolocation ? "Detect My Location" : "Use Nearby Location"}
+            </Button>
 
           </Box>
 
@@ -617,7 +633,7 @@ const ServiceCard = ({ service, onBook }) => (
     <p className="details text-black">{service.service.details}</p>
     <button
       className="book-button"
-      onClick={() => onBook(service)}  
+      onClick={() => onBook(service)}
       disabled={!service.service.is_available}
     >
       {service.service.is_available ? "Book Now" : "Unavailable"}

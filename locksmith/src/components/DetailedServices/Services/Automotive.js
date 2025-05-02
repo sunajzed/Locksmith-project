@@ -11,6 +11,9 @@ import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import CircularProgress from '@mui/material/CircularProgress';
 import Typography from '@mui/material/Typography';
+import Autocomplete from '@mui/material/Autocomplete';
+import { CiLocationArrow1 } from "react-icons/ci";
+
 const modalStyle = {
   position: 'absolute',
   top: '50%',
@@ -33,6 +36,7 @@ const modalStyle = {
     borderRadius: '3px',
   }
 };
+
 const Automotive = () => {
   const [services, setServices] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -48,10 +52,15 @@ const Automotive = () => {
   const [isSearching, setIsSearching] = useState(false);
   const [openModal, setOpenModal] = useState(false);
   const [currentService, setCurrentService] = useState(null);
-  const [address, setAddress] = useState("");
   const [contactNumber, setContactNumber] = useState("");
   const [bookingError, setBookingError] = useState("");
+  const [address, setAddress] = useState("");
+  const [addressSuggestions, setAddressSuggestions] = useState([]);
+  const [addressInputValue, setAddressInputValue] = useState("");
+  const [isFetchingSuggestions, setIsFetchingSuggestions] = useState(false);
   const navigate = useNavigate();
+
+  // Geolocation useEffect
   useEffect(() => {
     if (!navigator.geolocation) {
       setError("Geolocation is not supported by your browser.");
@@ -74,6 +83,8 @@ const Automotive = () => {
       }
     );
   }, []);
+
+  // Services fetch useEffect
   useEffect(() => {
     const fetchServices = async () => {
       try {
@@ -88,7 +99,6 @@ const Automotive = () => {
             Authorization: token ? `Bearer ${token}` : "",
           },
         });
-        console.log('API Response:', response.data);
         setServices(response.data);
         if (response.data.length > 0) {
           setFilterValue(response.data[0].service.admin_service_name);
@@ -109,11 +119,68 @@ const Automotive = () => {
 
     return () => clearTimeout(debounceTimer);
   }, [latitude, longitude, geoLoading]);
+
+  // Address suggestion functions
+  const fetchAddressSuggestions = async (query) => {
+    if (!query || query.length === 0 ) {
+      setAddressSuggestions([]);
+      return;
+    }
+
+    setIsFetchingSuggestions(true);
+    try {
+      const token = localStorage.getItem("accessToken");
+      const response = await api.get("/api/get-address-suggestions/", {
+        params: { query },
+        headers: {
+          Authorization: token ? `Bearer ${token}` : "",
+        },
+      });
+      setAddressSuggestions(response.data.predictions || []);
+    } catch (error) {
+      console.error("Error fetching address suggestions:", error);
+      setAddressSuggestions([]);
+    } finally {
+      setIsFetchingSuggestions(false);
+    }
+  };
+
+  const debouncedFetchSuggestions = debounce(fetchAddressSuggestions, 300);
+
+  const getApproximateLocation = async (lat, lng) => {
+    try {
+      setIsFetchingSuggestions(true);
+      const response = await fetch(
+        `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}`
+      );
+      const data = await response.json();
+      return data.display_name || `Near coordinates: ${lat.toFixed(4)}, ${lng.toFixed(4)}`;
+    } catch (error) {
+      console.error("Reverse geocoding error:", error);
+      return `Near coordinates: ${lat.toFixed(4)}, ${lng.toFixed(4)}`;
+    } finally {
+      setIsFetchingSuggestions(false);
+    }
+  };
+
+  const handleUseCurrentLocation = async () => {
+    if (!latitude || !longitude) {
+      alert("Location not available. Please enable location services.");
+      return;
+    }
+
+    const location = await getApproximateLocation(latitude, longitude);
+    setAddress(location);
+    setAddressInputValue(location);
+  };
+
+  // Other handlers
   const handleTabChange = (event, newValue) => {
     setSelectedService(newValue);
     const serviceNames = [...new Set(services.map((service) => service.service.admin_service_name))];
     setFilterValue(serviceNames[newValue]);
   };
+
   const handleFilterChange = (event) => {
     const selectedName = event.target.value;
     setFilterValue(selectedName);
@@ -125,6 +192,7 @@ const Automotive = () => {
       setSelectedService(index);
     }
   };
+
   const handleOpenModal = (service) => {
     if (!localStorage.getItem("accessToken")) {
       alert("Please log in to book a service.");
@@ -158,7 +226,7 @@ const Automotive = () => {
       scheduled_time: currentTime,
       scheduled_date: currentTime,
       locksmith_service: currentService.service.id,
-      customer_address: address,  
+      customer_address: address,
       customer_contact_number: contactNumber
     };
 
@@ -182,6 +250,7 @@ const Automotive = () => {
       setLoading(false);
     }
   };
+
   const debouncedSearch = debounce(async (query) => {
     if (!query) {
       setSearchResults([]);
@@ -189,14 +258,6 @@ const Automotive = () => {
     }
     setIsSearching(true);
     try {
-      const token = localStorage.getItem("accessToken");
-      const response = await api.get("/api/car-key-details/", {
-        params: { search: query },
-        headers: {
-          Authorization: token ? `Bearer ${token}` : "",
-        },
-      });
-      console.log('Search API Response:', response.data);
       const matchingServices = services.filter((service) => {
         const carKey = service.car_key_details || service.service?.car_key_details || {};
         return (
@@ -206,7 +267,6 @@ const Automotive = () => {
           (carKey.number_of_buttons && carKey.number_of_buttons.toString().includes(query))
         );
       });
-
       setSearchResults(matchingServices);
     } catch (err) {
       console.error("Search API Error:", err.response?.data || err.message);
@@ -223,10 +283,8 @@ const Automotive = () => {
   };
 
   const serviceNames = [...new Set(services.map((service) => service.service.admin_service_name))];
-
-  const filteredServices = filterValue === ""
-    ? services
-    : services.filter((service) => service.service.admin_service_name === filterValue);
+  const filteredServices = filterValue === "" ? services : services.filter((service) => service.service.admin_service_name === filterValue);
+  const noResultsFound = searchQuery && searchResults.length === 0;
 
   if (loading || geoLoading) {
     return (
@@ -246,8 +304,6 @@ const Automotive = () => {
       </div>
     );
   }
-
-  const noResultsFound = searchQuery && searchResults.length === 0;
 
   return (
     <Box className="residential-container">
@@ -366,18 +422,55 @@ const Automotive = () => {
           </Box>
 
           <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-            <TextField
-              fullWidth
-              label="Address"
-              variant="outlined"
-              size="small"
+            <Autocomplete
+              freeSolo
+              disableClearable
+              options={addressSuggestions}
+              getOptionLabel={(option) =>
+                typeof option === 'string' ? option : option.description
+              }
+              loading={isFetchingSuggestions}
               value={address}
-              onChange={(e) => setAddress(e.target.value)}
-              sx={{
-                '& .MuiOutlinedInput-root': {
-                  borderRadius: '8px',
-                }
+              onChange={(event, newValue) => {
+                setAddress(typeof newValue === 'string' ? newValue : newValue.description);
               }}
+              inputValue={addressInputValue}
+              onInputChange={(event, newInputValue) => {
+                setAddressInputValue(newInputValue);
+                debouncedFetchSuggestions(newInputValue);
+              }}
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  label="Address"
+                  variant="outlined"
+                  size="small"
+                  fullWidth
+                  required
+                  sx={{
+                    '& .MuiOutlinedInput-root': {
+                      borderRadius: '8px',
+                    }
+                  }}
+                  InputProps={{
+                    ...params.InputProps,
+                    endAdornment: (
+                      <>
+                        {isFetchingSuggestions ? (
+                          <CircularProgress color="inherit" size={20} />
+                        ) : null}
+                        {params.InputProps.endAdornment}
+                      </>
+                    ),
+                  }}
+                />
+              )}
+              renderOption={(props, option) => (
+                <li {...props} key={option.place_id}>
+                  {option.description}
+                </li>
+              )}
+              filterOptions={(x) => x}
             />
 
             <TextField
@@ -393,6 +486,50 @@ const Automotive = () => {
                 }
               }}
             />
+
+            <Button
+              variant="text"
+              onClick={handleUseCurrentLocation}
+              disabled={!latitude || !longitude || isFetchingSuggestions}
+              sx={{
+                textTransform: 'none',
+                borderRadius: '8px',
+                height: '40px',
+                minWidth: 'auto',
+                px: 3,
+                fontSize: '0.875rem',
+                fontWeight: 500,
+                color: 'primary.main',
+                bgcolor: 'transparent',
+                border: '1px solid',
+                borderColor: 'primary.main',
+                transition: 'all 0.2s ease',
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: 1.5,
+                '&:hover': {
+                  bgcolor: 'rgba(25, 118, 210, 0.04)',
+                  boxShadow: '0 2px 8px rgba(25, 118, 210, 0.1)'
+                },
+                '&:active': {
+                  bgcolor: 'rgba(25, 118, 210, 0.08)'
+                },
+                '&:disabled': {
+                  color: 'text.disabled',
+                  borderColor: 'action.disabled',
+                  boxShadow: 'none'
+                }
+              }}
+              startIcon={
+                isFetchingSuggestions ? (
+                  <CircularProgress size={18} thickness={4} color="inherit" />
+                ) : (
+                  <CiLocationArrow1 size={18} style={{ strokeWidth: 1.5 }} />
+                )
+              }
+            >
+              {navigator.geolocation ? "Detect My Location" : "Use Nearby Location"}
+            </Button>
 
             {bookingError && (
               <Typography color="error" variant="body2" sx={{ mt: 1 }}>
@@ -455,7 +592,7 @@ const Automotive = () => {
           <ServiceCard
             key={index}
             service={service}
-            onBook={handleOpenModal}  // Changed from handleBooking to handleOpenModal
+            onBook={handleOpenModal}
           />
         ))}
       </div>
@@ -464,8 +601,6 @@ const Automotive = () => {
 };
 
 const ServiceCard = ({ service, onBook }) => {
-  console.log("Service ID:", service.service?.id);
-
   const carKeyDetails = service.car_key_details || service.service?.car_key_details || {};
 
   return (
@@ -501,16 +636,6 @@ const ServiceCard = ({ service, onBook }) => {
         </div>
       </div>
 
-      <div className="service-meta">
-        {/* <div className="meta-item">
-          <span className="meta-label">Locksmith:</span>
-          <span className="meta-value">{service.locksmith}</span>
-        </div> */}
-        {/* <div className="meta-item">
-          <span className="meta-label">Distance:</span>
-          <span className="meta-value">{service.distance_km} km</span>
-        </div> */}
-      </div>
       <p className="service-description">{service.service.details}</p>
       <button
         className={`book-button ${service.service.is_available ? "" : "disabled"}`}
@@ -524,4 +649,3 @@ const ServiceCard = ({ service, onBook }) => {
 };
 
 export default Automotive;
-

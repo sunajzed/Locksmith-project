@@ -91,7 +91,7 @@ export default function Signup() {
 
       const response = await api.post('/api/google-login/', {
         token: idToken,
-        role: 'locksmith'  // 👈 Role is locksmith here
+        role: 'locksmith'  
       });
 
       const access = response.data.access_token;
