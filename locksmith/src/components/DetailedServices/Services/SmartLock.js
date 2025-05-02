@@ -675,7 +675,7 @@ const SmartLock = () => {
   }
 
   const fetchAddressSuggestions = async (query) => {
-    if (!query || query.length < 3) {
+    if (!query || query.length === 0) {
       setAddressSuggestions([]);
       return;
     }
@@ -890,8 +890,6 @@ const SmartLock = () => {
               )}
               filterOptions={(x) => x}
             />
-
-           
 
             <TextField
               fullWidth
