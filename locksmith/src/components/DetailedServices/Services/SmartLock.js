@@ -535,14 +535,13 @@ const SmartLock = () => {
     );
   }, []);
 
-  // Fetch services based on geolocation
   useEffect(() => {
     const fetchServices = async () => {
       try {
         const token = localStorage.getItem("accessToken");
         const response = await api.get("/api/admin/services/services_to_customer/", {
           params: {
-            service_type: "smart-lock",
+            service_type: "smart_lock",
             latitude,
             longitude,
           },
