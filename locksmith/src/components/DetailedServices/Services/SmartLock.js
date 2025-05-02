@@ -891,7 +891,22 @@ const SmartLock = () => {
               filterOptions={(x) => x}
             />
 
-            <Button
+           
+
+            <TextField
+              fullWidth
+              label="Contact Number"
+              variant="outlined"
+              size="small"
+              value={contactNumber}
+              onChange={(e) => setContactNumber(e.target.value)}
+              sx={{
+                '& .MuiOutlinedInput-root': {
+                  borderRadius: '8px',
+                }
+              }}
+            />
+             <Button
               variant="text"
               onClick={handleUseCurrentLocation}
               disabled={!latitude || !longitude || isFetchingSuggestions}
@@ -934,20 +949,6 @@ const SmartLock = () => {
             >
               {navigator.geolocation ? "Use My Current Location" : "Detect Nearby Location"}
             </Button>
-
-            <TextField
-              fullWidth
-              label="Contact Number"
-              variant="outlined"
-              size="small"
-              value={contactNumber}
-              onChange={(e) => setContactNumber(e.target.value)}
-              sx={{
-                '& .MuiOutlinedInput-root': {
-                  borderRadius: '8px',
-                }
-              }}
-            />
 
 
             {bookingError && (
