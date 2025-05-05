@@ -1,4 +1,4 @@
-.table-container {
+/* .table-container {
   padding: 20px;
   margin: 20px;
   background: #fff;
@@ -36,4 +36,56 @@
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+  } */
+  .table-container {
+    padding: 20px;
+    margin: 20px;
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  }
+  
+  .table-responsive {
+    max-width: 100%;
+    overflow-x: auto;
+  }
+  
+  .requests-table {
+    width: 100%;
+    table-layout: auto; /* This allows columns to expand based on content */
+  }
+  
+  .requests-table th,
+  .requests-table td {
+    vertical-align: middle;
+    text-align: center;
+    white-space: nowrap; /* Prevent text wrapping */
+    padding: 8px 12px; /* Add some padding for better spacing */
+  }
+  
+  .requests-table th {
+    position: sticky;
+    top: 0;
+    background: #343a40;
+    color: white;
+  }
+  
+  .table-success {
+    background-color: #d4edda !important;
+  }
+  
+  .table-danger {
+    background-color: #f8d7da !important;
+  }
+  
+  @media (max-width: 768px) {
+    .table-container {
+      padding: 10px;
+    }
+    
+    .requests-table th,
+    .requests-table td {
+      padding: 6px 8px; /* Reduce padding on smaller screens */
+      font-size: 0.9rem; /* Reduce font size on smaller screens */
+    }
   }

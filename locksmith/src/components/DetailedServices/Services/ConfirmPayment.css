@@ -40,3 +40,25 @@
       font-size: 1rem;
     }
   }
+  .price-breakdown {
+    background-color: #f8f9fa;
+    border-radius: 5px;
+    padding: 10px;
+    border-left: 4px solid #0d6efd;
+  }
+  
+  .breakdown-details {
+    border-left: 2px solid #dee2e6;
+    margin-left: 10px;
+  }
+  .total-price {
+    margin-bottom: 1rem;
+    color: black;
+  }
+  
+  .total-price-amount {
+    margin-left: 0.5rem;
+    font-size: 1.25rem;
+    font-weight: bold;
+    color: #2563eb; /* Adjust color as needed */
+  }
