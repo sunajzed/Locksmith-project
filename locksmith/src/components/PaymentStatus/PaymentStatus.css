@@ -1,0 +1,152 @@
+/* PaymentStatus.css - Styles for Payment Status Component */
+
+.payment-status-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding: 2rem;
+    background: linear-gradient(135deg, #f5f7fa 0%, #e4e8f0 100%);
+  }
+  
+  .payment-status-container .animated-card {
+    width: 100%;
+    max-width: 600px;
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    padding: 2.5rem;
+    text-align: center;
+    background: white;
+    transition: transform 0.3s ease;
+  }
+  
+  .payment-status-container .animated-card:hover {
+    transform: translateY(-5px);
+  }
+  
+  .payment-status-container .status-icon {
+    font-size: 5rem;
+    margin-bottom: 1.5rem;
+  }
+  
+  .payment-status-container .status-icon.success {
+    color: #28a745;
+  }
+  
+  .payment-status-container .status-icon.error {
+    color: #dc3545;
+  }
+  
+  .payment-status-container .subtitle {
+    font-size: 1.2rem;
+    color: #6c757d;
+    margin-bottom: 2rem;
+  }
+  
+  .payment-status-container .booking-summary {
+    background: #f8f9fa;
+    border-radius: 8px;
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+    text-align: left;
+  }
+  
+  .payment-status-container .booking-summary h5 {
+    display: flex;
+    align-items: center;
+    color: #495057;
+    margin-bottom: 1.2rem;
+  }
+  
+  .payment-status-container .summary-item {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 0.8rem;
+    padding-bottom: 0.8rem;
+    border-bottom: 1px solid #e9ecef;
+  }
+  
+  .payment-status-container .summary-item:last-child {
+    border-bottom: none;
+  }
+  
+  .payment-status-container .label {
+    font-weight: 600;
+    color: #495057;
+  }
+  
+  .payment-status-container .value {
+    color: #6c757d;
+  }
+  
+  .payment-status-container .confirmation-message {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #6c757d;
+    margin: 1.5rem 0;
+  }
+  
+  .payment-status-container .error-message {
+    background: #fff3f3;
+    border-left: 4px solid #dc3545;
+    padding: 1rem;
+    margin-bottom: 1.5rem;
+    text-align: left;
+  }
+  
+  .payment-status-container .action-buttons {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+  
+  /* Animations */
+  @keyframes bounceIn {
+    0% {
+      transform: scale(0.1);
+      opacity: 0;
+    }
+    60% {
+      transform: scale(1.2);
+      opacity: 1;
+    }
+    100% {
+      transform: scale(1);
+    }
+  }
+  
+  @keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    20%, 60% { transform: translateX(-10px); }
+    40%, 80% { transform: translateX(10px); }
+  }
+  
+  .payment-status-container .bounce-in {
+    animation: bounceIn 0.8s;
+  }
+  
+  .payment-status-container .shake {
+    animation: shake 0.5s;
+  }
+  
+  /* Responsive Styles */
+  @media (max-width: 576px) {
+    .payment-status-container {
+      padding: 1rem;
+    }
+    
+    .payment-status-container .animated-card {
+      padding: 1.5rem;
+    }
+    
+    .payment-status-container .action-buttons {
+      flex-direction: column;
+    }
+    
+    .payment-status-container .action-buttons .btn {
+      width: 100%;
+    }
+  }
