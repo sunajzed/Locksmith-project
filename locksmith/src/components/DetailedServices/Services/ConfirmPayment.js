@@ -246,7 +246,7 @@ const ConfirmPayment = () => {
         <div className="luxury-card-header">
           <div className="header-decoration"></div>
           <h2 className="luxury-title">
-            <span className="title-accent">Confirm Your Booking</span> 
+            <span className="title-accent">Confirm Your Booking </span> 
           </h2>
           <p className="luxury-subtitle">Final step to secure your service</p>
         </div>
