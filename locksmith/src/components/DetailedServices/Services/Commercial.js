@@ -4,7 +4,8 @@ import api from "../../../api/api";
 import Box from "@mui/material/Box";
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
-import "./style.css";
+import "./automotivestyle.css";
+import debounce from "lodash/debounce";
 import Modal from "@mui/material/Modal";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
@@ -12,7 +13,9 @@ import CircularProgress from '@mui/material/CircularProgress';
 import Typography from '@mui/material/Typography';
 import Autocomplete from '@mui/material/Autocomplete';
 import { CiLocationArrow1 } from "react-icons/ci";
-import debounce from "lodash/debounce";
+import Checkbox from '@mui/material/Checkbox';
+import FormControlLabel from '@mui/material/FormControlLabel';
+import Slider from '@mui/material/Slider';
 
 const Commercial = () => {
   const [services, setServices] = useState([]);
@@ -32,6 +35,11 @@ const Commercial = () => {
   const [addressSuggestions, setAddressSuggestions] = useState([]);
   const [addressInputValue, setAddressInputValue] = useState("");
   const [isFetchingSuggestions, setIsFetchingSuggestions] = useState(false);
+  const [imageFile, setImageFile] = useState(null);
+  const [imagePreview, setImagePreview] = useState(null);
+  const [needMoreKeys, setNeedMoreKeys] = useState(false);
+  const [quantity, setQuantity] = useState(1);
+  const [additionalKeyPrice, setAdditionalKeyPrice] = useState(10);
   const navigate = useNavigate();
 
   const modalStyle = {
@@ -202,11 +210,40 @@ const Commercial = () => {
   const handleCloseModal = () => {
     setOpenModal(false);
     setBookingError("");
+    setImageFile(null);
+    setImagePreview(null);
+    setNeedMoreKeys(false);
+    setQuantity(1);
+  };
+
+  const handleImageUpload = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setImageFile(file);
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setImagePreview(reader.result);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleQuantityChange = (event, newValue) => {
+    setQuantity(newValue);
+  };
+
+  const calculateTotalPrice = () => {
+    if (!currentService) return 0;
+    const basePrice = parseFloat(currentService.service.total_price);
+    if (needMoreKeys) {
+      return basePrice + (additionalKeyPrice * (quantity - 1));
+    }
+    return basePrice;
   };
 
   const handleBooking = async () => {
     if (!address || !contactNumber) {
-      setBookingError("Please fill in all fields");
+      setBookingError("Please fill in all required fields");
       return;
     }
 
@@ -215,29 +252,45 @@ const Commercial = () => {
 
     const token = localStorage.getItem("accessToken");
     const currentTime = new Date().toISOString();
-    
-    const bookingData = {
-      service_request: currentService.service.id,
-      locksmith: currentService.locksmith_id,
-      scheduled_time: currentTime,
-      scheduled_date: currentTime,
-      locksmith_service: currentService.service.id,
-      customer_address: address,
-      customer_contact_number: contactNumber
-    };
 
+    const formData = new FormData();
+    formData.append("service_request", currentService.service.id);
+    formData.append("locksmith", currentService.locksmith_id);
+    formData.append("scheduled_time", currentTime);
+    formData.append("scheduled_date", currentTime);
+    formData.append("locksmith_service", currentService.service.id);
+    formData.append("customer_address", address);
+    formData.append("customer_contact_number", contactNumber);
+    formData.append("need_more_keys", needMoreKeys);
+    formData.append("quantity", quantity);
+    if (imageFile) {
+      formData.append("key_image", imageFile);
+    }
+    const totalPrice = calculateTotalPrice(); 
     try {
       setLoading(true);
-      await api.post("/api/bookings/", bookingData, {
+      await api.post("/api/bookings/", formData, {
         headers: {
           Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
+          "Content-Type": "multipart/form-data",
         },
       });
       setBookingSuccess(true);
       handleCloseModal();
       setTimeout(() => {
-        navigate("/confirm-payment", { state: { service: currentService } });
+        navigate("/confirm-payment", { 
+          state: { 
+            service: {
+              ...currentService,
+              totalPrice, // Pass the calculated total price
+              quantity,
+              needMoreKeys
+            },
+            basePrice: currentService.service.total_price, // Pass base price separately
+            additionalKeys: needMoreKeys ? quantity - 1 : 0,
+            additionalKeyPrice
+          } 
+        });
       }, 2000);
     } catch (error) {
       console.error("Booking failed:", error);
@@ -356,198 +409,299 @@ const Commercial = () => {
 
       {/* Booking Modal */}
       <Modal
-        open={openModal}
-        onClose={handleCloseModal}
-        aria-labelledby="premium-booking-modal"
+  open={openModal}
+  onClose={handleCloseModal}
+  aria-labelledby="premium-booking-modal"
+  sx={{
+    backdropFilter: 'blur(4px)',
+    backgroundColor: 'rgba(0,0,0,0.5)'
+  }}
+>
+  <Box sx={modalStyle}>
+    <Box sx={{
+      mb: 3,
+      borderBottom: '1px solid',
+      borderColor: 'divider',
+      pb: 2
+    }}>
+      <Typography
+        id="premium-booking-modal"
+        variant="h5"
+        component="h2"
         sx={{
-          backdropFilter: 'blur(4px)',
-          backgroundColor: 'rgba(0,0,0,0.5)'
+          fontWeight: 600,
+          color: 'text.primary'
         }}
       >
-        <Box sx={modalStyle}>
-          <Box sx={{ 
-            mb: 3,
-            borderBottom: '1px solid',
-            borderColor: 'divider',
-            pb: 2
-          }}>
-            <Typography 
-              id="premium-booking-modal" 
-              variant="h5" 
-              component="h2"
-              sx={{ 
-                fontWeight: 600,
-                color: 'text.primary'
-              }}
-            >
-              Complete Your Booking
-            </Typography>
-            <Typography variant="body2" sx={{ mt: 1, color: 'text.secondary' }}>
-              Please provide your details to secure your service
-            </Typography>
-          </Box>
+        Complete Your Booking
+      </Typography>
+      <Typography variant="body2" sx={{ mt: 1, color: 'text.secondary' }}>
+        Please provide your details to secure your service
+      </Typography>
+    </Box>
 
-          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-            <Autocomplete
-              freeSolo
-              disableClearable
-              options={addressSuggestions}
-              getOptionLabel={(option) =>
-                typeof option === 'string' ? option : option.description
-              }
-              loading={isFetchingSuggestions}
-              value={address}
-              onChange={(event, newValue) => {
-                setAddress(typeof newValue === 'string' ? newValue : newValue.description);
-              }}
-              inputValue={addressInputValue}
-              onInputChange={(event, newInputValue) => {
-                setAddressInputValue(newInputValue);
-                debouncedFetchSuggestions(newInputValue);
-              }}
-              renderInput={(params) => (
-                <TextField
-                  {...params}
-                  label="Address"
-                  variant="outlined"
-                  size="small"
-                  fullWidth
-                  required
-                  sx={{
-                    '& .MuiOutlinedInput-root': {
-                      borderRadius: '8px',
-                    }
-                  }}
-                  InputProps={{
-                    ...params.InputProps,
-                    endAdornment: (
-                      <>
-                        {isFetchingSuggestions ? (
-                          <CircularProgress color="inherit" size={20} />
-                        ) : null}
-                        {params.InputProps.endAdornment}
-                      </>
-                    ),
-                  }}
-                />
-              )}
-              renderOption={(props, option) => (
-                <li {...props} key={option.place_id}>
-                  {option.description}
-                </li>
-              )}
-              filterOptions={(x) => x}
-            />
-
-            <TextField
-              fullWidth
-              label="Contact Number"
-              variant="outlined"
-              size="small"
-              value={contactNumber}
-              onChange={(e) => setContactNumber(e.target.value)}
-              sx={{
-                '& .MuiOutlinedInput-root': {
-                  borderRadius: '8px',
-                }
-              }}
-            />
-
-            <Button
-              variant="text"
-              onClick={handleUseCurrentLocation}
-              disabled={!latitude || !longitude || isFetchingSuggestions}
-              sx={{
-                textTransform: 'none',
+    <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+      <Autocomplete
+        freeSolo
+        disableClearable
+        options={addressSuggestions}
+        getOptionLabel={(option) =>
+          typeof option === 'string' ? option : option.description
+        }
+        loading={isFetchingSuggestions}
+        value={address}
+        onChange={(event, newValue) => {
+          setAddress(typeof newValue === 'string' ? newValue : newValue.description);
+        }}
+        inputValue={addressInputValue}
+        onInputChange={(event, newInputValue) => {
+          setAddressInputValue(newInputValue);
+          debouncedFetchSuggestions(newInputValue);
+        }}
+        renderInput={(params) => (
+          <TextField
+            {...params}
+            label="Address"
+            variant="outlined"
+            size="small"
+            fullWidth
+            required
+            sx={{
+              '& .MuiOutlinedInput-root': {
                 borderRadius: '8px',
-                height: '40px',
-                minWidth: 'auto',
-                px: 3,
-                fontSize: '0.875rem',
-                fontWeight: 500,
-                color: 'primary.main',
-                bgcolor: 'transparent',
-                border: '1px solid',
-                borderColor: 'primary.main',
-                transition: 'all 0.2s ease',
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: 1.5,
-                '&:hover': {
-                  bgcolor: 'rgba(25, 118, 210, 0.04)',
-                  boxShadow: '0 2px 8px rgba(25, 118, 210, 0.1)'
-                },
-                '&:active': {
-                  bgcolor: 'rgba(25, 118, 210, 0.08)'
-                },
-                '&:disabled': {
-                  color: 'text.disabled',
-                  borderColor: 'action.disabled',
-                  boxShadow: 'none'
-                }
-              }}
-              startIcon={
-                isFetchingSuggestions ? (
-                  <CircularProgress size={18} thickness={4} color="inherit" />
-                ) : (
-                  <CiLocationArrow1 size={18} style={{ strokeWidth: 1.5 }} />
-                )
               }
-            >
-              {navigator.geolocation ? "Detect My Location" : "Use Nearby Location"}
-            </Button>
-
-            {bookingError && (
-              <Typography color="error" variant="body2" sx={{ mt: 1 }}>
-                {bookingError}
-              </Typography>
-            )}
-          </Box>
-
-          <Box sx={{ 
-            display: 'flex', 
-            justifyContent: 'flex-end', 
-            gap: 2,
-            mt: 4,
-            pt: 2,
-            borderTop: '1px solid',
-            borderColor: 'divider'
-          }}>
-            <Button 
-              onClick={handleCloseModal}
-              variant="text"
-              sx={{
-                textTransform: 'none',
-                px: 3,
-                borderRadius: '8px'
-              }}
-            >
-              Cancel
-            </Button>
-            <Button 
-              variant="contained" 
-              onClick={handleBooking}
-              disabled={loading}
-              sx={{
-                textTransform: 'none',
-                px: 3,
-                borderRadius: '8px',
-                boxShadow: 'none',
-                '&:hover': {
-                  boxShadow: 'none'
-                }
-              }}
-            >
-              {loading ? (
+            }}
+            InputProps={{
+              ...params.InputProps,
+              endAdornment: (
                 <>
-                  <CircularProgress size={20} sx={{ mr: 1 }} />
-                  Processing...
+                  {isFetchingSuggestions ? (
+                    <CircularProgress color="inherit" size={20} />
+                  ) : null}
+                  {params.InputProps.endAdornment}
                 </>
-              ) : 'Confirm Booking'}
-            </Button>
+              ),
+            }}
+          />
+        )}
+        renderOption={(props, option) => (
+          <li {...props} key={option.place_id}>
+            {option.description}
+          </li>
+        )}
+        filterOptions={(x) => x}
+      />
+
+      <TextField
+        fullWidth
+        label="Contact Number"
+        variant="outlined"
+        size="small"
+        value={contactNumber}
+        onChange={(e) => setContactNumber(e.target.value)}
+        required
+        sx={{
+          '& .MuiOutlinedInput-root': {
+            borderRadius: '8px',
+          }
+        }}
+      />
+
+      <Button
+        variant="text"
+        onClick={handleUseCurrentLocation}
+        disabled={!latitude || !longitude || isFetchingSuggestions}
+        sx={{
+          textTransform: 'none',
+          borderRadius: '8px',
+          height: '40px',
+          minWidth: 'auto',
+          px: 3,
+          fontSize: '0.875rem',
+          fontWeight: 500,
+          color: 'primary.main',
+          bgcolor: 'transparent',
+          border: '1px solid',
+          borderColor: 'primary.main',
+          transition: 'all 0.2s ease',
+          display: 'inline-flex',
+          alignItems: 'center',
+          gap: 1.5,
+          '&:hover': {
+            bgcolor: 'rgba(25, 118, 210, 0.04)',
+            boxShadow: '0 2px 8px rgba(25, 118, 210, 0.1)'
+          },
+          '&:active': {
+            bgcolor: 'rgba(25, 118, 210, 0.08)'
+          },
+          '&:disabled': {
+            color: 'text.disabled',
+            borderColor: 'action.disabled',
+            boxShadow: 'none'
+          }
+        }}
+        startIcon={
+          isFetchingSuggestions ? (
+            <CircularProgress size={18} thickness={4} color="inherit" />
+          ) : (
+            <CiLocationArrow1 size={18} style={{ strokeWidth: 1.5 }} />
+          )
+        }
+      >
+        {navigator.geolocation ? "Detect My Location" : "Use Nearby Location"}
+      </Button>
+
+      {/* Image Upload Section */}
+      <Box sx={{ mt: 2 }}>
+        <Typography variant="subtitle2" sx={{ mb: 1 }}>
+          Upload Key Image (Optional)
+        </Typography>
+        <input
+          accept="image/*"
+          style={{ display: 'none' }}
+          id="key-image-upload"
+          type="file"
+          onChange={handleImageUpload}
+        />
+        <label htmlFor="key-image-upload">
+          <Button 
+            variant="outlined" 
+            component="span"
+            sx={{
+              textTransform: 'none',
+              borderRadius: '8px',
+              width: '100%'
+            }}
+          >
+            {imageFile ? 'Change Image' : 'Upload Image'}
+          </Button>
+        </label>
+        {imagePreview && (
+          <Box sx={{ mt: 2, textAlign: 'center' }}>
+            <img 
+              src={imagePreview} 
+              alt="Preview" 
+              style={{ 
+                maxWidth: '100%', 
+                maxHeight: '150px',
+                borderRadius: '8px'
+              }} 
+            />
           </Box>
+        )}
+      </Box>
+
+      {/* Need More Keys Checkbox */}
+      <FormControlLabel
+        control={
+          <Checkbox
+            checked={needMoreKeys}
+            onChange={(e) => setNeedMoreKeys(e.target.checked)}
+            color="primary"
+          />
+        }
+        label="Do you need more keys?"
+        sx={{ mt: 1 }}
+      />
+      
+      {/* Quantity Selector (shown only when needMoreKeys is true) */}
+      {needMoreKeys && (
+        <Box sx={{ mt: 2 }}>
+          <Typography variant="subtitle2" sx={{ mb: 1 }}>
+            Number of Keys Needed
+          </Typography>
+          <Slider
+            value={quantity}
+            onChange={handleQuantityChange}
+            aria-labelledby="discrete-slider"
+            valueLabelDisplay="auto"
+            step={1}
+            marks
+            min={1}
+            max={10}
+            sx={{
+              color: 'primary.main',
+              '& .MuiSlider-valueLabel': {
+                backgroundColor: 'primary.main',
+                borderRadius: '8px',
+              }
+            }}
+          />
+          <Typography variant="body2" sx={{ mt: 1, color: 'text.secondary' }}>
+            Additional keys: ${additionalKeyPrice} each
+          </Typography>
         </Box>
-      </Modal>
+      )}
+      
+      {/* Total Price Display */}
+      <Box sx={{ 
+        mt: 2, 
+        p: 2, 
+        backgroundColor: 'action.hover', 
+        borderRadius: '8px',
+        textAlign: 'center'
+      }}>
+        <Typography variant="h6">
+          Total Price: ${calculateTotalPrice().toFixed(2)}
+        </Typography>
+        {needMoreKeys && quantity > 1 && currentService && (
+          <Typography variant="caption" sx={{ color: 'text.secondary' }}>
+            (Base price: ${currentService.service.total_price} + ${additionalKeyPrice} × {quantity - 1})
+          </Typography>
+        )}
+      </Box>
+
+      {bookingError && (
+        <Typography color="error" variant="body2" sx={{ mt: 1 }}>
+          {bookingError}
+        </Typography>
+      )}
+    </Box>
+
+    <Box sx={{
+      display: 'flex',
+      justifyContent: 'flex-end',
+      gap: 2,
+      mt: 4,
+      pt: 2,
+      borderTop: '1px solid',
+      borderColor: 'divider'
+    }}>
+      <Button
+        onClick={handleCloseModal}
+        variant="text"
+        sx={{
+          textTransform: 'none',
+          px: 3,
+          borderRadius: '8px'
+        }}
+      >
+        Cancel
+      </Button>
+      <Button
+        variant="contained"
+        onClick={handleBooking}
+        disabled={loading}
+        sx={{
+          textTransform: 'none',
+          px: 3,
+          borderRadius: '8px',
+          boxShadow: 'none',
+          '&:hover': {
+            boxShadow: 'none'
+          }
+        }}
+      >
+        {loading ? (
+          <>
+            <CircularProgress size={20} sx={{ mr: 1 }} />
+            Processing...
+          </>
+        ) : 'Confirm Booking'}
+      </Button>
+    </Box>
+  </Box>
+</Modal>
 
       {/* Services List */}
       <div className="services-list">
