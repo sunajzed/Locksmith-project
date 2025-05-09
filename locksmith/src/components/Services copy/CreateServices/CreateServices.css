@@ -1,4 +1,4 @@
-.choose-service-container {
+/* .choose-service-container {
   max-width: 500px;
   margin: auto;
   padding: 20px;
@@ -29,4 +29,109 @@
 
 .tooltip-arrow {
   border-top-color: #333 !important; 
+} */
+
+.create-service-container {
+  width: 100%;
+  max-width: 1200px;
+  margin: 40px auto;
+  padding: 40px 60px;
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
+
+.create-service-container h2 {
+  text-align: center;
+  color: #2c3e50;
+  margin-bottom: 40px;
+  font-size: 32px;
+  font-weight: 600;
+}
+
+.form-group {
+  margin-bottom: 25px;
+}
+
+.form-label {
+  display: block;
+  margin-bottom: 10px;
+  font-size: 16px;
+  font-weight: 500;
+  color: #34495e;
+}
+
+.form-control,
+.form-select {
+  width: 100%;
+  padding: 14px 16px;
+  font-size: 16px;
+  border: 1px solid #dcdde1;
+  border-radius: 8px;
+  background-color: #f9f9f9;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.form-control:focus,
+.form-select:focus {
+  border-color: #2980b9;
+  outline: none;
+  box-shadow: 0 0 0 4px rgba(41, 128, 185, 0.15);
+  background-color: #fff;
+}
+
+.custom-button {
+  width: 100%;
+  padding: 16px;
+  font-size: 18px;
+  font-weight: 600;
+  color: #fff;
+  background-color: #2980b9;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background-color 0.25s ease;
+  margin-top: 20px;
+}
+
+.custom-button:hover {
+  background-color: #21618c;
+}
+
+.tooltip-inner {
+  background-color: #2c3e50 !important;
+  color: #ecf0f1 !important;
+  font-size: 1rem;
+  border-radius: 6px;
+  padding: 10px 14px;
+}
+
+.tooltip-arrow::before {
+  border-top-color: #2c3e50 !important;
+}
+
+.modal-content {
+  border-radius: 12px;
+  padding: 25px;
+}
+
+.modal-title {
+  font-weight: 600;
+  font-size: 22px;
+  color: #2c3e50;
+}
+
+.alert {
+  font-size: 16px;
+  padding: 14px;
+  border-radius: 8px;
+}
+
+@media (max-width: 992px) {
+  .create-service-container {
+    padding: 30px 20px;
+  }
+}
+
+
