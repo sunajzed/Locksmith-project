@@ -12,6 +12,9 @@
 // import Typography from '@mui/material/Typography';
 // import Autocomplete from '@mui/material/Autocomplete';
 // import { CiLocationArrow1 } from "react-icons/ci";
+// import Checkbox from '@mui/material/Checkbox';
+// import FormControlLabel from '@mui/material/FormControlLabel';
+// import Slider from '@mui/material/Slider';
 
 // const Residential = () => {
 //   const [services, setServices] = useState([]);
@@ -32,7 +35,16 @@
 //   const [addressInputValue, setAddressInputValue] = useState("");
 //   const [isFetchingSuggestions, setIsFetchingSuggestions] = useState(false);
 //   const [bookingError, setBookingError] = useState("");
+//   const [imageFile, setImageFile] = useState(null);
+//   const [imagePreview, setImagePreview] = useState(null);
+//   const [needMoreKeys, setNeedMoreKeys] = useState(false);
+//   const [quantity, setQuantity] = useState(1);
+//   const [additionalKeyPrice, setAdditionalKeyPrice] = useState(10);
+//   const [scheduledDate, setScheduledDate] = useState("");
+//   const [scheduledTime, setScheduledTime] = useState("");
+//   const [isEmergency, setIsEmergency] = useState(false);
 //   const navigate = useNavigate();
+
 //   const modalStyle = {
 //     position: 'absolute',
 //     top: '50%',
@@ -143,48 +155,139 @@
 //   const handleCloseModal = () => {
 //     setOpenModal(false);
 //     setBookingError("");
+//     setImageFile(null);
+//     setImagePreview(null);
+//     setNeedMoreKeys(false);
+//     setQuantity(1);
+//     setIsEmergency(false);
+//     setScheduledDate("");
+//     setScheduledTime("");
 //   };
+
+//   const handleImageUpload = (e) => {
+//     const file = e.target.files[0];
+//     if (file) {
+//       setImageFile(file);
+//       const reader = new FileReader();
+//       reader.onloadend = () => {
+//         setImagePreview(reader.result);
+//       };
+//       reader.readAsDataURL(file);
+//     }
+//   };
+
+//   const handleQuantityChange = (event, newValue) => {
+//     setQuantity(newValue);
+//   };
+
+//   const calculateTotalPrice = () => {
+//     if (!currentService) return 0;
+//     const basePrice = parseFloat(currentService.service.total_price);
+//     if (needMoreKeys) {
+//       return basePrice + (additionalKeyPrice * (quantity - 1));
+//     }
+//     return basePrice;
+//   };
+
 //   const handleBooking = async () => {
 //     if (!address || !houseNumber || !contactNumber) {
-//       setBookingError("Please fill in all fields");
+//       setBookingError("Please fill in all required fields");
 //       return;
 //     }
-
+  
+//     // Validate scheduling if not emergency
+//     if (!isEmergency && (!scheduledDate || !scheduledTime)) {
+//       setBookingError("Please select a date and time for your service");
+//       return;
+//     }
+  
 //     const isConfirmed = window.confirm("Are you sure you want to book this service?");
 //     if (!isConfirmed) return;
-
+  
 //     const token = localStorage.getItem("accessToken");
-//     const currentTime = new Date().toISOString();
-
-//     const bookingData = {
-//       service_request: currentService.service.id,
-//       locksmith: currentService.locksmith_id,
-//       scheduled_time: currentTime,
-//       scheduled_date: currentTime,
-//       locksmith_service: currentService.service.id,
-//       customer_address: address,
-//       customer_contact_number: contactNumber,
-//       house_number: houseNumber
-//     };
-
-
+    
+//     // Create proper datetime strings
+//     let bookingDate, bookingTime;
+    
+//     if (isEmergency) {
+//       // For emergency, use current time
+//       const now = new Date();
+//       bookingDate = now.toISOString().split('T')[0]; // YYYY-MM-DD
+//       bookingTime = now.toTimeString().substring(0, 5); // HH:MM
+//     } else {
+//       // For scheduled service, use selected time
+//       bookingDate = scheduledDate;
+//       bookingTime = scheduledTime;
+      
+//       // Validate selected time is in future
+//       const selectedDateTime = new Date(`${scheduledDate}T${scheduledTime}:00`);
+//       const now = new Date();
+      
+//       if (selectedDateTime < now) {
+//         setBookingError("Please select a date/time in the future");
+//         return;
+//       }
+  
+//       // Check if date is too far in the future (e.g., more than 3 months)
+//       const maxDate = new Date();
+//       maxDate.setMonth(maxDate.getMonth() + 3);
+//       if (selectedDateTime > maxDate) {
+//         setBookingError("Please select a date within the next 3 months");
+//         return;
+//       }
+//     }
+  
+//     const formData = new FormData();
+//     formData.append("service_request", currentService.service.id);
+//     formData.append("locksmith", currentService.locksmith_id);
+//     formData.append("scheduled_time", bookingTime);  // Use the properly determined time
+//     formData.append("scheduled_date", bookingDate);  // Use the properly determined date
+//     formData.append("locksmith_service", currentService.service.id);
+//     formData.append("customer_address", address);
+//     formData.append("customer_contact_number", contactNumber);
+//     formData.append("house_number", houseNumber);
+//     formData.append("need_more_keys", needMoreKeys);
+//     formData.append("quantity", quantity);
+//     formData.append("is_emergency", isEmergency);
+    
+//     if (imageFile) {
+//       formData.append("key_image", imageFile);
+//     }
+    
+//     const totalPrice = calculateTotalPrice(); 
+    
 //     try {
 //       setLoading(true);
-//       const response = await api.post("/api/bookings/", bookingData, {
+//       const response = await api.post("/api/bookings/", formData, {
 //         headers: {
 //           Authorization: `Bearer ${token}`,
-//           "Content-Type": "application/json",
+//           "Content-Type": "multipart/form-data",
 //         },
 //       });
-//       console.log("Booking response:", response.data);
+      
 //       setBookingSuccess(true);
 //       handleCloseModal();
+      
 //       setTimeout(() => {
-//         navigate("/confirm-payment", { state: { service: currentService } });
+//         navigate("/confirm-payment", { 
+//           state: { 
+//             service: {
+//               ...currentService,
+//               totalPrice,
+//               quantity,
+//               needMoreKeys,
+//               scheduledDate: bookingDate,
+//               scheduledTime: bookingTime,
+//               isEmergency
+//             },
+//             basePrice: currentService.service.total_price,
+//             additionalKeys: needMoreKeys ? quantity - 1 : 0,
+//             additionalKeyPrice
+//           } 
+//         });
 //       }, 2000);
 //     } catch (error) {
 //       console.error("Booking failed:", error);
-//       console.error("Error details:", error.response?.data);
 //       setBookingError(error.response?.data?.message || "Booking failed. Please try again.");
 //     } finally {
 //       setLoading(false);
@@ -194,27 +297,8 @@
 //   const serviceNames = [...new Set(services.map((service) => service.service.admin_service_name))];
 
 //   const filteredServices = filterValue === ""
-//     ? services // Show all services when "All Services" is selected
+//     ? services
 //     : services.filter((service) => service.service.admin_service_name === filterValue);
-
-//   if (loading || geoLoading) {
-//     return (
-//       <div className="loading-container">
-//         <div className="loading-spinner"></div>
-//         <p className="loading-message">Fetching services near you...</p>
-//       </div>
-//     );
-//   }
-
-//   if (error) return <p className="error">{error}</p>;
-
-//   if (!loading && !geoLoading && filteredServices.length === 0) {
-//     return (
-//       <div className="no-services-message">
-//         <p>No services available in your area. Please try again later.</p>
-//       </div>
-//     );
-//   }
 
 //   const debounce = (func, delay) => {
 //     let timer;
@@ -239,9 +323,6 @@
 //           Authorization: token ? `Bearer ${token}` : "",
 //         },
 //       });
-
-//       // Assuming the API returns data in Google's format:
-//       // response.data.predictions array with description fields
 //       setAddressSuggestions(response.data.predictions || []);
 //     } catch (error) {
 //       console.error("Error fetching address suggestions:", error);
@@ -251,40 +332,8 @@
 //     }
 //   };
 
-//   // Debounced version of the fetch function
 //   const debouncedFetchSuggestions = debounce(fetchAddressSuggestions, 300);
-//   const getApproximateLocation = async (lat, lng) => {
-//     try {
-//       setIsFetchingSuggestions(true);
 
-//       // First try to get timezone name
-//       const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-//       if (timezone) {
-//         // Extract city name from timezone (e.g., "America/New_York" -> "New York")
-//         const city = timezone.split('/')[1]?.replace(/_/g, ' ') || '';
-//         if (city) return city;
-//       }
-
-//       // Fallback to coordinates if no timezone info
-//       return `Near coordinates: ${lat.toFixed(4)}, ${lng.toFixed(4)}`;
-//     } catch (error) {
-//       console.error('Error getting approximate location:', error);
-//       return `Near coordinates: ${lat.toFixed(4)}, ${lng.toFixed(4)}`;
-//     } finally {
-//       setIsFetchingSuggestions(false);
-//     }
-//   };
-
-//   const handleUseCurrentLocation = async () => {
-//     if (!latitude || !longitude) {
-//       alert("Location not available. Please enable location services.");
-//       return;
-//     }
-
-//     const location = await getApproximateLocation(latitude, longitude);
-//     setAddress(location);
-//     setAddressInputValue(location);
-//   };
 //   const getAccurateAddress = async (lat, lng) => {
 //     setIsFetchingSuggestions(true);
 //     try {
@@ -306,15 +355,25 @@
 //       setIsFetchingSuggestions(false);
 //     }
 //   };
-//   const getApproximateLocationByIP = async () => {
-//     try {
-//       const response = await fetch('https://ipapi.co/json/');
-//       const data = await response.json();
-//       return `${data.city}, ${data.country}`;
-//     } catch (error) {
-//       return "Location unavailable";
-//     }
-//   };
+
+//   if (loading || geoLoading) {
+//     return (
+//       <div className="loading-container">
+//         <div className="loading-spinner"></div>
+//         <p className="loading-message">Fetching services near you...</p>
+//       </div>
+//     );
+//   }
+
+//   if (error) return <p className="error">{error}</p>;
+
+//   if (!loading && !geoLoading && filteredServices.length === 0) {
+//     return (
+//       <div className="no-services-message">
+//         <p>No services available in your area. Please try again later.</p>
+//       </div>
+//     );
+//   }
 
 //   return (
 //     <Box className="residential-container">
@@ -433,6 +492,7 @@
 //               size="small"
 //               value={houseNumber}
 //               onChange={(e) => setHouseNumber(e.target.value)}
+//               required
 //               sx={{
 //                 '& .MuiOutlinedInput-root': {
 //                   borderRadius: '8px',
@@ -482,14 +542,13 @@
 //                     ),
 //                   }}
 //                 />
-
 //               )}
 //               renderOption={(props, option) => (
 //                 <li {...props} key={option.place_id}>
 //                   {option.description}
 //                 </li>
 //               )}
-//               filterOptions={(x) => x} // Bypass client-side filtering
+//               filterOptions={(x) => x}
 //             />
 
 //             <TextField
@@ -499,6 +558,7 @@
 //               size="small"
 //               value={contactNumber}
 //               onChange={(e) => setContactNumber(e.target.value)}
+//               required
 //               sx={{
 //                 '& .MuiOutlinedInput-root': {
 //                   borderRadius: '8px',
@@ -506,11 +566,178 @@
 //               }}
 //             />
 
-//             {bookingError && (
-//               <Typography color="error" variant="body2" sx={{ mt: 1 }}>
-//                 {bookingError}
-//               </Typography>
+//             {/* Emergency Service Checkbox */}
+//             <FormControlLabel
+//               control={
+//                 <Checkbox
+//                   checked={isEmergency}
+//                   onChange={(e) => {
+//                     setIsEmergency(e.target.checked);
+//                     if (e.target.checked) {
+//                       // Set to current date/time if emergency
+//                       const now = new Date();
+//                       setScheduledDate(now.toISOString().split('T')[0]);
+//                       setScheduledTime(now.toTimeString().substring(0, 5));
+//                     }
+//                   }}
+//                   color="primary"
+//                 />
+//               }
+//               label="This is an emergency service (needed immediately)"
+//               sx={{ mt: 1 }}
+//             />
+            
+//             {/* Scheduling Fields - shown only when not emergency */}
+//             {!isEmergency && (
+//               <>
+//                 <TextField
+//                   fullWidth
+//                   label="Date"
+//                   type="date"
+//                   variant="outlined"
+//                   size="small"
+//                   value={scheduledDate}
+//                   onChange={(e) => setScheduledDate(e.target.value)}
+//                   required={!isEmergency}
+//                   InputLabelProps={{
+//                     shrink: true,
+//                   }}
+//                   sx={{
+//                     '& .MuiOutlinedInput-root': {
+//                         borderRadius: '8px',
+//                     },
+//                     mt: 2
+//                   }}
+//                 />
+
+//                 <TextField
+//                   fullWidth
+//                   label="Time"
+//                   type="time"
+//                   variant="outlined"
+//                   size="small"
+//                   value={scheduledTime}
+//                   onChange={(e) => setScheduledTime(e.target.value)}
+//                   required={!isEmergency}
+//                   InputLabelProps={{
+//                     shrink: true,
+//                   }}
+//                   sx={{
+//                     '& .MuiOutlinedInput-root': {
+//                         borderRadius: '8px',
+//                     },
+//                     mt: 2
+//                   }}
+//                 />
+//               </>
 //             )}
+
+//             <Typography variant="body2" sx={{ mt: 1, color: 'text.secondary' }}>
+//               {isEmergency 
+//                 ? "Emergency services will be dispatched immediately" 
+//                 : "Please select a convenient date and time for your service"}
+//             </Typography>
+
+//             {/* Image Upload Section */}
+//             <Box sx={{ mt: 2 }}>
+//               <Typography variant="subtitle2" sx={{ mb: 1 }}>
+//                 Upload Key Image (Optional)
+//               </Typography>
+//               <input
+//                 accept="image/*"
+//                 style={{ display: 'none' }}
+//                 id="key-image-upload"
+//                 type="file"
+//                 onChange={handleImageUpload}
+//               />
+//               <label htmlFor="key-image-upload">
+//                 <Button 
+//                   variant="outlined" 
+//                   component="span"
+//                   sx={{
+//                     textTransform: 'none',
+//                     borderRadius: '8px',
+//                     width: '100%'
+//                   }}
+//                 >
+//                   {imageFile ? 'Change Image' : 'Upload Image'}
+//                 </Button>
+//               </label>
+//               {imagePreview && (
+//                 <Box sx={{ mt: 2, textAlign: 'center' }}>
+//                   <img 
+//                     src={imagePreview} 
+//                     alt="Preview" 
+//                     style={{ 
+//                       maxWidth: '100%', 
+//                       maxHeight: '150px',
+//                       borderRadius: '8px'
+//                     }} 
+//                   />
+//                 </Box>
+//               )}
+//             </Box>
+            
+//             {/* Need More Keys Checkbox */}
+//             <FormControlLabel
+//               control={
+//                 <Checkbox
+//                   checked={needMoreKeys}
+//                   onChange={(e) => setNeedMoreKeys(e.target.checked)}
+//                   color="primary"
+//                 />
+//               }
+//               label="Do you need more keys?"
+//               sx={{ mt: 1 }}
+//             />
+            
+//             {/* Quantity Selector (shown only when needMoreKeys is true) */}
+//             {needMoreKeys && (
+//               <Box sx={{ mt: 2 }}>
+//                 <Typography variant="subtitle2" sx={{ mb: 1 }}>
+//                   Number of Keys Needed
+//                 </Typography>
+//                 <Slider
+//                   value={quantity}
+//                   onChange={handleQuantityChange}
+//                   aria-labelledby="discrete-slider"
+//                   valueLabelDisplay="auto"
+//                   step={1}
+//                   marks
+//                   min={1}
+//                   max={10}
+//                   sx={{
+//                     color: 'primary.main',
+//                     '& .MuiSlider-valueLabel': {
+//                       backgroundColor: 'primary.main',
+//                       borderRadius: '8px',
+//                     }
+//                   }}
+//                 />
+//                 <Typography variant="body2" sx={{ mt: 1, color: 'text.secondary' }}>
+//                   Additional keys: ${additionalKeyPrice} each
+//                 </Typography>
+//               </Box>
+//             )}
+            
+//             {/* Total Price Display */}
+//             <Box sx={{ 
+//               mt: 2, 
+//               p: 2, 
+//               backgroundColor: 'action.hover', 
+//               borderRadius: '8px',
+//               textAlign: 'center'
+//             }}>
+//               <Typography variant="h6">
+//                 Total Price: ${calculateTotalPrice().toFixed(2)}
+//               </Typography>
+//               {needMoreKeys && quantity > 1 && currentService && (
+//                 <Typography variant="caption" sx={{ color: 'text.secondary' }}>
+//                   (Base price: ${currentService.service.total_price} + ${additionalKeyPrice} × {quantity - 1})
+//                 </Typography>
+//               )}
+//             </Box>
+
 //             <Button
 //               variant="text"
 //               onClick={() => getAccurateAddress(latitude, longitude)}
@@ -555,6 +782,11 @@
 //               {navigator.geolocation ? "Detect My Location" : "Use Nearby Location"}
 //             </Button>
 
+//             {bookingError && (
+//               <Typography color="error" variant="body2" sx={{ mt: 1 }}>
+//                 {bookingError}
+//               </Typography>
+//             )}
 //           </Box>
 
 //           <Box sx={{
@@ -617,19 +849,14 @@
 //       <h3>{service.service.admin_service_name}</h3>
 //       <p className="price">${service.service.total_price}</p>
 //     </div>
-//     {/* Availability Status */}
 //     <div
-//       className={`availability-status ${service.service.is_available ? "available" : "unavailable"
-//         }`}
+//       className={`availability-status ${service.service.is_available ? "available" : "unavailable"}`}
 //     >
 //       {service.service.is_available ? "Open for Service" : "Currently Unavailable"}
 //     </div>
 //     <p className="text-black">
 //       <strong>Type:</strong> {service.service.service_type}
 //     </p>
-//     {/* <p className="text-black">
-//       <strong>Distance:</strong> {service.distance_km} km
-//     </p> */}
 //     <p className="details text-black">{service.service.details}</p>
 //     <button
 //       className="book-button"
@@ -642,6 +869,7 @@
 // );
 
 // export default Residential;
+
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../../../api/api";
@@ -683,8 +911,12 @@ const Residential = () => {
   const [imagePreview, setImagePreview] = useState(null);
   const [needMoreKeys, setNeedMoreKeys] = useState(false);
   const [quantity, setQuantity] = useState(1);
-  const [additionalKeyPrice, setAdditionalKeyPrice] = useState(10);
+  const [additionalKeyPrice, setAdditionalKeyPrice] = useState(0); // Initialize as 0, to be fetched from API
+  const [scheduledDate, setScheduledDate] = useState("");
+  const [scheduledTime, setScheduledTime] = useState("");
+  const [isEmergency, setIsEmergency] = useState(false);
   const navigate = useNavigate();
+
   const modalStyle = {
     position: 'absolute',
     top: '50%',
@@ -748,6 +980,8 @@ const Residential = () => {
         setServices(response.data);
         if (response.data.length > 0) {
           setFilterValue(response.data[0].service.admin_service_name);
+          // Assuming additional_key_price is part of the service object
+          setAdditionalKeyPrice(response.data[0].service.additional_key_price || 0);
         }
       } catch (err) {
         console.error("API Error:", err.response?.data || err.message);
@@ -789,8 +1023,10 @@ const Residential = () => {
       return;
     }
     setCurrentService(service);
+    setAdditionalKeyPrice(service.service.additional_key_price || 0); // Set additional key price for the selected service
     setOpenModal(true);
   };
+
   const handleCloseModal = () => {
     setOpenModal(false);
     setBookingError("");
@@ -798,6 +1034,9 @@ const Residential = () => {
     setImagePreview(null);
     setNeedMoreKeys(false);
     setQuantity(1);
+    setIsEmergency(false);
+    setScheduledDate("");
+    setScheduledTime("");
   };
 
   const handleImageUpload = (e) => {
@@ -831,50 +1070,93 @@ const Residential = () => {
       return;
     }
 
+    // Validate scheduling if not emergency
+    if (!isEmergency && (!scheduledDate || !scheduledTime)) {
+      setBookingError("Please select a date and time for your service");
+      return;
+    }
+
     const isConfirmed = window.confirm("Are you sure you want to book this service?");
     if (!isConfirmed) return;
 
     const token = localStorage.getItem("accessToken");
-    const currentTime = new Date().toISOString();
 
-    const formData = new FormData();
-    formData.append("service_request", currentService.service.id);
-    formData.append("locksmith", currentService.locksmith_id);
-    formData.append("scheduled_time", currentTime);
-    formData.append("scheduled_date", currentTime);
-    formData.append("locksmith_service", currentService.service.id);
-    formData.append("customer_address", address);
-    formData.append("customer_contact_number", contactNumber);
-    formData.append("house_number", houseNumber);
-    formData.append("need_more_keys", needMoreKeys);
-    formData.append("quantity", quantity);
-    if (imageFile) {
-      formData.append("key_image", imageFile);
+    // Create proper datetime string in ISO 8601 format (YYYY-MM-DDTHH:MM:SSZ)
+    let bookingDateTime;
+    if (isEmergency) {
+      // For emergency, use current time
+      const now = new Date();
+      bookingDateTime = now.toISOString(); // e.g., 2025-05-15T14:30:00Z
+    } else {
+      // For scheduled service, combine date and time
+      bookingDateTime = `${scheduledDate}T${scheduledTime}:00Z`;
+
+      // Validate selected time is in future
+      const selectedDateTime = new Date(bookingDateTime);
+      const now = new Date();
+      if (selectedDateTime < now) {
+        setBookingError("Please select a date/time in the future");
+        return;
+      }
+
+      // Check if date is too far in the future (e.g., more than 3 months)
+      const maxDate = new Date();
+      maxDate.setMonth(maxDate.getMonth() + 3);
+      if (selectedDateTime > maxDate) {
+        setBookingError("Please select a date within the next 3 months");
+        return;
+      }
     }
-    const totalPrice = calculateTotalPrice(); 
+
+    // Prepare data for POST request
+    const bookingData = {
+      locksmith_service: currentService.service.id,
+      scheduled_date: bookingDateTime,
+      customer_contact_number: contactNumber,
+      customer_address: address,
+      house_number: houseNumber,
+      number_of_keys: needMoreKeys ? quantity : 1,
+    };
+
+    // Use FormData for multipart/form-data (required for image upload)
+    const formData = new FormData();
+    Object.keys(bookingData).forEach((key) => {
+      formData.append(key, bookingData[key]);
+    });
+
+    if (imageFile) {
+      formData.append("image", imageFile);
+    }
+
+    const totalPrice = calculateTotalPrice();
+
     try {
       setLoading(true);
-      await api.post("/api/bookings/", formData, {
+      const response = await api.post("/api/bookings/", formData, {
         headers: {
           Authorization: `Bearer ${token}`,
           "Content-Type": "multipart/form-data",
         },
       });
+
       setBookingSuccess(true);
       handleCloseModal();
+
       setTimeout(() => {
-        navigate("/confirm-payment", { 
-          state: { 
+        navigate("/confirm-payment", {
+          state: {
             service: {
               ...currentService,
-              totalPrice, // Pass the calculated total price
-              quantity,
-              needMoreKeys
+              totalPrice,
+              number_of_keys: needMoreKeys ? quantity : 1,
+              needMoreKeys,
+              scheduled_date: bookingDateTime,
+              isEmergency,
             },
-            basePrice: currentService.service.total_price, // Pass base price separately
+            basePrice: currentService.service.total_price,
             additionalKeys: needMoreKeys ? quantity - 1 : 0,
-            additionalKeyPrice
-          } 
+            additionalKeyPrice,
+          },
         });
       }, 2000);
     } catch (error) {
@@ -885,33 +1167,11 @@ const Residential = () => {
     }
   };
 
-
- 
-
   const serviceNames = [...new Set(services.map((service) => service.service.admin_service_name))];
 
   const filteredServices = filterValue === ""
-    ? services // Show all services when "All Services" is selected
+    ? services
     : services.filter((service) => service.service.admin_service_name === filterValue);
-
-  if (loading || geoLoading) {
-    return (
-      <div className="loading-container">
-        <div className="loading-spinner"></div>
-        <p className="loading-message">Fetching services near you...</p>
-      </div>
-    );
-  }
-
-  if (error) return <p className="error">{error}</p>;
-
-  if (!loading && !geoLoading && filteredServices.length === 0) {
-    return (
-      <div className="no-services-message">
-        <p>No services available in your area. Please try again later.</p>
-      </div>
-    );
-  }
 
   const debounce = (func, delay) => {
     let timer;
@@ -936,9 +1196,6 @@ const Residential = () => {
           Authorization: token ? `Bearer ${token}` : "",
         },
       });
-
-      // Assuming the API returns data in Google's format:
-      // response.data.predictions array with description fields
       setAddressSuggestions(response.data.predictions || []);
     } catch (error) {
       console.error("Error fetching address suggestions:", error);
@@ -948,40 +1205,8 @@ const Residential = () => {
     }
   };
 
-  // Debounced version of the fetch function
   const debouncedFetchSuggestions = debounce(fetchAddressSuggestions, 300);
-  const getApproximateLocation = async (lat, lng) => {
-    try {
-      setIsFetchingSuggestions(true);
 
-      // First try to get timezone name
-      const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-      if (timezone) {
-        // Extract city name from timezone (e.g., "America/New_York" -> "New York")
-        const city = timezone.split('/')[1]?.replace(/_/g, ' ') || '';
-        if (city) return city;
-      }
-
-      // Fallback to coordinates if no timezone info
-      return `Near coordinates: ${lat.toFixed(4)}, ${lng.toFixed(4)}`;
-    } catch (error) {
-      console.error('Error getting approximate location:', error);
-      return `Near coordinates: ${lat.toFixed(4)}, ${lng.toFixed(4)}`;
-    } finally {
-      setIsFetchingSuggestions(false);
-    }
-  };
-
-  const handleUseCurrentLocation = async () => {
-    if (!latitude || !longitude) {
-      alert("Location not available. Please enable location services.");
-      return;
-    }
-
-    const location = await getApproximateLocation(latitude, longitude);
-    setAddress(location);
-    setAddressInputValue(location);
-  };
   const getAccurateAddress = async (lat, lng) => {
     setIsFetchingSuggestions(true);
     try {
@@ -1003,15 +1228,25 @@ const Residential = () => {
       setIsFetchingSuggestions(false);
     }
   };
-  const getApproximateLocationByIP = async () => {
-    try {
-      const response = await fetch('https://ipapi.co/json/');
-      const data = await response.json();
-      return `${data.city}, ${data.country}`;
-    } catch (error) {
-      return "Location unavailable";
-    }
-  };
+
+  if (loading || geoLoading) {
+    return (
+      <div className="loading-container">
+        <div className="loading-spinner"></div>
+        <p className="loading-message">Fetching services near you...</p>
+      </div>
+    );
+  }
+
+  if (error) return <p className="error">{error}</p>;
+
+  if (!loading && !geoLoading && filteredServices.length === 0) {
+    return (
+      <div className="no-services-message">
+        <p>No services available in your area. Please try again later.</p>
+      </div>
+    );
+  }
 
   return (
     <Box className="residential-container">
@@ -1089,8 +1324,6 @@ const Residential = () => {
           ))}
         </Tabs>
       </Box>
-
-
 
       <Modal
         open={openModal}
@@ -1206,6 +1439,78 @@ const Residential = () => {
               }}
             />
 
+            {/* Emergency Service Checkbox */}
+            <FormControlLabel
+              control={
+                <Checkbox
+                  checked={isEmergency}
+                  onChange={(e) => {
+                    setIsEmergency(e.target.checked);
+                    if (e.target.checked) {
+                      // Set to current date/time if emergency
+                      const now = new Date();
+                      setScheduledDate(now.toISOString().split('T')[0]);
+                      setScheduledTime(now.toTimeString().substring(0, 5));
+                    }
+                  }}
+                  color="primary"
+                />
+              }
+              label="This is an emergency service (needed immediately)"
+              sx={{ mt: 1 }}
+            />
+
+            {/* Scheduling Fields - shown only when not emergency */}
+            {!isEmergency && (
+              <>
+                <TextField
+                  fullWidth
+                  label="Date"
+                  type="date"
+                  variant="outlined"
+                  size="small"
+                  value={scheduledDate}
+                  onChange={(e) => setScheduledDate(e.target.value)}
+                  required={!isEmergency}
+                  InputLabelProps={{
+                    shrink: true,
+                  }}
+                  sx={{
+                    '& .MuiOutlinedInput-root': {
+                      borderRadius: '8px',
+                    },
+                    mt: 2
+                  }}
+                />
+
+                <TextField
+                  fullWidth
+                  label="Time"
+                  type="time"
+                  variant="outlined"
+                  size="small"
+                  value={scheduledTime}
+                  onChange={(e) => setScheduledTime(e.target.value)}
+                  required={!isEmergency}
+                  InputLabelProps={{
+                    shrink: true,
+                  }}
+                  sx={{
+                    '& .MuiOutlinedInput-root': {
+                      borderRadius: '8px',
+                    },
+                    mt: 2
+                  }}
+                />
+              </>
+            )}
+
+            <Typography variant="body2" sx={{ mt: 1, color: 'text.secondary' }}>
+              {isEmergency
+                ? "Emergency services will be dispatched immediately"
+                : "Please select a convenient date and time for your service"}
+            </Typography>
+
             {/* Image Upload Section */}
             <Box sx={{ mt: 2 }}>
               <Typography variant="subtitle2" sx={{ mb: 1 }}>
@@ -1219,8 +1524,8 @@ const Residential = () => {
                 onChange={handleImageUpload}
               />
               <label htmlFor="key-image-upload">
-                <Button 
-                  variant="outlined" 
+                <Button
+                  variant="outlined"
                   component="span"
                   sx={{
                     textTransform: 'none',
@@ -1233,19 +1538,19 @@ const Residential = () => {
               </label>
               {imagePreview && (
                 <Box sx={{ mt: 2, textAlign: 'center' }}>
-                  <img 
-                    src={imagePreview} 
-                    alt="Preview" 
-                    style={{ 
-                      maxWidth: '100%', 
+                  <img
+                    src={imagePreview}
+                    alt="Preview"
+                    style={{
+                      maxWidth: '100%',
                       maxHeight: '150px',
                       borderRadius: '8px'
-                    }} 
+                    }}
                   />
                 </Box>
               )}
             </Box>
-            
+
             {/* Need More Keys Checkbox */}
             <FormControlLabel
               control={
@@ -1258,7 +1563,7 @@ const Residential = () => {
               label="Do you need more keys?"
               sx={{ mt: 1 }}
             />
-            
+
             {/* Quantity Selector (shown only when needMoreKeys is true) */}
             {needMoreKeys && (
               <Box sx={{ mt: 2 }}>
@@ -1287,12 +1592,12 @@ const Residential = () => {
                 </Typography>
               </Box>
             )}
-            
+
             {/* Total Price Display */}
-            <Box sx={{ 
-              mt: 2, 
-              p: 2, 
-              backgroundColor: 'action.hover', 
+            <Box sx={{
+              mt: 2,
+              p: 2,
+              backgroundColor: 'action.hover',
               borderRadius: '8px',
               textAlign: 'center'
             }}>
@@ -1417,19 +1722,14 @@ const ServiceCard = ({ service, onBook }) => (
       <h3>{service.service.admin_service_name}</h3>
       <p className="price">${service.service.total_price}</p>
     </div>
-    {/* Availability Status */}
     <div
-      className={`availability-status ${service.service.is_available ? "available" : "unavailable"
-        }`}
+      className={`availability-status ${service.service.is_available ? "available" : "unavailable"}`}
     >
       {service.service.is_available ? "Open for Service" : "Currently Unavailable"}
     </div>
     <p className="text-black">
       <strong>Type:</strong> {service.service.service_type}
     </p>
-    {/* <p className="text-black">
-      <strong>Distance:</strong> {service.distance_km} km
-    </p> */}
     <p className="details text-black">{service.service.details}</p>
     <button
       className="book-button"
