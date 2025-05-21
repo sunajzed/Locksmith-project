@@ -1,30 +1,77 @@
-.table-container {
-    padding: 20px;
-    background: #fff;
-    border-radius: 8px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-  }
-  
-  .table-responsive {
-    max-width: 100%;
-    overflow-x: auto;
-  }
-  
-  .service-table th,
-  .service-table td {
-    vertical-align: middle;
-    text-align: center;
-    padding: 10px;
-  }
-  
-  .table-dark th {
-    background-color: #343a40;
-    color: #fff;
-  }
-  
-  @media (max-width: 768px) {
-    .table-container {
-      padding: 10px;
-    }
-  }
-  
+/* .view-service-container {
+  padding: 20px;
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+.services-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+}
+
+.services-table th, .services-table td {
+  border: 1px solid #ddd;
+  padding: 12px;
+  text-align: left;
+}
+
+.services-table th {
+  background-color: #f2f2f2;
+  font-weight: bold;
+}
+
+.services-table tr:nth-child(even) {
+  background-color: #f9f9f9;
+}
+
+.services-table tr:hover {
+  background-color: #f1f1f1;
+}
+
+.error-message {
+  color: #d32f2f;
+  margin-bottom: 15px;
+} */
+
+.view-service-container {
+  padding: 20px;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.services-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+}
+
+.services-table th,
+.services-table td {
+  border: 1px solid #ddd;
+  padding: 8px;
+  text-align: left;
+}
+
+.services-table th {
+  background-color: #f2f2f2;
+}
+
+.error-message {
+  color: red;
+  text-align: center;
+  margin: 20px 0;
+}
+
+.delete-button {
+  background-color: #ff4d4d;
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  cursor: pointer;
+  border-radius: 3px;
+}
+
+.delete-button:hover {
+  background-color: #cc0000;
+}

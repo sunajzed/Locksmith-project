@@ -93,7 +93,8 @@
 //             <th>Details</th>
 //             <th>Manufacturer</th>
 //             <th>Model</th>
-//             <th>Year</th>
+//            <th>Year From</th>
+// <th>Year To</th>
 //             <th>Buttons</th>
 //             <th>Status</th>
 //             <th>Actions</th>
@@ -113,7 +114,8 @@
 //                 <td>{service.details}</td>
 //                 <td>{service.car_key_details?.manufacturer || "N/A"}</td>
 //                 <td>{service.car_key_details?.model || "N/A"}</td>
-//                 <td>{service.car_key_details?.year || "N/A"}</td>
+//              <td>{service.car_key_details?.year_from || "N/A"}</td>
+// <td>{service.car_key_details?.year_to || "N/A"}</td>
 //                 <td>{service.car_key_details?.number_of_buttons || "N/A"}</td>
 //                 <td className={`status ${service.approved ? "approved" : "pending"}`}>
 //                   {service.approved ? "Approved" : "Pending"}
@@ -152,9 +154,7 @@
 // };
 
 // export default ApproveService;
-
 import React, { useState, useEffect } from "react";
-import axios from "axios";
 import { Table, Container, Button, Alert } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import "./ApproveService.css"; // Custom CSS file
@@ -244,12 +244,13 @@ const ApproveService = () => {
             <th>Service Type</th>
             <th>Admin Service ID</th>
             <th>Custom Price ($)</th>
+            <th>Additional Key Price ($)</th>
             <th>Total Price ($)</th>
             <th>Details</th>
             <th>Manufacturer</th>
             <th>Model</th>
-           <th>Year From</th>
-<th>Year To</th>
+            <th>Year From</th>
+            <th>Year To</th>
             <th>Buttons</th>
             <th>Status</th>
             <th>Actions</th>
@@ -265,12 +266,13 @@ const ApproveService = () => {
                 <td>{service.service_type}</td>
                 <td>{service.admin_service_id}</td>
                 <td>{service.custom_price}</td>
+                <td>{service.additional_key_price || "N/A"}</td>
                 <td>{service.total_price || "N/A"}</td>
                 <td>{service.details}</td>
                 <td>{service.car_key_details?.manufacturer || "N/A"}</td>
                 <td>{service.car_key_details?.model || "N/A"}</td>
-             <td>{service.car_key_details?.year_from || "N/A"}</td>
-<td>{service.car_key_details?.year_to || "N/A"}</td>
+                <td>{service.car_key_details?.year_from || "N/A"}</td>
+                <td>{service.car_key_details?.year_to || "N/A"}</td>
                 <td>{service.car_key_details?.number_of_buttons || "N/A"}</td>
                 <td className={`status ${service.approved ? "approved" : "pending"}`}>
                   {service.approved ? "Approved" : "Pending"}
@@ -297,7 +299,7 @@ const ApproveService = () => {
             ))
           ) : (
             <tr>
-              <td colSpan="14" className="text-center">
+              <td colSpan="16" className="text-center">
                 No locksmith services found.
               </td>
             </tr>

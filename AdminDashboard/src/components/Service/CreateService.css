@@ -1,4 +1,4 @@
-.create-service-form {
+ .create-service-form {
     background: white;
     padding: 20px;
     border-radius: 10px;
@@ -47,7 +47,23 @@
   .create-button:hover {
     background-color: #0056b3;
   }
-  
+  .custom-type-container {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.custom-type-input {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.hint-text {
+  color: #666;
+  font-size: 0.8rem;
+}
   @media (max-width: 480px) {
     .create-service-form {
       width: 90%;

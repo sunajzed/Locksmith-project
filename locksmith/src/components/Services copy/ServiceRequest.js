@@ -1,6 +1,5 @@
 // import React, { useState, useEffect } from "react";
 // import { Button, Table, Modal } from "react-bootstrap";
-// import axios from "axios";
 // import api from "./../../api/api";
 // import "./ServiceRequest.css";
 
@@ -17,7 +16,7 @@
 //   }, []);
 
 //   const fetchRequests = async () => {
-//     const token = localStorage.getItem("accessToken"); // Get auth token
+//     const token = localStorage.getItem("accessToken");
 
 //     if (!token) {
 //       setError("Unauthorized. Please log in as a locksmith.");
@@ -27,10 +26,10 @@
 
 //     try {
 //       const response = await api.get("/api/bookings/", {
-//         headers: { Authorization: `Bearer ${token}` }, // Attach token
+//         headers: { Authorization: `Bearer ${token}` },
 //       });
 
-//       setRequests(response.data); // Assuming API returns an array of requests
+//       setRequests(response.data);
 //     } catch (err) {
 //       setError("Failed to fetch service requests.");
 //     } finally {
@@ -71,8 +70,6 @@
 //     }
 //   };
 
-//   if (loading) return <p>Loading...</p>;
-//   if (error) return <p className="error">{error}</p>;
 //   const markComplete = async (id) => {
 //     const token = localStorage.getItem("accessToken");
 
@@ -96,26 +93,15 @@
 //     }
 //   };
 
+//   if (loading) return <p>Loading...</p>;
+//   if (error) return <p className="error">{error}</p>;
+
 //   return (
 //     <div className="table-container">
 //       <h2 className="text-center mb-4">Service Request Management</h2>
 //       <div className="table-responsive">
 //         <Table bordered hover className="requests-table">
 //           <thead className="table-dark">
-//             {/* <tr>
-//               <th>ID</th>
-//               <th>Customer</th>
-//               <th>Email</th>
-//               <th>Service Type</th>
-//               <th>Locksmith Service</th>
-//               <th>Payment Intent</th>
-//               <th>Scheduled Date</th>
-//               <th>Status</th>
-//               <th>Customer Address</th>
-//               <th>Contact Number</th>
-//               <th>House Number</th>
-//               <th>Actions</th>
-//             </tr> */}
 //             <tr>
 //               <th>ID</th>
 //               <th>Customer</th>
@@ -141,38 +127,21 @@
 //                   req.status === "Booking completed" ? "table-success" : ""
 //                 }
 //               >
-//                 {/* <td>{req.id}</td>
-//                 <td>{req.customer.username}</td>
-//                 <td>{req.customer.email}</td>
-//                 <td>{req.locksmith_service_type}</td>
-//                 <td>{req.locksmith_service}</td>
-//                 <td>{req.payment_intent_id}</td>
-//                 <td>{new Date(req.scheduled_date).toLocaleString()}</td>
-//                 <td>{req.status}</td>
-//                 <td>{req.customer_address}</td>
-//                 <td>{req.customer_contact_number}</td>
-//                 <td>{req.house_number}</td>
-//                 <td>
-//                   <Button
-//                     variant="primary"
-//                     size="sm"
-//                     disabled={req.status === "Booking completed"}
-//                     onClick={() => markComplete(req.id)}
-//                   >
-//                     {req.status === "Booking completed" ? "Completed" : "Complete"}
-//                   </Button>
-//                 </td> */}
 //                 <td>{req.id}</td>
-//                 <td>{req.customer.username}</td>
-//                 <td>{req.customer.email}</td>
-//                 <td>{req.locksmith_service_type}</td>
-//                 <td>{req.locksmith_service}</td>
-//                 <td>{req.payment_intent_id}</td>
-//                 <td>{new Date(req.scheduled_date).toLocaleString()}</td>
-//                 <td>{req.status}</td>
-//                 <td>{req.customer_address}</td>
-//                 <td>{req.customer_contact_number}</td>
-//                 <td>{req.house_number}</td>
+//                 <td>{req.customer?.username || "N/A"}</td>
+//                 <td>{req.customer?.email || "N/A"}</td>
+//                 <td>{req.locksmith_service_type || "N/A"}</td>
+//                 <td>{req.locksmith_service || "N/A"}</td>
+//                 <td>{req.payment_intent_id || "N/A"}</td>
+//                 <td>
+//                   {req.scheduled_date
+//                     ? new Date(req.scheduled_date).toLocaleString()
+//                     : "N/A"}
+//                 </td>
+//                 <td>{req.status || "Pending"}</td>
+//                 <td>{req.customer_address || "N/A"}</td>
+//                 <td>{req.customer_contact_number || "N/A"}</td>
+//                 <td>{req.house_number || "N/A"}</td>
 //                 <td>
 //                   {req.image ? (
 //                     <a
@@ -194,7 +163,7 @@
 //                     "No Image"
 //                   )}
 //                 </td>
-//                 <td>{req.additional_keys || "N/A"}</td>
+//                 <td>{req.number_of_keys > 1 ? req.number_of_keys - 1 : "N/A"}</td>
 //                 <td>
 //                   <Button
 //                     variant="primary"
@@ -213,7 +182,6 @@
 //         </Table>
 //       </div>
 
-//       {/* Modal for Approving/Rejecting Requests */}
 //       <Modal show={showModal} onHide={() => setShowModal(false)} centered>
 //         <Modal.Header closeButton>
 //           <Modal.Title>
@@ -222,8 +190,9 @@
 //         </Modal.Header>
 //         <Modal.Body>
 //           Are you sure you want to {decision} the service request for{" "}
-//           <strong>{selectedRequest?.locksmith_service}</strong> requested by{" "}
-//           <strong>{selectedRequest?.customer?.username}</strong>?
+//           <strong>{selectedRequest?.locksmith_service || "N/A"}</strong>{" "}
+//           requested by{" "}
+//           <strong>{selectedRequest?.customer?.username || "N/A"}</strong>?
 //         </Modal.Body>
 //         <Modal.Footer>
 //           <Button
@@ -239,10 +208,8 @@
 // };
 
 // export default ServiceRequest;
-
 import React, { useState, useEffect } from "react";
 import { Button, Table, Modal } from "react-bootstrap";
-import axios from "axios";
 import api from "./../../api/api";
 import "./ServiceRequest.css";
 
@@ -259,7 +226,7 @@ const ServiceRequest = () => {
   }, []);
 
   const fetchRequests = async () => {
-    const token = localStorage.getItem("accessToken"); // Get auth token
+    const token = localStorage.getItem("accessToken");
 
     if (!token) {
       setError("Unauthorized. Please log in as a locksmith.");
@@ -269,12 +236,13 @@ const ServiceRequest = () => {
 
     try {
       const response = await api.get("/api/bookings/", {
-        headers: { Authorization: `Bearer ${token}` }, // Attach token
+        headers: { Authorization: `Bearer ${token}` },
       });
-
-      setRequests(response.data); // Assuming API returns an array of requests
+      console.log("Fetched Bookings:", response.data);
+      setRequests(response.data);
     } catch (err) {
-      setError("Failed to fetch service requests.");
+      setError(`Failed to fetch service requests: ${err.response?.data?.message || err.message}`);
+      console.error("Fetch error:", err);
     } finally {
       setLoading(false);
     }
@@ -292,7 +260,6 @@ const ServiceRequest = () => {
 
     try {
       const updatedStatus = decision === "approve" ? "Approved" : "Rejected";
-
       await api.patch(
         `/api/bookings/${selectedRequest.id}/`,
         { status: updatedStatus },
@@ -306,15 +273,13 @@ const ServiceRequest = () => {
             : req
         )
       );
-
       setShowModal(false);
     } catch (err) {
       setError("Failed to update request status.");
+      console.error("Decision error:", err);
     }
   };
 
-  if (loading) return <p>Loading...</p>;
-  if (error) return <p className="error">{error}</p>;
   const markComplete = async (id) => {
     const token = localStorage.getItem("accessToken");
 
@@ -324,9 +289,7 @@ const ServiceRequest = () => {
         { status: "Booking completed" },
         { headers: { Authorization: `Bearer ${token}` } }
       );
-
       alert("Booking marked as completed!");
-
       setRequests((prevRequests) =>
         prevRequests.map((req) =>
           req.id === id ? { ...req, status: "Booking completed" } : req
@@ -338,26 +301,15 @@ const ServiceRequest = () => {
     }
   };
 
+  if (loading) return <p>Loading...</p>;
+  if (error) return <p className="error">{error}</p>;
+
   return (
     <div className="table-container">
       <h2 className="text-center mb-4">Service Request Management</h2>
       <div className="table-responsive">
         <Table bordered hover className="requests-table">
           <thead className="table-dark">
-            {/* <tr>
-              <th>ID</th>
-              <th>Customer</th>
-              <th>Email</th>
-              <th>Service Type</th>
-              <th>Locksmith Service</th>
-              <th>Payment Intent</th>
-              <th>Scheduled Date</th>
-              <th>Status</th>
-              <th>Customer Address</th>
-              <th>Contact Number</th>
-              <th>House Number</th>
-              <th>Actions</th>
-            </tr> */}
             <tr>
               <th>ID</th>
               <th>Customer</th>
@@ -383,62 +335,54 @@ const ServiceRequest = () => {
                   req.status === "Booking completed" ? "table-success" : ""
                 }
               >
-                {/* <td>{req.id}</td>
-                <td>{req.customer.username}</td>
-                <td>{req.customer.email}</td>
-                <td>{req.locksmith_service_type}</td>
-                <td>{req.locksmith_service}</td>
-                <td>{req.payment_intent_id}</td>
-                <td>{new Date(req.scheduled_date).toLocaleString()}</td>
-                <td>{req.status}</td>
-                <td>{req.customer_address}</td>
-                <td>{req.customer_contact_number}</td>
-                <td>{req.house_number}</td>
-                <td>
-                  <Button
-                    variant="primary"
-                    size="sm"
-                    disabled={req.status === "Booking completed"}
-                    onClick={() => markComplete(req.id)}
-                  >
-                    {req.status === "Booking completed" ? "Completed" : "Complete"}
-                  </Button>
-                </td> */}
                 <td>{req.id}</td>
-                <td>{req.customer.username}</td>
-                <td>{req.customer.email}</td>
-                <td>{req.locksmith_service_type}</td>
-                <td>{req.locksmith_service}</td>
-                <td>{req.payment_intent_id}</td>
-                <td>{new Date(req.scheduled_date).toLocaleString()}</td>
-                <td>{req.status}</td>
-                <td>{req.customer_address}</td>
-                <td>{req.customer_contact_number}</td>
-                <td>{req.house_number}</td>
+                <td>{req.customer?.username || "N/A"}</td>
+                <td>{req.customer?.email || "N/A"}</td>
+                <td>{req.locksmith_service_type || "N/A"}</td>
+                <td>{req.locksmith_service || "N/A"}</td>
+                <td>{req.payment_intent_id || "N/A"}</td>
                 <td>
-               {req.image ? (
-  <a
-    href={`http://127.0.0.1:8000${req.image}`}
-    target="_blank"
-    rel="noopener noreferrer"
-  >
-    <img
-      src={`http://127.0.0.1:8000${req.image}`}
-      alt="Service"
-      style={{
-        width: "60px",
-        height: "60px",
-        objectFit: "cover",
-      }}
-    />
-  </a>
-) : (
-  "No Image"
-)}
-
+                  {req.scheduled_date
+                    ? new Date(req.scheduled_date).toLocaleString()
+                    : "N/A"}
                 </td>
-              <td>{req.number_of_keys ?? "N/A"}</td>
-
+                <td>{req.status || "Pending"}</td>
+                <td>{req.customer_address || "N/A"}</td>
+                <td>{req.customer_contact_number || "N/A"}</td>
+                <td>{req.house_number || "N/A"}</td>
+                <td>
+                  {req.image ? (
+                    <a
+                      href={req.image}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      <img
+                        src={req.image}
+                        alt="Service"
+                        style={{
+                          width: "60px",
+                          height: "60px",
+                          objectFit: "cover",
+                        }}
+                        onError={(e) => {
+                          console.error("Image failed to load:", req.image);
+                          e.target.src = "/path/to/fallback-image.jpg";
+                        }}
+                      />
+                    </a>
+                  ) : (
+                    "No Image"
+                  )}
+                </td>
+                <td>
+                  {req.number_of_keys !== undefined &&
+                  req.number_of_keys !== null
+                    ? req.number_of_keys > 1
+                      ? req.number_of_keys - 1
+                      : "None"
+                    : "N/A"}
+                </td>
                 <td>
                   <Button
                     variant="primary"
@@ -457,7 +401,6 @@ const ServiceRequest = () => {
         </Table>
       </div>
 
-      {/* Modal for Approving/Rejecting Requests */}
       <Modal show={showModal} onHide={() => setShowModal(false)} centered>
         <Modal.Header closeButton>
           <Modal.Title>
@@ -466,8 +409,9 @@ const ServiceRequest = () => {
         </Modal.Header>
         <Modal.Body>
           Are you sure you want to {decision} the service request for{" "}
-          <strong>{selectedRequest?.locksmith_service}</strong> requested by{" "}
-          <strong>{selectedRequest?.customer?.username}</strong>?
+          <strong>{selectedRequest?.locksmith_service || "N/A"}</strong>{" "}
+          requested by{" "}
+          <strong>{selectedRequest?.customer?.username || "N/A"}</strong>?
         </Modal.Body>
         <Modal.Footer>
           <Button
