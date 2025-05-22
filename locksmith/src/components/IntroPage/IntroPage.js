@@ -6,7 +6,6 @@ const services = [
   { label: 'Residential', path: '/residential' },
   { label: 'Automotive', path: '/automotive' },
   { label: 'Commercial', path: '/commercial' },
-  { label: 'Emergency', path: '/emergency' },
   { label: 'Smart Lock', path: '/smart-lock' },
 ];
 
