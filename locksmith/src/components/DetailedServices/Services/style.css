@@ -1,5 +1,4 @@
-/* Tab Container */
-.residential-container {
+ .commercial-container {
   max-width: 1200px;
   margin: auto;
   padding: 20px;
@@ -14,7 +13,6 @@ h2 {
   font-weight: 600;
 }
 
-/* Services List */
 .services-list {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
@@ -23,7 +21,6 @@ h2 {
   margin-top: 40px;
 }
 
-/* Services Card */
 .services-card {
   width: 100%;
   max-width: 350px;
@@ -95,7 +92,6 @@ h2 {
   box-shadow: 0 0 5px rgba(240, 178, 131, 0.5);
 }
 
-/* Loading Container */
 .loading-container {
   display: flex;
   flex-direction: column;
@@ -105,7 +101,6 @@ h2 {
   background-color: #ffffff;
 }
 
-/* Loading Spinner */
 .loading-spinner {
   border: 6px solid #f3f3f3;
   border-top: 6px solid #424446;
@@ -120,7 +115,6 @@ h2 {
   100% { transform: rotate(360deg); }
 }
 
-/* Loading Message */
 .loading-message {
   margin-top: 20px;
   font-size: 1.2rem;
@@ -128,7 +122,6 @@ h2 {
   font-weight: bold;
 }
 
-/* Error Message */
 .error {
   color: red;
   text-align: center;
@@ -136,7 +129,6 @@ h2 {
   font-size: 1.2rem;
 }
 
-/* Success Message */
 .success-message {
   background-color: #4caf50;
   color: white;
@@ -146,7 +138,6 @@ h2 {
   text-align: center;
 }
 
-/* No Services Message */
 .no-services-message {
   text-align: center;
   font-size: 1.2rem;
@@ -154,7 +145,6 @@ h2 {
   margin-top: 20px;
 }
 
-/* Filter Container */
 .filter-container {
   margin-bottom: 20px;
   text-align: center;
@@ -181,7 +171,50 @@ h2 {
   box-shadow: 0 0 5px rgba(240, 178, 131, 0.5);
 }
 
-/* Media Queries for Responsiveness */
+.search-container {
+  position: relative;
+  margin-bottom: 20px;
+}
+
+.search-input {
+  width: 100%;
+  padding: 10px;
+  font-size: 1rem;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  outline: none;
+}
+
+.search-input:focus {
+  border-color: rgb(240, 178, 131);
+  box-shadow: 0 0 5px rgba(240, 178, 131, 0.5);
+}
+
+.availability-status {
+  padding: 6px 12px;
+  border-radius: 4px;
+  font-size: 0.9rem;
+  font-weight: bold;
+  text-align: center;
+  margin: 10px 0;
+}
+
+.availability-status.available {
+  background-color: #e8f5e9;
+  color: #2e7d32;
+}
+
+.availability-status.unavailable {
+  background-color: #ffebee;
+  color: #c62828;
+}
+
+.book-button:disabled {
+  background-color: #b0bec5;
+  color: #546e7a;
+  cursor: not-allowed;
+}
+
 @media (min-width: 1024px) {
   .services-list {
     grid-template-columns: repeat(3, 1fr);
@@ -198,45 +231,4 @@ h2 {
   .services-list {
     grid-template-columns: repeat(1, 1fr);
   }
-}
-@media (min-width: 1024px) {
-  .MuiTabs-root {
-    width: 100%;
-  }
-
-  .MuiTab-root {
-    min-width: 200px !important; /* Ensure minimum width for tabs on larger screens */
-  }
-}
-
-@media (max-width: 1023px) {
-  .MuiTab-root {
-    min-width: 150px !important; /* Adjust for smaller screens */
-  }
-}
-/* Availability Status Styles */
-.availability-status {
-  padding: 6px 12px;
-  border-radius: 4px;
-  font-size: 0.9rem;
-  font-weight: bold;
-  text-align: center;
-  margin: 10px 0;
-}
-
-.availability-status.available {
-  background-color: #e8f5e9; /* Light green background */
-  color: #2e7d32; /* Dark green text */
-}
-
-.availability-status.unavailable {
-  background-color: #ffebee; /* Light red background */
-  color: #c62828; /* Dark red text */
-}
-
-/* Disabled Button Styles */
-.book-button:disabled {
-  background-color: #b0bec5; /* Gray background */
-  color: #546e7a; /* Dark gray text */
-  cursor: not-allowed;
 }

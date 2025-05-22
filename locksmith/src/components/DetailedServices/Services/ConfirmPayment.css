@@ -1,66 +1,4 @@
-/* .confirmation-container {
-    max-width: 600px;
-    margin: 0 auto;
-  }
-
-  .card {
-    border: 1px solid #e0e0e0;
-    border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  }
-  
-  .confirm-button {
-    background-color: #3e3f40;
-    border: none;
-    padding: 10px 20px;
-    font-size: 1.1rem;
-    border-radius: 5px;
-    transition: background-color 0.3s ease;
-  }
-  
-  .confirm-button:hover {
-    background-color: #000000;
-  }
-  
-  @media (max-width: 768px) {
-    .confirmation-container {
-      padding: 0 15px;
-    }
-  
-    .card {
-      padding: 20px;
-    }
-  
-    .confirm-button {
-      width: 100%;
-      font-size: 1rem;
-    }
-  }
-  .price-breakdown {
-    background-color: #f8f9fa;
-    border-radius: 5px;
-    padding: 10px;
-    border-left: 4px solid #0d6efd;
-  }
-  
-  .breakdown-details {
-    border-left: 2px solid #dee2e6;
-    margin-left: 10px;
-  }
-  .total-price {
-    margin-bottom: 1rem;
-    color: black;
-  }
-  
-  .total-price-amount {
-    margin-left: 0.5rem;
-    font-size: 1.25rem;
-    font-weight: bold;
-    color: #2563eb; 
-  } */
-
-  /* Luxury Design System */
-:root {
+/* :root {
   --primary: #8B5CF6;
   --primary-dark: #7C3AED;
   --primary-light: #C4B5FD;
@@ -75,7 +13,6 @@
   --danger: #EF4444;
 }
 
-/* Base Styles */
 * {
   box-sizing: border-box;
   margin: 0;
@@ -89,7 +26,6 @@ body {
   line-height: 1.6;
 }
 
-/* Luxury Payment Container */
 .luxury-payment-container {
   display: flex;
   justify-content: center;
@@ -149,7 +85,6 @@ body {
   font-weight: 400;
 }
 
-/* Service Card */
 .luxury-service-card {
   display: flex;
   padding: 1.5rem;
@@ -226,7 +161,6 @@ body {
   color: var(--primary-dark);
 }
 
-/* Price Breakdown */
 .luxury-price-breakdown {
   padding: 1.5rem;
 }
@@ -290,7 +224,6 @@ body {
   font-size: 1.2rem;
 }
 
-/* Payment Actions */
 .luxury-payment-actions {
   padding: 1.5rem;
   background: rgba(249, 250, 251, 0.7);
@@ -390,7 +323,6 @@ body {
   flex-shrink: 0;
 }
 
-/* Success Page */
 .luxury-success-container {
   display: flex;
   justify-content: center;
@@ -588,7 +520,7 @@ body {
   line-height: 1.5;
 }
 
-/* Animations */
+
 @keyframes spin {
   to { transform: rotate(360deg); }
 }
@@ -603,7 +535,6 @@ body {
   to { transform: translateY(0); }
 }
 
-/* Responsive Adjustments */
 @media (max-width: 640px) {
   .luxury-payment-container, .luxury-success-container {
     padding: 1rem;
@@ -634,4 +565,371 @@ body {
   .success-actions {
     flex-direction: column;
   }
+} */
+
+/* Base Styles */
+.payment-container, .success-container, .payment-error-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  padding: 2rem;
+  background-color: #f9fafb;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  color: #111827;
+}
+
+/* Payment Card */
+.payment-card, .success-card, .payment-error-card {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
+  width: 100%;
+  max-width: 560px;
+  padding: 2.5rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.payment-header {
+  margin-bottom: 2rem;
+  text-align: center;
+}
+
+.payment-header h2 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  color: #111827;
+}
+
+.subheader {
+  color: #6b7280;
+  font-size: 0.95rem;
+}
+
+/* Service Summary */
+.service-summary {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: 1.5rem;
+  background-color: #f8fafc;
+  border-radius: 8px;
+  margin-bottom: 2rem;
+}
+
+.service-info h3 {
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+
+.service-info p {
+  color: #6b7280;
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+
+.service-price {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: #111827;
+}
+
+/* Payment Details */
+.payment-details {
+  margin-bottom: 2rem;
+}
+
+.payment-details h4 {
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin-bottom: 1.5rem;
+  color: #111827;
+}
+
+.details-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.75rem;
+}
+
+.detail-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.5rem 0;
+  font-size: 0.95rem;
+}
+
+.detail-row span:first-child {
+  color: #6b7280;
+}
+
+.detail-row span:last-child {
+  font-weight: 500;
+  color: #111827;
+}
+
+.divider {
+  height: 1px;
+  background-color: #e5e7eb;
+  margin: 0.5rem 0;
+}
+
+.total-row {
+  padding-top: 0.75rem;
+  border-top: 1px solid #e5e7eb;
+  font-weight: 600;
+  font-size: 1.05rem;
+}
+
+/* Scheduled Time */
+.scheduled-time {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #6b7280;
+  font-size: 0.9rem;
+  margin-bottom: 2rem;
+  padding: 0.75rem 1rem;
+  background-color: #f8fafc;
+  border-radius: 6px;
+}
+
+.scheduled-time strong {
+  color: #111827;
+}
+
+/* Payment Actions */
+.payment-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.primary-button {
+  background-color: #111827;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 1rem 1.5rem;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.primary-button:hover {
+  background-color: #1f2937;
+}
+
+.primary-button.processing {
+  background-color: #374151;
+}
+
+.button-spinner {
+  width: 1rem;
+  height: 1rem;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  border-top-color: white;
+  animation: spin 1s ease-in-out infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.security-info {
+  display: flex;
+  justify-content: center;
+  gap: 1.5rem;
+  font-size: 0.85rem;
+  color: #6b7280;
+}
+
+.security-item {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+/* Success Page */
+.success-card {
+  text-align: center;
+}
+
+.success-card.animate {
+  animation: fadeInUp 0.6s ease-out;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.success-icon {
+  width: 64px;
+  height: 64px;
+  margin: 0 auto 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #ecfdf5;
+  border-radius: 50%;
+}
+
+.success-icon svg {
+  width: 32px;
+  height: 32px;
+}
+
+.success-content h2 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+
+.success-message {
+  color: #6b7280;
+  margin-bottom: 2rem;
+}
+
+.booking-summary {
+  text-align: left;
+  background-color: #f8fafc;
+  border-radius: 8px;
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.summary-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.25rem;
+}
+
+.summary-header h3 {
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+.status-badge {
+  background-color: #d1fae5;
+  color: #065f46;
+  padding: 0.25rem 0.75rem;
+  border-radius: 9999px;
+  font-size: 0.8rem;
+  font-weight: 500;
+}
+
+.summary-details {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.75rem;
+}
+
+.detail-item {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.95rem;
+}
+
+.detail-item span:first-child {
+  color: #6b7280;
+}
+
+.success-actions {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.secondary-button {
+  background-color: white;
+  color: #111827;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  padding: 1rem 1.5rem;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+  flex: 1;
+}
+
+.secondary-button:hover {
+  background-color: #f9fafb;
+}
+
+.success-note {
+  display: flex;
+  gap: 0.5rem;
+  color: #6b7280;
+  font-size: 0.9rem;
+  text-align: left;
+  padding: 0.75rem;
+  background-color: #f8fafc;
+  border-radius: 6px;
+}
+
+.success-note svg {
+  flex-shrink: 0;
+  margin-top: 0.15rem;
+}
+
+/* Error Page */
+.payment-error-card {
+  text-align: center;
+}
+
+.error-icon {
+  width: 64px;
+  height: 64px;
+  margin: 0 auto 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #fef2f2;
+  border-radius: 50%;
+}
+
+.error-icon svg {
+  width: 32px;
+  height: 32px;
+}
+
+.error-message {
+  color: #6b7280;
+  margin-bottom: 2rem;
+}
+.price-breakdown {
+  margin: 20px 0;
+  padding: 15px;
+  background-color: #f8f9fa;
+  border-radius: 8px;
+}
+.breakdown-item {
+  display: flex;
+  justify-content: space-between;
+  padding: 5px 0;
+}
+.breakdown-item.total {
+  font-weight: bold;
+  border-top: 1px solid #e5e7eb;
+  padding-top: 10px;
+  margin-top: 10px;
 }

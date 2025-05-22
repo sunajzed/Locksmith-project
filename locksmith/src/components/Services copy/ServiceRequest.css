@@ -1,91 +1,103 @@
-/* .table-container {
-  padding: 20px;
-  margin: 20px;
-  background: #fff;
-  border-radius: 8px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+   /* Container */
+.table-container {
+  padding: 2rem;
+  background-color: #f9f9f9;
 }
-  
-  .table-responsive {
-    max-width: 100%;
-    overflow-x: auto;
-  }
-  
-  .requests-table th,
-  .requests-table td {
-    vertical-align: middle;
-    text-align: center;
-  }
-  
-  .table-success {
-    background-color: #d4edda !important;
-  }
-  
-  .table-danger {
-    background-color: #f8d7da !important;
-  }
-  
-  @media (max-width: 768px) {
-    .table-container {
-      padding: 10px;
-    }
-  }
-  
-  .requests-table td {
-    max-width: 200px;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-  } */
+
+/* Headings */
+.table-container h2 {
+  text-align: center;
+  margin-bottom: 2rem;
+  color: #333;
+  font-weight: bold;
+}
+
+/* Table Styling */
+.requests-table {
+  width: 100%;
+  border-collapse: collapse;
+  background-color: #fff;
+  border-radius: 8px;
+  overflow: hidden;
+  font-size: 0.95rem;
+}
+
+.requests-table thead {
+  background-color: #343a40;
+  color: #fff;
+}
+
+.requests-table th,
+.requests-table td {
+  text-align: center;
+  padding: 12px 10px;
+  border: 1px solid #dee2e6;
+  vertical-align: middle;
+}
+
+.requests-table tbody tr:nth-child(odd) {
+  background-color: #f8f9fa;
+}
+
+.requests-table tbody tr:hover {
+  background-color: #e9ecef;
+  transition: 0.3s ease;
+}
+
+.requests-table img {
+  width: 60px;
+  height: 60px;
+  object-fit: cover;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+}
+
+/* Success row */
+.table-success {
+  background-color: #d4edda !important;
+}
+
+/* Filters */
+form .form-group {
+  margin-bottom: 1rem;
+}
+
+form label {
+  font-weight: 600;
+}
+
+.form-select,
+.form-control {
+  padding: 0.5rem 0.75rem;
+}
+
+/* Error */
+.error {
+  color: red;
+  text-align: center;
+  margin-top: 2rem;
+  font-weight: bold;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
   .table-container {
-    padding: 20px;
-    margin: 20px;
-    background: #fff;
-    border-radius: 8px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    padding: 1rem;
   }
-  
-  .table-responsive {
-    max-width: 100%;
-    overflow-x: auto;
-  }
-  
-  .requests-table {
-    width: 100%;
-    table-layout: auto; /* This allows columns to expand based on content */
-  }
-  
+
   .requests-table th,
   .requests-table td {
-    vertical-align: middle;
-    text-align: center;
-    white-space: nowrap; /* Prevent text wrapping */
-    padding: 8px 12px; /* Add some padding for better spacing */
+    font-size: 0.85rem;
+    padding: 8px;
   }
-  
-  .requests-table th {
-    position: sticky;
-    top: 0;
-    background: #343a40;
-    color: white;
+
+  .requests-table img {
+    width: 45px;
+    height: 45px;
   }
-  
-  .table-success {
-    background-color: #d4edda !important;
+
+  .form-select,
+  .form-control {
+    font-size: 0.9rem;
   }
-  
-  .table-danger {
-    background-color: #f8d7da !important;
-  }
-  
-  @media (max-width: 768px) {
-    .table-container {
-      padding: 10px;
-    }
-    
-    .requests-table th,
-    .requests-table td {
-      padding: 6px 8px; /* Reduce padding on smaller screens */
-      font-size: 0.9rem; /* Reduce font size on smaller screens */
-    }
-  }
+}

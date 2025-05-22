@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from 'react';
 import api from '../../api/api';
 import './MyBookings.css';
@@ -6,6 +5,7 @@ import './MyBookings.css';
 export default function MyBookings() {
   const [bookings, setBookings] = useState([]);
   const [error, setError] = useState('');
+  const [filter, setFilter] = useState('all'); // 'all', 'paid', 'unpaid'
   const userRole = localStorage.getItem('userRole');
   const accessToken = localStorage.getItem('accessToken');
 
@@ -17,10 +17,18 @@ export default function MyBookings() {
 
     const fetchBookings = async () => {
       try {
-        const response = await api.get('/api/bookings/', {
+        let url = '/api/bookings/';
+        if (filter === 'paid') {
+          url += '?payment_status=paid';
+        } else if (filter === 'unpaid') {
+          // Show pending payments as unpaid
+          url += '?payment_status=pending';
+        }
+        const response = await api.get(url, {
           headers: { Authorization: `Bearer ${accessToken}` },
         });
         setBookings(response.data);
+        setError('');
       } catch (err) {
         setError('Failed to fetch bookings. Please try again.');
         console.error(err);
@@ -28,19 +36,33 @@ export default function MyBookings() {
     };
 
     fetchBookings();
-  }, [accessToken, userRole]);
-
-
+  }, [accessToken, userRole, filter]);
 
   return (
     <div className="bookings-container">
       <h2>My Bookings</h2>
+
+      <div className="filter-container" style={{ marginBottom: '1rem' }}>
+        <label htmlFor="paymentFilter" style={{ marginRight: '0.5rem' }}>
+          Filter by Payment Status:
+        </label>
+        <select
+          id="paymentFilter"
+          value={filter}
+          onChange={(e) => setFilter(e.target.value)}
+        >
+          <option value="all">All</option>
+          <option value="paid">Paid</option>
+          <option value="unpaid">Unpaid (Pending)</option>
+        </select>
+      </div>
+
       {error ? (
         <p className="error-message">{error}</p>
       ) : bookings.length === 0 ? (
         <p className="no-bookings">No bookings found.</p>
       ) : (
-        <div className="table-responsive"> {/* Bootstrap class for scrollable table */}
+        <div className="table-responsive">
           <table className="table table-bordered table-striped bookings-table">
             <thead className="thead-dark">
               <tr>
@@ -49,7 +71,7 @@ export default function MyBookings() {
                 <th>Scheduled Date</th>
                 <th>Status</th>
                 <th>Payment ID</th>
-                {/* <th>Action</th> */}
+                <th>Payment Status</th>
               </tr>
             </thead>
             <tbody>
@@ -60,11 +82,7 @@ export default function MyBookings() {
                   <td>{new Date(booking.scheduled_date).toLocaleString()}</td>
                   <td>{booking.status}</td>
                   <td>{booking.payment_intent_id || 'N/A'}</td>
-                  {/* <td>
-                    <button className="cancel-button" onClick={() => handleCancelBooking(booking.id)}>
-                      Cancel Booking
-                    </button>
-                  </td> */}
+                  <td>{booking.payment_status ? booking.payment_status.toUpperCase() : 'N/A'}</td>
                 </tr>
               ))}
             </tbody>

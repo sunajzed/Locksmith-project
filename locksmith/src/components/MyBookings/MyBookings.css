@@ -1,63 +1,106 @@
+.bookings-container {
+  max-width: 900px;
+  margin: 2rem auto;
+  padding: 0 1rem;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  color: #333;
+}
 
+h2 {
+  text-align: center;
+  margin-bottom: 1.5rem;
+  font-weight: 700;
+  font-size: 2rem;
+  color: #2c3e50;
+}
 
-   .bookings-container {
-    max-width: 900px;
-    margin: 40px auto;
-    padding: 20px;
-    background: #fff;
-    border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    text-align: center;
-  }
-  
-  h2 {
-    margin-bottom: 20px;
-    color: #333;
-  }
-  
-  .error-message {
-    color: red;
-    font-weight: bold;
-  }
-  
-  .no-bookings {
-    color: #777;
-  }
-  
-  .bookings-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 20px;
-  }
-  
-  .bookings-table th {
-    background: black;
-    color: white;
-    padding: 10px;
-    text-align: left;
-  }
-  
+.filter-container {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  font-size: 1rem;
+  color: #444;
+}
+
+select#paymentFilter {
+  padding: 0.4rem 0.8rem;
+  border-radius: 5px;
+  border: 1.5px solid #ccc;
+  font-size: 1rem;
+  outline-color: #007bff;
+  cursor: pointer;
+  transition: border-color 0.3s ease;
+}
+
+select#paymentFilter:hover,
+select#paymentFilter:focus {
+  border-color: #007bff;
+}
+
+.table-responsive {
+  overflow-x: auto;
+}
+
+.bookings-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  box-shadow: 0 4px 12px rgb(0 0 0 / 0.1);
+  border-radius: 8px;
+  overflow: hidden;
+  background: #fff;
+}
+
+.bookings-table thead {
+  background: #007bff; /* bootstrap blue */
+  color: #fff;
+}
+
+.bookings-table thead tr {
+  border-bottom: 3px solid #0056b3;
+}
+
+.bookings-table th,
+.bookings-table td {
+  padding: 12px 15px;
+  text-align: left;
+  vertical-align: middle;
+  font-size: 1rem;
+  border-bottom: 1px solid #e1e1e1;
+}
+
+.bookings-table tbody tr:nth-child(even) {
+  background-color: #f9f9f9;
+}
+
+.bookings-table tbody tr:hover {
+  background-color: #e6f0ff;
+  cursor: default;
+}
+
+.error-message {
+  color: #e74c3c;
+  font-weight: 600;
+  text-align: center;
+  margin-top: 1rem;
+}
+
+.no-bookings {
+  color: #666;
+  font-style: italic;
+  text-align: center;
+  margin-top: 1rem;
+}
+
+/* Responsive font size for smaller screens */
+@media (max-width: 600px) {
+  .bookings-table th,
   .bookings-table td {
-    color: black;
-    padding: 10px;
-    border-top: 1px solid #444;
+    font-size: 0.9rem;
+    padding: 10px 8px;
   }
-  
-  .bookings-table th, .bookings-table td {
-    border: 1px solid #fff;
+
+  h2 {
+    font-size: 1.5rem;
   }
-  
-  .cancel-button {
-    background: red;
-    color: white;
-    padding: 5px 10px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    font-weight: bold;
-  }
-  
-  .cancel-button:hover {
-    background: darkred;
-  }
-  
+}
