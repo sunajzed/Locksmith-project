@@ -156,7 +156,6 @@ export default function NavBar() {
                     <Dropdown.Item as={Link} to="/residential-service" className="dropdown-item-custom">Residential</Dropdown.Item>
                     <Dropdown.Item as={Link} to="/automotive-service" className="dropdown-item-custom">Automotive</Dropdown.Item>
                     <Dropdown.Item as={Link} to="/commercial-service" className="dropdown-item-custom">Commercial</Dropdown.Item>
-                    <Dropdown.Item as={Link} to="/emergency-service" className="dropdown-item-custom">Emergency</Dropdown.Item>
                     <Dropdown.Item as={Link} to="/smart-lock-service" className="dropdown-item-custom">Smart Lock</Dropdown.Item>
                   </Dropdown.Menu>
                 </Dropdown>

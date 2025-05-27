@@ -32,10 +32,10 @@ const CreateService = () => {
   const [model, setModel] = useState("");
   const [yearRange, setYearRange] = useState("");
   const [numberOfButtons, setNumberOfButtons] = useState("");
+  const [numberOfButtonsOptions, setNumberOfButtonsOptions] = useState([]);
 
   const serviceTypes = [
     "smart_lock",
-    "emergency",
     "automotive",
     "commercial",
     "residential",
@@ -50,7 +50,6 @@ const CreateService = () => {
           return;
         }
 
-        // Only fetch services if a serviceType is selected
         if (serviceType) {
           const response = await api.get(
             `/api/admin/services/available_services/?service_type=${serviceType}`,
@@ -60,7 +59,7 @@ const CreateService = () => {
           );
           setServices(response.data);
         } else {
-          setServices([]); // Clear services if no service type is selected
+          setServices([]);
         }
       } catch (error) {
         setMessage({ type: "danger", text: "Failed to fetch services." });
@@ -69,7 +68,6 @@ const CreateService = () => {
     };
 
     fetchServices();
-    // Reset selected service when serviceType changes
     setSelectedServiceId("");
     setSelectedService("");
   }, [serviceType]);
@@ -93,11 +91,20 @@ const CreateService = () => {
         setModel("");
         setYearRange("");
         setNumberOfButtons("");
+        setNumberOfButtonsOptions([]);
       }
     };
 
     fetchCarDetails();
   }, [serviceType]);
+
+  useEffect(() => {
+    if (selectedService.toLowerCase() === "key duplication") {
+      setMakeKeysAtSite(true);
+    } else {
+      setMakeKeysAtSite(false);
+    }
+  }, [selectedService]);
 
   const handleServiceChange = (e) => {
     const selectedId = e.target.value;
@@ -203,7 +210,7 @@ const CreateService = () => {
         service_type: serviceType,
         additional_key_price: makeKeysAtSite && additionalKeyPrice
           ? parseFloat(additionalKeyPrice)
-          : 0, // Set to 0 if no additional key price
+          : 0,
         ...(serviceType === "automotive" && {
           car_key_details: {
             manufacturer,
@@ -224,7 +231,6 @@ const CreateService = () => {
 
       setMessage({ type: "success", text: "Service added successfully!" });
 
-      // Reset form
       setSelectedService("");
       setSelectedServiceId("");
       setCustomPrice("");
@@ -236,6 +242,7 @@ const CreateService = () => {
       setModel("");
       setYearRange("");
       setNumberOfButtons("");
+      setNumberOfButtonsOptions([]);
       setIsConfirmed(false);
     } catch (error) {
       console.error("Error:", error);
@@ -266,23 +273,34 @@ const CreateService = () => {
       )].sort()
     : [];
 
+  // Updated useEffect to handle multiple number of buttons without auto-filling
   useEffect(() => {
     if (manufacturer && model && yearRange) {
       const [yearFrom, yearTo] = yearRange.split("-").map(Number);
-      const selectedCar = carDetails.find(
+      const matchingCars = carDetails.filter(
         (car) =>
           car.manufacturer === manufacturer &&
           car.model === model &&
           car.year_from === yearFrom &&
           car.year_to === yearTo
       );
-      if (selectedCar) {
-        setNumberOfButtons(selectedCar.number_of_buttons.toString());
+
+      // Collect all unique number_of_buttons values
+      const buttonOptions = [
+        ...new Set(matchingCars.map((car) => car.number_of_buttons.toString())),
+      ].sort();
+
+      setNumberOfButtonsOptions(buttonOptions);
+
+      // Do not auto-fill if there are multiple options
+      if (buttonOptions.length === 1) {
+        setNumberOfButtons(buttonOptions[0]); // Auto-fill only if there's exactly one option
       } else {
-        setNumberOfButtons("");
+        setNumberOfButtons(""); // Keep it empty to show the placeholder
       }
     } else {
       setNumberOfButtons("");
+      setNumberOfButtonsOptions([]);
     }
   }, [manufacturer, model, yearRange, carDetails]);
 
@@ -337,8 +355,8 @@ const CreateService = () => {
           <Col md={6}>
             <Form.Group>
               <Form.Label>
-                Custom Price ($)
-                <OverlayTrigger
+                Your Price (AUD)
+                {/* <OverlayTrigger
                   placement="right"
                   overlay={
                     <Tooltip>
@@ -350,7 +368,7 @@ const CreateService = () => {
                     className="ms-2 text-info"
                     style={{ cursor: "pointer" }}
                   />
-                </OverlayTrigger>
+                </OverlayTrigger> */}
               </Form.Label>
               <Form.Control
                 type="number"
@@ -403,6 +421,7 @@ const CreateService = () => {
                       setModel("");
                       setYearRange("");
                       setNumberOfButtons("");
+                      setNumberOfButtonsOptions([]);
                     }}
                   >
                     <option value="">-- Select Manufacturer --</option>
@@ -423,6 +442,7 @@ const CreateService = () => {
                       setModel(e.target.value);
                       setYearRange("");
                       setNumberOfButtons("");
+                      setNumberOfButtonsOptions([]);
                     }}
                     disabled={!manufacturer}
                   >
@@ -442,7 +462,11 @@ const CreateService = () => {
                   <Form.Label>Year Range</Form.Label>
                   <Form.Select
                     value={yearRange}
-                    onChange={(e) => setYearRange(e.target.value)}
+                    onChange={(e) => {
+                      setYearRange(e.target.value);
+                      setNumberOfButtons("");
+                      setNumberOfButtonsOptions([]);
+                    }}
                     disabled={!manufacturer || !model}
                   >
                     <option value="">-- Select Year Range --</option>
@@ -457,12 +481,18 @@ const CreateService = () => {
               <Col md={6}>
                 <Form.Group>
                   <Form.Label>Number of Buttons</Form.Label>
-                  <Form.Control
-                    type="number"
+                  <Form.Select
                     value={numberOfButtons}
-                    readOnly
-                    disabled={!manufacturer || !model || !yearRange}
-                  />
+                    onChange={(e) => setNumberOfButtons(e.target.value)}
+                    disabled={!manufacturer || !model || !yearRange || numberOfButtonsOptions.length === 0}
+                  >
+                    <option value="">-- Select Number of Buttons --</option>
+                    {numberOfButtonsOptions.map((option) => (
+                      <option key={option} value={option}>
+                        {option}
+                      </option>
+                    ))}
+                  </Form.Select>
                 </Form.Group>
               </Col>
             </Row>
@@ -522,6 +552,9 @@ const CreateService = () => {
           <Modal.Title>Confirm Service Price</Modal.Title>
         </Modal.Header>
         <Modal.Body>
+          <div className="alert alert-warning" role="alert">
+            ⚠️ Please ensure you have included GST if applicable.
+          </div>
           This is the base price before adding platform fees. Proceed?
         </Modal.Body>
         <Modal.Footer>

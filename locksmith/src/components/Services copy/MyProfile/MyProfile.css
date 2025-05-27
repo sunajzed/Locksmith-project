@@ -1,92 +1,48 @@
-/* Consistent with LockSmithForm styling */
-.locksmith-form {
-  max-width: 100%;
-  width: 100%;
-  padding: 20px;
-  margin: 20px auto;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  background-color: #fff;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+.my-profile-container {
+  max-width: 800px;
+  margin: 40px auto;
+  padding: 24px;
+  background-color: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
 }
 
-@media (min-width: 768px) {
-  .locksmith-form {
-    max-width: 600px;
-  }
-}
-
-.form-group {
-  margin-bottom: 1.5rem;
-}
-
-.form-group label {
-  font-weight: 600;
-  margin-bottom: 0.5rem;
-  display: block;
-}
-
-.form-control {
-  width: 100%;
-  padding: 0.5rem 0.75rem;
-  border: 1px solid #ced4da;
-  border-radius: 0.25rem;
-  transition: border-color 0.15s ease-in-out;
-}
-
-.form-control:focus {
-  border-color: #80bdff;
-  outline: 0;
-  box-shadow: 0 0 0 0.2rem rgba(0,123,255,0.25);
-}
-
-.form-control-file {
-  display: block;
-  width: 100%;
-}
-
-.alert {
-  padding: 0.75rem 1.25rem;
-  margin-bottom: 1rem;
-  border: 1px solid transparent;
-  border-radius: 0.25rem;
-}
-
-.alert-success {
-  color: #155724;
-  background-color: #d4edda;
-  border-color: #c3e6cb;
-}
-
-.alert-danger {
-  color: #721c24;
-  background-color: #f8d7da;
-  border-color: #f5c6cb;
-}
-
-.btn-outline-secondary {
-  color: #6c757d;
-  border-color: #6c757d;
-}
-
-.btn-outline-secondary:hover {
-  color: #fff;
-  background-color: #6c757d;
-  border-color: #6c757d;
-}
-
-.text-center {
+.file-preview {
+  margin-top: 16px;
   text-align: center;
 }
 
-.mt-2 {
-  margin-top: 0.5rem;
+.file-preview img {
+  object-fit: cover;
+  border: 1px solid #e0e0e0;
 }
 
-.mt-4 {
-  margin-top: 1.5rem;
+.file-preview a {
+  color: #1976d2;
+  text-decoration: none;
+  font-weight: 500;
 }
 
-.mb-4 {
-  margin-bottom: 1.5rem;
+.file-preview a:hover {
+  text-decoration: underline;
+}
+
+@media (max-width: 600px) {
+  .my-profile-container {
+    margin: 20px;
+    padding: 16px;
+  }
+}
+
+.alert {
+  animation: fadeIn 0.3s ease-in;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }

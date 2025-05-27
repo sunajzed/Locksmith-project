@@ -4,7 +4,6 @@
 // import Box from "@mui/material/Box";
 // import Tabs from "@mui/material/Tabs";
 // import Tab from "@mui/material/Tab";
-// import debounce from "lodash/debounce";
 // import Modal from "@mui/material/Modal";
 // import TextField from "@mui/material/TextField";
 // import Button from "@mui/material/Button";
@@ -15,6 +14,8 @@
 // import Checkbox from '@mui/material/Checkbox';
 // import FormControlLabel from '@mui/material/FormControlLabel';
 // import Slider from '@mui/material/Slider';
+// import debounce from "lodash/debounce";
+// import "./style.css";
 
 // const modalStyle = {
 //   position: 'absolute',
@@ -63,7 +64,7 @@
 //   const [imageFile, setImageFile] = useState(null);
 //   const [imagePreview, setImagePreview] = useState(null);
 //   const [needMoreKeys, setNeedMoreKeys] = useState(false);
-//   const [additionalKeys, setAdditionalKeys] = useState(0); // Number of additional keys (excluding the first key)
+//   const [additionalKeys, setAdditionalKeys] = useState(0);
 //   const [additionalKeyPrice, setAdditionalKeyPrice] = useState(0);
 //   const [scheduledDate, setScheduledDate] = useState("");
 //   const [scheduledTime, setScheduledTime] = useState("");
@@ -186,8 +187,8 @@
 //   const highlightSearchTerm = (text, term) => {
 //     if (!term || !text) return text;
 //     const regex = new RegExp(`(${term})`, 'gi');
-//     return text.toString().split(regex).map((part, i) =>
-//       regex.test(part) ? <mark key={i} className="search-highlight">{part}</mark> : part
+//     return text.toString().split(regex).map((part, i) => 
+//       regex.test(part) ? <mark key={i}>{part}</mark> : part
 //     );
 //   };
 
@@ -306,8 +307,8 @@
 //       }
 //     }
 
-//     const totalKeys = needMoreKeys ? 1 + additionalKeys : 1; // Total keys includes the base key
-//     const additionalKeysCount = needMoreKeys ? additionalKeys : 0; // Number of additional keys
+//     const totalKeys = needMoreKeys ? 1 + additionalKeys : 1;
+//     const additionalKeysCount = needMoreKeys ? additionalKeys : 0;
 
 //     const formData = new FormData();
 //     formData.append("locksmith_service", currentService.service.id);
@@ -316,7 +317,7 @@
 //     formData.append("customer_address", address);
 //     formData.append("customer_contact_number", contactNumber);
 //     formData.append("emergency", isEmergency);
-//     formData.append("number_of_keys", additionalKeysCount); // Send only the number of additional keys
+//     formData.append("number_of_keys", additionalKeysCount);
 //     formData.append("total_price", calculateTotalPrice().toFixed(2));
 //     if (imageFile) {
 //       formData.append("image", imageFile);
@@ -338,7 +339,7 @@
 //           service: {
 //             ...currentService,
 //             totalPrice: calculateTotalPrice(),
-//             totalKeys: totalKeys, // Total keys for display purposes
+//             totalKeys,
 //             needMoreKeys,
 //             scheduled_date: bookingDateTime,
 //             isEmergency,
@@ -411,152 +412,6 @@
 
 //   return (
 //     <Box className="commercial-container">
-//       <style>
-//         {`
-//           .commercial-container {
-//             padding: 20px;
-//             max-width: 1200px;
-//             margin: 0 auto;
-//           }
-
-//           .services-list {
-//             display: grid;
-//             grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-//             gap: 8px;
-//             padding: 20px 0;
-//           }
-
-//           .services-card {
-//             background-color: #fff;
-//             border: 1px solid #e0e0e0;
-//             border-radius: 8px;
-//             padding: 20px;
-//             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-//             display: flex;
-//             flex-direction: column;
-//             gap: 10px;
-//             margin: 0;
-//           }
-
-//           .service-header {
-//             display: flex;
-//             justify-content: space-between;
-//             align-items: center;
-//             margin-bottom: 10px;
-//           }
-
-//           .service-header h3 {
-//             font-size: 1.25rem;
-//             font-weight: bold;
-//             color: #333;
-//             margin: 0;
-//           }
-
-//           .service-header .price {
-//             font-size: 1.25rem;
-//             font-weight: bold;
-//             color: #f0b283;
-//             margin: 0;
-//           }
-
-//           .availability-status {
-//             display: inline-block;
-//             padding: 5px 10px;
-//             border-radius: 5px;
-//             font-size: 0.875rem;
-//             font-weight: 500;
-//             margin-bottom: 10px;
-//           }
-
-//           .availability-status.available {
-//             background-color: #e6f4ea;
-//             color: #2e7d32;
-//           }
-
-//           .availability-status.unavailable {
-//             background-color: #ffebee;
-//             color: #d32f2f;
-//           }
-
-//           .services-card p {
-//             margin: 5px 0;
-//             font-size: 0.875rem;
-//             color: #333;
-//           }
-
-//           .services-card p strong {
-//             font-weight: 600;
-//           }
-
-//           .book-button {
-//             background-color: #333;
-//             color: #fff;
-//             border: none;
-//             border-radius: 5px;
-//             padding: 10px;
-//             font-size: 1rem;
-//             font-weight: 500;
-//             cursor: pointer;
-//             margin-top: auto;
-//             text-align: center;
-//             transition: background-color 0.2s ease;
-//           }
-
-//           .book-button:hover {
-//             background-color: #555;
-//           }
-
-//           .book-button:disabled {
-//             background-color: #ccc;
-//             cursor: not-allowed;
-//           }
-
-//           .search-container {
-//             position: relative;
-//             margin-bottom: 20px;
-//           }
-
-//           .search-input {
-//             width: 100%;
-//             padding: 10px;
-//             font-size: 1rem;
-//             border: 1px solid #e0e0e0;
-//             border-radius: 5px;
-//             outline: none;
-//           }
-
-//           .search-loading-indicator {
-//             position: absolute;
-//             right: 10px;
-//             top: 50%;
-//             transform: translateY(-50%);
-//           }
-
-//           .filter-container {
-//             display: flex;
-//             align-items: center;
-//             gap: 15px;
-//             margin-bottom: 20px;
-//           }
-
-//           .filter-dropdown {
-//             padding: 8px;
-//             font-size: 1rem;
-//             border: 1px solid #e0e0e0;
-//             borderRadius: 5px;
-//             outline: none;
-//           }
-
-//           .no-results-message, .no-services-message {
-//             text-align: center;
-//             padding: 20px;
-//             background-color: #f8f9fa;
-//             border-radius: 8px;
-//             margin-top: 20px;
-//           }
-//         `}
-//       </style>
-
 //       <h2>Commercial Locksmith Services</h2>
 //       {bookingSuccess && (
 //         <div className="success-message">
@@ -572,7 +427,7 @@
 //           className="search-input"
 //         />
 //         {isSearching && (
-//           <div className="search-loading-indicator">
+//           <div>
 //             <CircularProgress size={20} />
 //           </div>
 //         )}
@@ -588,7 +443,9 @@
 //         >
 //           <option value="">All Services</option>
 //           {serviceNames.map((name, index) => (
-//             <option key={index} value={name}>{name}</option>
+//             <option key={index} value={name}>
+//               {name}
+//             </option>
 //           ))}
 //         </select>
 //         <label htmlFor="key-filter" style={{ marginLeft: '15px' }}>Filter by Key Option: </label>
@@ -657,7 +514,7 @@
 //       <Modal
 //         open={openModal}
 //         onClose={handleCloseModal}
-//         aria-labelledby="premium-booking-modal"
+//         aria-labelledby="commercial-booking-modal"
 //         sx={{
 //           backdropFilter: 'blur(4px)',
 //           backgroundColor: 'rgba(0,0,0,0.5)'
@@ -671,7 +528,7 @@
 //             pb: 2
 //           }}>
 //             <Typography
-//               id="premium-booking-modal"
+//               id="commercial-booking-modal"
 //               variant="h5"
 //               component="h2"
 //               sx={{
@@ -703,10 +560,10 @@
 //                 setAddressInputValue(newInputValue);
 //                 debouncedFetchSuggestions(newInputValue);
 //               }}
-//               renderInput={(params) => (
+//               renderInput={(parameters) => (
 //                 <TextField
-//                   {...params}
-//                   label="Address"
+//                   {...parameters}
+//                   label="Business Address"
 //                   variant="outlined"
 //                   size="small"
 //                   fullWidth
@@ -717,13 +574,13 @@
 //                     }
 //                   }}
 //                   InputProps={{
-//                     ...params.InputProps,
+//                     ...parameters.InputProps,
 //                     endAdornment: (
 //                       <>
 //                         {isFetchingSuggestions ? (
 //                           <CircularProgress color="inherit" size={20} />
 //                         ) : null}
-//                         {params.InputProps.endAdornment}
+//                         {parameters.InputProps.endAdornment}
 //                       </>
 //                     ),
 //                   }}
@@ -863,18 +720,18 @@
 //             </Button>
 //             <Box sx={{ mt: 2 }}>
 //               <Typography variant="subtitle2" sx={{ mb: 1 }}>
-//                 Upload Key Image (Optional)
+//                 Upload Lock Image (Optional)
 //               </Typography>
 //               <input
 //                 accept="image/*"
 //                 style={{ display: 'none' }}
-//                 id="key-image-upload"
+//                 id="lock-image-upload"
 //                 type="file"
 //                 onChange={handleImageUpload}
 //               />
-//               <label htmlFor="key-image-upload">
-//                 <Button
-//                   variant="outlined"
+//               <label htmlFor="lock-image-upload">
+//                 <Button 
+//                   variant="outlined" 
 //                   component="span"
 //                   sx={{
 //                     textTransform: 'none',
@@ -887,14 +744,14 @@
 //               </label>
 //               {imagePreview && (
 //                 <Box sx={{ mt: 2, textAlign: 'center' }}>
-//                   <img
-//                     src={imagePreview}
-//                     alt="Preview"
-//                     style={{
-//                       maxWidth: '100%',
+//                   <img 
+//                     src={imagePreview} 
+//                     alt="Preview" 
+//                     style={{ 
+//                       maxWidth: '100%', 
 //                       maxHeight: '150px',
 //                       borderRadius: '8px'
-//                     }}
+//                     }} 
 //                   />
 //                 </Box>
 //               )}
@@ -941,10 +798,10 @@
 //                 )}
 //               </>
 //             )}
-//             <Box sx={{
-//               mt: 2,
-//               p: 2,
-//               backgroundColor: 'action.hover',
+//             <Box sx={{ 
+//               mt: 2, 
+//               p: 2, 
+//               backgroundColor: 'action.hover', 
 //               borderRadius: '8px',
 //               textAlign: 'center'
 //             }}>
@@ -1008,8 +865,21 @@
 //         </Box>
 //       </Modal>
 //       {noResultsFound && (
-//         <div className="no-results-message">
-//           <p>No results found for "{searchQuery}". Try different keywords.</p>
+//         <div style={{
+//           width: '100%',
+//           textAlign: 'center',
+//           padding: '40px 20px',
+//           backgroundColor: '#f8f9fa',
+//           borderRadius: '8px',
+//           marginTop: '20px',
+//           boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
+//         }}>
+//           <Typography variant="h6" color="textSecondary" gutterBottom>
+//             No results found
+//           </Typography>
+//           <Typography variant="body1" color="textSecondary">
+//             No results found for "{searchQuery}". Try different keywords.
+//           </Typography>
 //         </div>
 //       )}
 //       <div className="services-list">
@@ -1037,14 +907,14 @@
 //               No services available
 //             </Typography>
 //             <Typography variant="body1" color="textSecondary">
-//               {keyFilter !== "all" || filterValue !== ""
+//               {keyFilter !== "all" || filterValue !== "" 
 //                 ? "No services match your current filters. Please try different filters."
 //                 : "No services available in your area. Please try again later."}
 //             </Typography>
 //             {(keyFilter !== "all" || filterValue !== "") && (
-//               <Button
-//                 variant="outlined"
-//                 color="primary"
+//               <Button 
+//                 variant="outlined" 
+//                 color="primary" 
 //                 onClick={() => {
 //                   setFilterValue("");
 //                   setKeyFilter("all");
@@ -1072,10 +942,10 @@
 //     >
 //       {service.service.is_available ? "Open for Service" : "Currently Unavailable"}
 //     </div>
-//     <p>
+//     <p className="text-black">
 //       <strong>Type:</strong> {service.service.service_type}
 //     </p>
-//     <p className="details">{highlightSearchTerm(service.service.details, searchQuery)}</p>
+//     <p className="details text-black">{highlightSearchTerm(service.service.details, searchQuery)}</p>
 //     <button
 //       className="book-button"
 //       onClick={() => onBook(service)}
@@ -1087,7 +957,6 @@
 // );
 
 // export default Commercial;
-
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../../../api/api";
@@ -1503,6 +1372,9 @@ const Commercial = () => {
   return (
     <Box className="commercial-container">
       <h2>Commercial Locksmith Services</h2>
+      <Typography variant="body2" sx={{ mt: 1, color: 'text.secondary', fontStyle: 'italic' }}>
+        Not for restricted key systems
+      </Typography>
       {bookingSuccess && (
         <div className="success-message">
           <p className="text-white">Booking Initialized! Redirecting to confirmation page...</p>

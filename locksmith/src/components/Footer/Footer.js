@@ -81,7 +81,6 @@ const Footer = () => {
               <li><Link to="/residential-service" className="text-light" onClick={handleLinkClick}>Residential</Link></li>
               <li><Link to="/commercial-service" className="text-light" onClick={handleLinkClick}>Commercial</Link></li>
               <li><Link to="/automotive-service" className="text-light" onClick={handleLinkClick}>Automotive</Link></li>
-              <li><Link to="/emergency-service" className="text-light" onClick={handleLinkClick}>Emergency</Link></li>
               <li><Link to="/smart-lock-service" className="text-light" onClick={handleLinkClick}>SmartLock</Link></li>
             </ul>
           </Col>

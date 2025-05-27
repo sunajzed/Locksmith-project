@@ -15,7 +15,6 @@ const CreateService = () => {
     { value: "automotive", label: "Automotive" },
     { value: "residential", label: "Residential" },
     { value: "commercial", label: "Commercial" },
-    { value: "emergency", label: "Emergency" },
     { value: "smart_lock", label: "Smart Lock" }
   ];
 
