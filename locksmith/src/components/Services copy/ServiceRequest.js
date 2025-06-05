@@ -1,26 +1,23 @@
 import React, { useState, useEffect } from "react";
-import { Button, Table, Modal, Form, Row, Col } from "react-bootstrap";
+import { Button, Table, Form, Row, Col } from "react-bootstrap";
 import api from "./../../api/api";
 import "./ServiceRequest.css";
+import { AiOutlineEyeInvisible } from "react-icons/ai";
 
 const ServiceRequest = () => {
   const [requests, setRequests] = useState([]);
   const [filteredRequests, setFilteredRequests] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
-  const [showModal, setShowModal] = useState(false);
-  const [selectedRequest, setSelectedRequest] = useState(null);
-  const [decision, setDecision] = useState("");
 
   // Filters
   const [filterDate, setFilterDate] = useState("");
   const [filterServiceType, setFilterServiceType] = useState("");
   const [filterEmergency, setFilterEmergency] = useState(false);
-  const [filterPaid, setFilterPaid] = useState(false);
 
   useEffect(() => {
     fetchRequests();
-  }, [filterEmergency, filterPaid]); // Re-fetch when emergency or paid filters change
+  }, [filterEmergency]);
 
   useEffect(() => {
     applyFilters();
@@ -36,15 +33,11 @@ const ServiceRequest = () => {
 
     setLoading(true);
     try {
-      // Build query params depending on filters
       let url = "/api/bookings/";
       const params = new URLSearchParams();
 
       if (filterEmergency) {
         params.append("emergency", "true");
-        if (filterPaid) {
-          params.append("payment_status", "paid");
-        }
       }
 
       const queryString = params.toString();
@@ -71,6 +64,9 @@ const ServiceRequest = () => {
   const applyFilters = () => {
     let filtered = [...requests];
 
+    // Filter out requests without a payment_intent_id
+    filtered = filtered.filter((req) => req.payment_intent_id);
+
     if (filterDate) {
       filtered = filtered.filter((req) =>
         req.scheduled_date?.startsWith(filterDate)
@@ -88,34 +84,49 @@ const ServiceRequest = () => {
     setFilteredRequests(filtered);
   };
 
-  const openModal = (request, action) => {
-    setSelectedRequest(request);
-    setDecision(action);
-    setShowModal(true);
-  };
-
-  const handleDecision = async () => {
-    if (!selectedRequest) return;
+  const handleBookingDecision = async (id, action) => {
     const token = localStorage.getItem("accessToken");
+    if (!token) {
+      alert("Unauthorized");
+      return;
+    }
+
+    const endpoint =
+      action === "approve"
+        ? `/api/bookings/${id}/approve_booking/`
+        : `/api/bookings/${id}/deny_booking/`;
 
     try {
-      const updatedStatus = decision === "approve" ? "Approved" : "Rejected";
-      await api.patch(
-        `/api/bookings/${selectedRequest.id}/`,
-        { status: updatedStatus },
-        { headers: { Authorization: `Bearer ${token}` } }
+      await api.post(
+        endpoint,
+        {},
+        {
+          headers: {
+            Authorization: `Token ${token}`,
+            "Content-Type": "application/json",
+          },
+        }
       );
 
-      setRequests((prevRequests) =>
-        prevRequests.map((req) =>
-          req.id === selectedRequest.id
-            ? { ...req, status: updatedStatus }
+      setRequests((prev) =>
+        prev.map((req) =>
+          req.id === id
+            ? {
+                ...req,
+                locksmith_status:
+                  action === "approve" ? "APPROVED" : "DENIED",
+              }
             : req
         )
       );
-      setShowModal(false);
+
+      alert(
+        action === "approve"
+          ? "Booking approved successfully"
+          : "Booking denied successfully"
+      );
     } catch (err) {
-      setError("Failed to update request status.");
+      alert("Failed to update booking status");
     }
   };
 
@@ -131,7 +142,7 @@ const ServiceRequest = () => {
       alert("Booking marked as completed!");
       setRequests((prevRequests) =>
         prevRequests.map((req) =>
-          req.id === id ? { ...req, status: "Booking completed" } : req
+          req.id === id ? { ...req, status: "Completed" } : req
         )
       );
     } catch (err) {
@@ -149,25 +160,25 @@ const ServiceRequest = () => {
       {/* Filter Section */}
       <Form className="mb-3">
         <Row>
-          <Col md={3}>
+          <Col md={4}>
             <Form.Group controlId="filterDate">
               <Form.Label>Filter by Date</Form.Label>
               <Form.Control
                 type="date"
                 value={filterDate}
                 onChange={(e) => setFilterDate(e.target.value)}
-                disabled={filterEmergency} // Disable when Emergency ON
+                disabled={filterEmergency}
               />
             </Form.Group>
           </Col>
 
-          <Col md={3}>
+          <Col md={4}>
             <Form.Group controlId="filterServiceType">
               <Form.Label>Filter by Service Type</Form.Label>
               <Form.Select
                 value={filterServiceType}
                 onChange={(e) => setFilterServiceType(e.target.value)}
-                disabled={filterEmergency} // Disable when Emergency ON
+                disabled={filterEmergency}
               >
                 <option value="">All Types</option>
                 <option value="Automotive">Automotive</option>
@@ -178,7 +189,7 @@ const ServiceRequest = () => {
             </Form.Group>
           </Col>
 
-          <Col md={3} className="d-flex align-items-center">
+          <Col md={4} className="d-flex align-items-center">
             <Form.Check
               type="checkbox"
               id="filterEmergency"
@@ -189,21 +200,8 @@ const ServiceRequest = () => {
                 if (e.target.checked) {
                   setFilterDate("");
                   setFilterServiceType("");
-                } else {
-                  setFilterPaid(false); // reset paid when emergency off
                 }
               }}
-            />
-          </Col>
-
-          <Col md={3} className="d-flex align-items-center">
-            <Form.Check
-              type="checkbox"
-              id="filterPaid"
-              label="Show Paid Only"
-              checked={filterPaid}
-              disabled={!filterEmergency} // only enabled if emergency ON
-              onChange={(e) => setFilterPaid(e.target.checked)}
             />
           </Col>
         </Row>
@@ -234,13 +232,15 @@ const ServiceRequest = () => {
             {filteredRequests.map((req) => (
               <tr
                 key={req.id}
-                className={
-                  req.status === "Booking completed" ? "table-success" : ""
-                }
+                className={req.status === "Completed" ? "table-success" : ""}
               >
                 <td>{req.id}</td>
                 <td>{req.customer?.username || "N/A"}</td>
-                <td>{req.customer?.email || "N/A"}</td>
+                <td>
+                  {req.locksmith_status === "APPROVED"
+                    ? req.customer?.email
+                    : "Hidden"}
+                </td>
                 <td>{req.locksmith_service_type || "N/A"}</td>
                 <td>{req.locksmith_service || "N/A"}</td>
                 <td>{req.payment_intent_id || "N/A"}</td>
@@ -249,10 +249,22 @@ const ServiceRequest = () => {
                     ? new Date(req.scheduled_date).toLocaleString()
                     : "N/A"}
                 </td>
-                <td>{req.status || "Pending"}</td>
-                <td>{req.customer_address || "N/A"}</td>
-                <td>{req.customer_contact_number || "N/A"}</td>
-                <td>{req.house_number || "N/A"}</td>
+                <td>{req.status || "Scheduled"}</td>
+                <td>
+                  {req.locksmith_status === "APPROVED"
+                    ? req.customer_address
+                    : "Hidden"}
+                </td>
+                <td>
+                  {req.locksmith_status === "APPROVED"
+                    ? req.customer_contact_number
+                    : "Hidden"}
+                </td>
+                <td>
+                  {req.locksmith_status === "APPROVED"
+                    ? req.house_number
+                    : "Hidden"}
+                </td>
                 <td>
                   {req.image ? (
                     <a
@@ -279,45 +291,48 @@ const ServiceRequest = () => {
                 </td>
                 <td>{req.number_of_keys ?? "N/A"}</td>
                 <td>
-                  <Button
-                    variant="primary"
-                    size="sm"
-                    disabled={req.status === "Booking completed"}
-                    onClick={() => markComplete(req.id)}
-                  >
-                    {req.status === "Booking completed"
-                      ? "Completed"
-                      : "Complete"}
-                  </Button>
+                  {req.locksmith_status === "PENDING" && (
+                    <>
+                      <Button
+                        variant="success"
+                        size="sm"
+                        className="me-1"
+                        onClick={() => handleBookingDecision(req.id, "approve")}
+                      >
+                        Accept
+                      </Button>
+                      <Button
+                        variant="danger"
+                        size="sm"
+                        onClick={() => handleBookingDecision(req.id, "reject")}
+                      >
+                        Reject
+                      </Button>
+                    </>
+                  )}
+                  {req.locksmith_status === "APPROVED" &&
+                    req.status !== "Completed" && (
+                      <Button
+                        variant="primary"
+                        size="sm"
+                        onClick={() => markComplete(req.id)}
+                      >
+                        Complete
+                      </Button>
+                    )}
+                  {req.locksmith_status === "APPROVED" &&
+                    req.status === "Completed" && (
+                      <span className="text-success fw-bold">✓ Completed</span>
+                    )}
+                  {req.locksmith_status === "DENIED" && (
+                    <span className="text-danger fw-bold">✗ Rejected</span>
+                  )}
                 </td>
               </tr>
             ))}
           </tbody>
         </Table>
       </div>
-
-      {/* Approve/Reject Modal */}
-      <Modal show={showModal} onHide={() => setShowModal(false)} centered>
-        <Modal.Header closeButton>
-          <Modal.Title>
-            {decision === "approve" ? "Approve Request" : "Reject Request"}
-          </Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          Are you sure you want to {decision} the service request for{" "}
-          <strong>{selectedRequest?.locksmith_service || "N/A"}</strong>{" "}
-          requested by{" "}
-          <strong>{selectedRequest?.customer?.username || "N/A"}</strong>?
-        </Modal.Body>
-        <Modal.Footer>
-          <Button
-            variant={decision === "approve" ? "success" : "danger"}
-            onClick={handleDecision}
-          >
-            {decision === "approve" ? "Approve" : "Reject"}
-          </Button>
-        </Modal.Footer>
-      </Modal>
     </div>
   );
 };

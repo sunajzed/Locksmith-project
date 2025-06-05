@@ -9,8 +9,6 @@ import {
   Button,
   Typography,
   Alert,
-  FormControlLabel,
-  Checkbox,
 } from "@mui/material";
 
 const MyProfile = () => {
@@ -30,6 +28,18 @@ const MyProfile = () => {
     photo: null,
   });
 
+  const [fileTypes, setFileTypes] = useState({
+    pcc_file: null,
+    license_file: null,
+    photo: null,
+  });
+
+  const [newUploads, setNewUploads] = useState({
+    pcc_file: false,
+    license_file: false,
+    photo: false,
+  });
+
   const [message, setMessage] = useState(null);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -47,7 +57,7 @@ const MyProfile = () => {
         });
 
         const data = response.data;
-        const baseURL = api.defaults.baseURL;
+        const baseURL = process.env.REACT_APP_BASE_URL?.replace(/\/$/, "") || "";
 
         setFormData({
           address: data.address || "",
@@ -56,13 +66,19 @@ const MyProfile = () => {
           pcc_file: null,
           license_file: null,
           photo: null,
-          gst_registered: data.gst_registered || false,
+          gst_registered: ["1", "Yes", "yes", true].includes(data.gst_registered),
         });
 
         setFileURLs({
           pcc_file: data.pcc_file ? `${baseURL}${data.pcc_file}` : null,
           license_file: data.license_file ? `${baseURL}${data.license_file}` : null,
           photo: data.photo ? `${baseURL}${data.photo}` : null,
+        });
+
+        setFileTypes({
+          pcc_file: data.pcc_file ? (data.pcc_file.endsWith(".pdf") ? "application/pdf" : "image/*") : null,
+          license_file: data.license_file ? (data.license_file.endsWith(".pdf") ? "application/pdf" : "image/*") : null,
+          photo: data.photo ? "image/*" : null,
         });
       } catch (error) {
         console.error("Error fetching form data:", error);
@@ -94,10 +110,22 @@ const MyProfile = () => {
         ...prevData,
         [name]: file,
       }));
+
       setFileURLs((prevURLs) => ({
         ...prevURLs,
         [name]: URL.createObjectURL(file),
       }));
+
+      setFileTypes((prevTypes) => ({
+        ...prevTypes,
+        [name]: file.type,
+      }));
+
+      setNewUploads((prevUploads) => ({
+        ...prevUploads,
+        [name]: true,
+      }));
+
       setError(null);
     } else {
       setFormData((prevData) => ({
@@ -138,7 +166,7 @@ const MyProfile = () => {
 
     try {
       const accessToken = localStorage.getItem("accessToken");
-      const response = await api.put("/locksmith/profile/update/", data, {
+      await api.put("/locksmith/profile/update/", data, {
         headers: {
           "Content-Type": "multipart/form-data",
           Authorization: `Bearer ${accessToken}`,
@@ -147,10 +175,79 @@ const MyProfile = () => {
 
       setMessage("Profile updated successfully!");
       setError(null);
+      // Reset newUploads state after successful submission
+      setNewUploads({
+        pcc_file: false,
+        license_file: false,
+        photo: false,
+      });
+
+      // Refetch data to update fileURLs with new server files
+      const response = await api.get("/api/locksmiths/locksmithform_val/", {
+        headers: { Authorization: `Bearer ${accessToken}` },
+      });
+      const newData = response.data;
+      const baseURL = process.env.REACT_APP_BASE_URL?.replace(/\/$/, "") || "";
+      setFileURLs({
+        pcc_file: newData.pcc_file ? `${baseURL}${newData.pcc_file}` : null,
+        license_file: newData.license_file ? `${baseURL}${newData.license_file}` : null,
+        photo: newData.photo ? `${baseURL}${newData.photo}` : null,
+      });
+      setFileTypes({
+        pcc_file: newData.pcc_file ? (newData.pcc_file.endsWith(".pdf") ? "application/pdf" : "image/*") : null,
+        license_file: newData.license_file ? (newData.license_file.endsWith(".pdf") ? "application/pdf" : "image/*") : null,
+        photo: newData.photo ? "image/*" : null,
+      });
     } catch (error) {
       setError(error.response?.data?.message || "Error updating profile. Please try again.");
       console.error("Error updating profile:", error);
     }
+  };
+
+  const renderFilePreview = (fileURL, fileType, altText, isNewUpload) => {
+    if (isNewUpload && fileURL) {
+      if (fileType === "application/pdf" || fileURL.endsWith(".pdf")) {
+        return (
+          <Box>
+            <Typography variant="body2">New file preview:</Typography>
+            <a href={fileURL} target="_blank" rel="noopener noreferrer">
+              View PDF
+            </a>
+            <iframe
+              src={fileURL}
+              title={altText}
+              style={{ width: "100%", height: "150px", borderRadius: "8px", marginTop: "8px" }}
+            />
+          </Box>
+        );
+      }
+      if (fileType?.startsWith("image/")) {
+        return (
+          <Box>
+            <Typography variant="body2">New file preview:</Typography>
+            <img
+              src={fileURL}
+              alt={altText}
+              style={{ maxWidth: "100%", maxHeight: "150px", borderRadius: "8px" }}
+            />
+          </Box>
+        );
+      }
+      return <Typography variant="body2" color="textSecondary">Unsupported file type</Typography>;
+    }
+
+    if (fileURL) {
+      return (
+        <Box>
+          <Typography variant="body2">Current file:</Typography>
+          <a href={fileURL} target="_blank" rel="noopener noreferrer">
+            View Current File {fileType === "application/pdf" || fileURL.endsWith(".pdf") ? "(PDF)" : "(Image)"}
+          </a>
+        </Box>
+      );
+    }
+
+    return <Typography variant="body2" color="textSecondary">No file available</Typography>;
   };
 
   if (loading) {
@@ -237,12 +334,7 @@ const MyProfile = () => {
             </Typography>
           </Grid>
           <Grid item xs={12} md={6}>
-            <Button
-              variant="contained"
-              component="label"
-              fullWidth
-              sx={{ mb: 2 }}
-            >
+            <Button variant="contained" component="label" fullWidth sx={{ mb: 2 }}>
               Upload Profile Photo (Max 150KB)
               <input
                 type="file"
@@ -252,23 +344,12 @@ const MyProfile = () => {
                 accept=".jpg,.jpeg,.png"
               />
             </Button>
-            {fileURLs.photo && (
-              <Box className="file-preview">
-                <img
-                  src={fileURLs.photo}
-                  alt="Profile Preview"
-                  style={{ maxWidth: "100%", maxHeight: "150px", borderRadius: "8px" }}
-                />
-              </Box>
-            )}
+            <Box className="file-preview">
+              {renderFilePreview(fileURLs.photo, fileTypes.photo, "Profile Preview", true)}
+            </Box>
           </Grid>
           <Grid item xs={12} md={6}>
-            <Button
-              variant="contained"
-              component="label"
-              fullWidth
-              sx={{ mb: 2 }}
-            >
+            <Button variant="contained" component="label" fullWidth sx={{ mb: 2 }}>
               Upload PCC File (Max 150KB)
               <input
                 type="file"
@@ -278,21 +359,12 @@ const MyProfile = () => {
                 accept=".pdf,.jpg,.jpeg,.png"
               />
             </Button>
-            {fileURLs.pcc_file && (
-              <Box className="file-preview">
-                <a href={fileURLs.pcc_file} target="_blank" rel="noopener noreferrer">
-                  View PCC File
-                </a>
-              </Box>
-            )}
+            <Box className="file-preview">
+              {renderFilePreview(fileURLs.pcc_file, fileTypes.pcc_file, "PCC Preview", newUploads.pcc_file)}
+            </Box>
           </Grid>
           <Grid item xs={12} md={6}>
-            <Button
-              variant="contained"
-              component="label"
-              fullWidth
-              sx={{ mb: 2 }}
-            >
+            <Button variant="contained" component="label" fullWidth sx={{ mb: 2 }}>
               Upload License File (Max 150KB)
               <input
                 type="file"
@@ -302,22 +374,12 @@ const MyProfile = () => {
                 accept=".pdf,.jpg,.jpeg,.png"
               />
             </Button>
-            {fileURLs.license_file && (
-              <Box className="file-preview">
-                <a href={fileURLs.license_file} target="_blank" rel="noopener noreferrer">
-                  View License File
-                </a>
-              </Box>
-            )}
+            <Box className="file-preview">
+              {renderFilePreview(fileURLs.license_file, fileTypes.license_file, "License Preview", newUploads.license_file)}
+            </Box>
           </Grid>
           <Grid item xs={12} sx={{ textAlign: "center" }}>
-            <Button
-              type="submit"
-              variant="contained"
-              color="primary"
-              size="large"
-              sx={{ minWidth: "200px" }}
-            >
+            <Button type="submit" variant="contained" color="primary" size="large" sx={{ minWidth: "200px" }}>
               Update Profile
             </Button>
           </Grid>
@@ -328,4 +390,3 @@ const MyProfile = () => {
 };
 
 export default MyProfile;
-
