@@ -88,7 +88,7 @@ const Automotive = () => {
       },
       (error) => {
         console.error("Error getting location:", error);
-        setError("Failed to retrieve location. Please enable location services or enter your location manually.");
+        setError("Unable to retrieve your location. Please enable location services to continue.");
         setLoading(false);
         setGeoLoading(false);
       }
@@ -986,7 +986,9 @@ const ServiceCard = ({ service, onBook, searchQuery, highlightSearchTerm }) => {
           </div>
         </div>
       </div>
-
+<p className="text-black">
+      <strong>Service Area:</strong> {service.service_area}
+    </p>
       <p className="service-description">{service.service.details}</p>
       <button
         className={`book-button ${service.service.is_available ? "" : "disabled"}`}

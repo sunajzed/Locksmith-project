@@ -86,7 +86,7 @@ const Emergency = () => {
       },
       (error) => {
         console.error("Error getting location:", error);
-        setError("Failed to retrieve location. Please enable location services or enter your location manually.");
+        setError("Unable to retrieve your location. Please enable location services to continue.");
         setLoading(false);
         setGeoLoading(false);
       }
