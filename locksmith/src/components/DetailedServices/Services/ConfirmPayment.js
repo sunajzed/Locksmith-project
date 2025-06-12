@@ -95,13 +95,12 @@ const ConfirmPayment = () => {
   }
 
   // Calculate the total price
-const adjustedBasePrice =
-  parseFloat(basePrice) + additionalKeys * parseFloat(additionalKeyPrice);
-const tenPercentFee = adjustedBasePrice * 0.1;
-const platformFee = 40;
-const gst = (tenPercentFee + platformFee) * 0.1;
-const totalPrice = adjustedBasePrice + tenPercentFee + platformFee + gst;
-
+  const adjustedBasePrice =
+    parseFloat(basePrice) + additionalKeys * parseFloat(additionalKeyPrice);
+  const tenPercentFee = adjustedBasePrice * 0.1;
+  const platformFee = 40;
+  const gst = (tenPercentFee + platformFee) * 0.1;
+  const totalPrice = adjustedBasePrice + tenPercentFee + platformFee + gst;
 
   const handleConfirmPayment = async () => {
     const accessToken = localStorage.getItem("accessToken");
