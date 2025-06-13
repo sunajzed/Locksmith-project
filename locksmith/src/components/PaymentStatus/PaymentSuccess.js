@@ -21,7 +21,7 @@ const PaymentStatus = () => {
 
     axios
       .get(
-        `${process.env.REACT_APP_BASE_URL}/api/bookings/by_session/?session_id=${sessionId}`,
+        `${process.env.REACT_APP_BASE_URL}api/bookings/by_session/?session_id=${sessionId}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
