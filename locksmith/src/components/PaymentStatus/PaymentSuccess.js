@@ -19,15 +19,15 @@ const PaymentStatus = () => {
       return;
     }
 
+    const baseURL = process.env.REACT_APP_BASE_URL.replace(/\/+$/, ""); // safe trailing slash removal
+    const endpoint = `/api/bookings/by_session/?session_id=${sessionId}`;
+
     axios
-      .get(
-        `${process.env.REACT_APP_BASE_URL}api/bookings/by_session/?session_id=${sessionId}`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      )
+      .get(`${baseURL}${endpoint}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
       .then((res) => {
         const data = res.data;
         if (data.payment_status === "paid") {
