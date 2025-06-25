@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Container, Row, Col } from "react-bootstrap";
-import { FaFacebookF, FaInstagram, FaTwitter, FaEnvelope } from "react-icons/fa";
+import { FaFacebookF, FaInstagram, FaLinkedinIn , FaEnvelope } from "react-icons/fa";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./Footer.css";
 
@@ -109,17 +109,29 @@ const Footer = () => {
 
         <Row className="social justify-content-center">
           <Col className="text-center">
-            <div className="social-icons">
-              <a href="https://www.facebook.com" target="_blank" rel="noopener noreferrer">
-                <FaFacebookF className="social-icon" />
-              </a>
-              <a href="https://www.instagram.com" target="_blank" rel="noopener noreferrer">
-                <FaInstagram className="social-icon" />
-              </a>
-              <a href="https://www.twitter.com" target="_blank" rel="noopener noreferrer">
-                <FaTwitter className="social-icon" />
-              </a>
-            </div>
+           <div className="social-icons">
+  <a
+    href="https://www.facebook.com/profile.php?id=61577346733921"
+    target="_blank"
+    rel="noopener noreferrer"
+  >
+    <FaFacebookF className="social-icon" />
+  </a>
+  <a
+    href="https://www.instagram.com/lockquick/?fbclid=IwY2xjawLIgkhleHRuA2FlbQIxMQBicmlkETFBdzk4Z1Q4SWMzeVd1M1N2AR4alkyfLtJ3r5f2n0vI2RfhorvIOxfP3ntWVbGmpbyaWyq5K7gY_guBaxHpzQ_aem_O7-r-PxR50El-cGtj4vghw"
+    target="_blank"
+    rel="noopener noreferrer"
+  >
+    <FaInstagram className="social-icon" />
+  </a>
+  <a
+    href="https://www.linkedin.com/company/lockquick/?viewAsMember=true"
+    target="_blank"
+    rel="noopener noreferrer"
+  >
+    <FaLinkedinIn className="social-icon" />
+  </a>
+</div>
           </Col>
         </Row>
 

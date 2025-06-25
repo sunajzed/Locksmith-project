@@ -283,16 +283,44 @@ export default function NavBar() {
                       >
                         Locksmith
                       </Dropdown.Item>
+                      <Dropdown.Item
+                        as={Link}
+                        to="#"
+                        onClick={() => handleNavLinkClick("#")}
+                      >
+                        CCTV Techician
+                      </Dropdown.Item>
                     </Dropdown.Menu>
                   </Dropdown>
-                  <Button
-                    as={Link}
-                    to="/signup"
-                    className="action-btn my-2 my-lg-0"
-                    onClick={() => handleNavLinkClick("/signup")}
-                  >
-                    Locksmith SignUp
-                  </Button>
+                  <Dropdown className="my-2 my-lg-0">
+                    <Dropdown.Toggle as={Button} className="drop-action-btn">
+                      SignUp
+                    </Dropdown.Toggle>
+                    <Dropdown.Menu>
+                      <Dropdown.Item
+                        as={Link}
+                        to="/signup"
+                        onClick={() => handleNavLinkClick("/usersignup")}
+                      >
+                        User
+                      </Dropdown.Item>
+                      <Dropdown.Item
+                        as={Link}
+                        to="/signup"
+                        onClick={() => handleNavLinkClick("/signup")}
+                      >
+                        Locksmith
+                      </Dropdown.Item>
+
+                      <Dropdown.Item
+                        as={Link}
+                        to="#"
+                        onClick={() => handleNavLinkClick("#")}
+                      >
+                        CCTV Techician
+                      </Dropdown.Item>
+                    </Dropdown.Menu>
+                  </Dropdown>
                 </>
               )}
             </Nav>
