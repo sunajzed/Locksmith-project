@@ -299,7 +299,7 @@ export default function NavBar() {
                     <Dropdown.Menu>
                       <Dropdown.Item
                         as={Link}
-                        to="/signup"
+                        to="/usersignup"
                         onClick={() => handleNavLinkClick("/usersignup")}
                       >
                         User
