@@ -577,7 +577,7 @@ export default function NavBar() {
                           handleNavLinkClick("/login?role=customer")
                         }
                       >
-                        User
+                        Customer
                       </Dropdown.Item>
                       <Dropdown.Item
                         as={Link}
@@ -607,7 +607,7 @@ export default function NavBar() {
                         to="/usersignup"
                         onClick={() => handleNavLinkClick("/usersignup")}
                       >
-                        User
+                        Customer
                       </Dropdown.Item>
                       <Dropdown.Item
                         as={Link}
