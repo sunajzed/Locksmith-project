@@ -1,9 +1,20 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Box, TextField, Typography, Button, Paper, Alert, CircularProgress, IconButton, Grid } from "@mui/material";
+import {
+  Box,
+  TextField,
+  Typography,
+  Button,
+  Paper,
+  Alert,
+  CircularProgress,
+  IconButton,
+  Grid,
+} from "@mui/material";
 import SaveIcon from "@mui/icons-material/Save";
 import AddIcon from "@mui/icons-material/Add";
 import DeleteIcon from "@mui/icons-material/Delete";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import api from "../../api/api";
 
 function HowWeWorkEditor() {
@@ -11,11 +22,26 @@ function HowWeWorkEditor() {
     heading: "HOW WE WORK",
     subheading: "Our Process",
     steps: [
-      { heading: "1. Make a Booking", text: "Contact us for immediate assistance." },
-      { heading: "2. Confirm the Details & Payment", text: "Receive a quick estimate and proceed with payment." },
-      { heading: "3. Locksmith Arrives", text: "Our expert locksmith reaches your location promptly." },
-      { heading: "4. Service Execution", text: "Your lock or key issue is resolved efficiently." },
-      { heading: "5. Review & Feedback", text: "Secure your property and share your experience." },
+      {
+        heading: "1. Make a Booking",
+        text: "Contact us for immediate assistance.",
+      },
+      {
+        heading: "2. Confirm the Details & Payment",
+        text: "Receive a quick estimate and proceed with payment.",
+      },
+      {
+        heading: "3. Locksmith Arrives",
+        text: "Our expert locksmith reaches your location promptly.",
+      },
+      {
+        heading: "4. Service Execution",
+        text: "Your lock or key issue is resolved efficiently.",
+      },
+      {
+        heading: "5. Review & Feedback",
+        text: "Secure your property and share your experience.",
+      },
     ],
   });
   const [message, setMessage] = useState("");
@@ -72,7 +98,10 @@ function HowWeWorkEditor() {
   };
 
   const addStep = () => {
-    setFormData((prev) => ({ ...prev, steps: [...prev.steps, { heading: "", text: "" }] }));
+    setFormData((prev) => ({
+      ...prev,
+      steps: [...prev.steps, { heading: "", text: "" }],
+    }));
   };
 
   const removeStep = (index) => {
@@ -103,14 +132,20 @@ function HowWeWorkEditor() {
     try {
       if (isNew) {
         const response = await api.post("/api/content/", payload, {
-          headers: { Authorization: `Token ${accessToken}`, "Content-Type": "multipart/form-data" },
+          headers: {
+            Authorization: `Token ${accessToken}`,
+            "Content-Type": "multipart/form-data",
+          },
         });
         setContentId(response.data.id);
         setIsNew(false);
         setMessage("How We Work content created successfully.");
       } else {
         await api.put(`/api/content/${contentId}/`, payload, {
-          headers: { Authorization: `Token ${accessToken}`, "Content-Type": "multipart/form-data" },
+          headers: {
+            Authorization: `Token ${accessToken}`,
+            "Content-Type": "multipart/form-data",
+          },
         });
         setMessage("How We Work content updated successfully.");
       }
@@ -126,22 +161,51 @@ function HowWeWorkEditor() {
 
   return (
     <Paper elevation={3} sx={{ p: 3 }}>
-      <Typography variant="h5" component="h2" gutterBottom sx={{ fontWeight: "bold", color: "primary.main" }}>
+      <Typography
+        variant="h5"
+        component="h2"
+        gutterBottom
+        sx={{ fontWeight: "bold", color: "primary.main" }}
+      >
         How We Work Section Editor
       </Typography>
       {message && (
-        <Alert severity={isError ? "error" : "success"} onClose={() => setMessage("")} sx={{ mb: 2 }}>
+        <Alert
+          severity={isError ? "error" : "success"}
+          onClose={() => setMessage("")}
+          sx={{ mb: 2 }}
+        >
           {message}
         </Alert>
       )}
       {loading ? (
-        <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center", my: 4 }}>
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            my: 4,
+          }}
+        >
           <CircularProgress />
           <Typography sx={{ ml: 2 }}>Loading...</Typography>
         </Box>
       ) : (
-        <Box component="form" noValidate autoComplete="off" sx={{ "& .MuiTextField-root": { mb: 2 } }}>
-          <TextField fullWidth label="Heading" name="heading" variant="outlined" value={formData.heading} onChange={handleChange} margin="normal" />
+        <Box
+          component="form"
+          noValidate
+          autoComplete="off"
+          sx={{ "& .MuiTextField-root": { mb: 2 } }}
+        >
+          <TextField
+            fullWidth
+            label="Heading"
+            name="heading"
+            variant="outlined"
+            value={formData.heading}
+            onChange={handleChange}
+            margin="normal"
+          />
           <TextField
             fullWidth
             label="Subheading"
@@ -177,17 +241,34 @@ function HowWeWorkEditor() {
                   rows={3}
                 />
               </Grid>
-              <Grid item xs={12} sm={1} sx={{ display: "flex", alignItems: "center" }}>
+              <Grid
+                item
+                xs={12}
+                sm={1}
+                sx={{ display: "flex", alignItems: "center" }}
+              >
                 <IconButton onClick={() => removeStep(index)} color="error">
                   <DeleteIcon />
                 </IconButton>
               </Grid>
             </Grid>
           ))}
-          <Button variant="outlined" startIcon={<AddIcon />} onClick={addStep} sx={{ mb: 2 }}>
+          <Button
+            variant="outlined"
+            startIcon={<AddIcon />}
+            onClick={addStep}
+            sx={{ mb: 2 }}
+          >
             Add Step
           </Button>
-          <Button variant="contained" color="primary" startIcon={<SaveIcon />} onClick={handleSave} sx={{ mt: 2 }} disabled={loading}>
+          <Button
+            variant="contained"
+            color="primary"
+            startIcon={<SaveIcon />}
+            onClick={handleSave}
+            sx={{ mt: 2 }}
+            disabled={loading}
+          >
             {isNew ? "Create" : "Update"} How We Work Section
           </Button>
         </Box>
