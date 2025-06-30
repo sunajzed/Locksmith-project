@@ -6,10 +6,11 @@ import api from "../../api/api";
 
 function LockSmithEditor() {
   const [formData, setFormData] = useState({
-    heading: "",
-    subheading: "",
-    description: "",
-    button_text: "",
+    heading: "RELIABLE LOCKSMITH",
+    subheading: "Securing Access to Your Home and Business",
+    description:
+      "Your safety is our priority. Whether you need a locked-out-of-house locksmith in Perth, emergency lockout services in Melbourne, or lost house keys replacement in Sydney, we deliver fast and reliable locksmith solutions.",
+    button_text: "View More",
   });
   const [message, setMessage] = useState("");
   const [isError, setIsError] = useState(false);
@@ -109,7 +110,15 @@ function LockSmithEditor() {
       ) : (
         <Box component="form" noValidate autoComplete="off" sx={{ "& .MuiTextField-root": { mb: 2 } }}>
           <TextField fullWidth label="Heading" name="heading" variant="outlined" value={formData.heading} onChange={handleChange} margin="normal" />
-          <TextField fullWidth label="Subheading" name="subheading" variant="outlined" value={formData.subheading} onChange={handleChange} margin="normal" />
+          <TextField
+            fullWidth
+            label="Subheading"
+            name="subheading"
+            variant="outlined"
+            value={formData.subheading}
+            onChange={handleChange}
+            margin="normal"
+          />
           <TextField
             fullWidth
             label="Description"
@@ -121,7 +130,15 @@ function LockSmithEditor() {
             multiline
             rows={4}
           />
-          <TextField fullWidth label="Button Text" name="button_text" variant="outlined" value={formData.button_text} onChange={handleChange} margin="normal" />
+          <TextField
+            fullWidth
+            label="Button Text"
+            name="button_text"
+            variant="outlined"
+            value={formData.button_text}
+            onChange={handleChange}
+            margin="normal"
+          />
           <Button variant="contained" color="primary" startIcon={<SaveIcon />} onClick={handleSave} sx={{ mt: 2 }} disabled={loading}>
             {isNew ? "Create" : "Update"} Locksmith Section
           </Button>

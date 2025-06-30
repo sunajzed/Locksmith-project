@@ -6,10 +6,11 @@ import api from "../../api/api";
 
 function LastSectionEditor() {
   const [formData, setFormData] = useState({
-    heading: "",
-    subheading: "",
-    description: "",
-    button_text: "",
+    heading: "SAFE & SECURE HOUSE",
+    subheading: "Need a Locksmith? We Come to You!",
+    description:
+      "Searching for the best emergency locksmith in Australia or dealing with locked keys inside your house? No matter your location, Lock Quick is here to provide fast, affordable, and reliable locksmith services across Australia.\nGet in touch today – your security is just a click away!",
+    button_text: "Contact Us",
   });
   const [message, setMessage] = useState("");
   const [isError, setIsError] = useState(false);

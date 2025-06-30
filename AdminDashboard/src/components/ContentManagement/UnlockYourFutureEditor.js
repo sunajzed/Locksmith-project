@@ -1,6 +1,15 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Box, TextField, Typography, Button, Paper, Alert, CircularProgress, IconButton } from "@mui/material";
+import {
+  Box,
+  TextField,
+  Typography,
+  Button,
+  Paper,
+  Alert,
+  CircularProgress,
+  IconButton,
+} from "@mui/material";
 import SaveIcon from "@mui/icons-material/Save";
 import AddIcon from "@mui/icons-material/Add";
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -8,11 +17,28 @@ import api from "../../api/api";
 
 function UnlockYourFutureEditor() {
   const [formData, setFormData] = useState({
-    heading: "",
-    subheading: "",
-    description: "",
-    benefits: [{ text: "" }],
-    button_text: "",
+    heading: "UNLOCK YOUR FUTURE – BECOME A LOCKSMITH WITH US!",
+    subheading: "Are You a Skilled Locksmith Looking for More Jobs?",
+    description:
+      "Join our Australia-wide locksmith network and start receiving high-paying service requests today!",
+    benefits: [
+      {
+        text: "Guaranteed Work Opportunities – Residential, Commercial & Automotive Locksmith Jobs",
+      },
+      {
+        text: "Flexible Schedule – Work in Sydney, Melbourne, Brisbane, Perth, Adelaide & Beyond",
+      },
+      {
+        text: "Instant Job Assignments – No more waiting! Start getting locksmith service requests immediately.",
+      },
+      {
+        text: "Work Independently or with a Team – Choose your preferred work style",
+      },
+      {
+        text: "Free Sign-Up & Quick Approval – Fast-track your locksmith career now!",
+      },
+    ],
+    button_text: "Start Earning!",
   });
   const [message, setMessage] = useState("");
   const [isError, setIsError] = useState(false);
@@ -36,7 +62,9 @@ function UnlockYourFutureEditor() {
   const fetchContent = async () => {
     setLoading(true);
     try {
-      const response = await api.get("/api/content/?section=unlock_your_future");
+      const response = await api.get(
+        "/api/content/?section=unlock_your_future"
+      );
       if (response.status === 200 && response.data.length > 0) {
         setFormData(response.data[0].content);
         setContentId(response.data[0].id);
@@ -63,7 +91,10 @@ function UnlockYourFutureEditor() {
   };
 
   const addBenefit = () => {
-    setFormData((prev) => ({ ...prev, benefits: [...prev.benefits, { text: "" }] }));
+    setFormData((prev) => ({
+      ...prev,
+      benefits: [...prev.benefits, { text: "" }],
+    }));
   };
 
   const removeBenefit = (index) => {
@@ -80,7 +111,7 @@ function UnlockYourFutureEditor() {
       !formData.subheading ||
       !formData.description ||
       !formData.button_text ||
-      formData.benefits.some((benefit) =>benefit.text === "")
+      formData.benefits.some((benefit) => benefit.text === "")
     ) {
       setMessage("All fields are required.");
       setIsError(true);
@@ -96,21 +127,29 @@ function UnlockYourFutureEditor() {
     try {
       if (isNew) {
         const response = await api.post("/api/content/", payload, {
-          headers: { Authorization: `Token ${accessToken}`, "Content-Type": "multipart/form-data" },
+          headers: {
+            Authorization: `Token ${accessToken}`,
+            "Content-Type": "multipart/form-data",
+          },
         });
         setContentId(response.data.id);
         setIsNew(false);
         setMessage("Unlock Your Future content created successfully.");
       } else {
         await api.put(`/api/content/${contentId}/`, payload, {
-          headers: { Authorization: `Token ${accessToken}`, "Content-Type": "multipart/form-data" },
+          headers: {
+            Authorization: `Token ${accessToken}`,
+            "Content-Type": "multipart/form-data",
+          },
         });
         setMessage("Unlock Your Future content updated successfully.");
       }
       setIsError(false);
     } catch (error) {
       console.error("Error saving unlock your future content:", error);
-      setMessage("Failed to save unlock your future content. Please try again.");
+      setMessage(
+        "Failed to save unlock your future content. Please try again."
+      );
       setIsError(true);
     } finally {
       setLoading(false);
@@ -119,22 +158,51 @@ function UnlockYourFutureEditor() {
 
   return (
     <Paper elevation={3} sx={{ p: 3 }}>
-      <Typography variant="h5" component="h2" gutterBottom sx={{ fontWeight: "bold", color: "primary.main" }}>
+      <Typography
+        variant="h5"
+        component="h2"
+        gutterBottom
+        sx={{ fontWeight: "bold", color: "primary.main" }}
+      >
         Unlock Your Future Section Editor
       </Typography>
       {message && (
-        <Alert severity={isError ? "error" : "success"} onClose={() => setMessage("")} sx={{ mb: 2 }}>
+        <Alert
+          severity={isError ? "error" : "success"}
+          onClose={() => setMessage("")}
+          sx={{ mb: 2 }}
+        >
           {message}
         </Alert>
       )}
       {loading ? (
-        <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center", my: 4 }}>
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            my: 4,
+          }}
+        >
           <CircularProgress />
           <Typography sx={{ ml: 2 }}>Loading...</Typography>
         </Box>
       ) : (
-        <Box component="form" noValidate autoComplete="off" sx={{ "& .MuiTextField-root": { mb: 2 } }}>
-          <TextField fullWidth label="Heading" name="heading" variant="outlined" value={formData.heading} onChange={handleChange} margin="normal" />
+        <Box
+          component="form"
+          noValidate
+          autoComplete="off"
+          sx={{ "& .MuiTextField-root": { mb: 2 } }}
+        >
+          <TextField
+            fullWidth
+            label="Heading"
+            name="heading"
+            variant="outlined"
+            value={formData.heading}
+            onChange={handleChange}
+            margin="normal"
+          />
           <TextField
             fullWidth
             label="Subheading"
@@ -156,7 +224,10 @@ function UnlockYourFutureEditor() {
             rows={4}
           />
           {formData.benefits.map((benefit, index) => (
-            <Box key={index} sx={{ display: "flex", alignItems: "center", mb: 2 }}>
+            <Box
+              key={index}
+              sx={{ display: "flex", alignItems: "center", mb: 2 }}
+            >
               <TextField
                 fullWidth
                 label={`Benefit ${index + 1}`}
@@ -166,12 +237,21 @@ function UnlockYourFutureEditor() {
                 onChange={(e) => handleChange(e, index)}
                 margin="normal"
               />
-              <IconButton onClick={() => removeBenefit(index)} color="error" sx={{ ml: 1 }}>
+              <IconButton
+                onClick={() => removeBenefit(index)}
+                color="error"
+                sx={{ ml: 1 }}
+              >
                 <DeleteIcon />
               </IconButton>
             </Box>
           ))}
-          <Button variant="outlined" startIcon={<AddIcon />} onClick={addBenefit} sx={{ mb: 2 }}>
+          <Button
+            variant="outlined"
+            startIcon={<AddIcon />}
+            onClick={addBenefit}
+            sx={{ mb: 2 }}
+          >
             Add Benefit
           </Button>
           <TextField
@@ -183,7 +263,14 @@ function UnlockYourFutureEditor() {
             onChange={handleChange}
             margin="normal"
           />
-          <Button variant="contained" color="primary" startIcon={<SaveIcon />} onClick={handleSave} sx={{ mt: 2 }} disabled={loading}>
+          <Button
+            variant="contained"
+            color="primary"
+            startIcon={<SaveIcon />}
+            onClick={handleSave}
+            sx={{ mt: 2 }}
+            disabled={loading}
+          >
             {isNew ? "Create" : "Update"} Unlock Your Future Section
           </Button>
         </Box>

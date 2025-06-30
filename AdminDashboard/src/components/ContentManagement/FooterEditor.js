@@ -1,40 +1,25 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Box, TextField, Typography, Button, Paper, Alert, CircularProgress, IconButton, Grid } from "@mui/material";
+import { Box, TextField, Typography, Button, Paper, Alert, CircularProgress, IconButton, Grid, MenuItem } from "@mui/material";
 import SaveIcon from "@mui/icons-material/Save";
 import AddIcon from "@mui/icons-material/Add";
 import DeleteIcon from "@mui/icons-material/Delete";
 import api from "../../api/api";
 
-function ServicesEditor() {
+function FooterEditor() {
   const [formData, setFormData] = useState({
-    heading: "OUR SERVICES",
-    subheading: "Trusted Locksmith Solutions for Homes, Businesses & Vehicles",
+    abn: "24 684 285 050",
     description:
-      "Security is our top priority. We provide expert locksmith services tailored to meet your needs—whether it’s securing your home, protecting your business, or assisting with automotive lock issues. Our skilled locksmiths ensure fast, reliable, and affordable solutions.",
-    services: [
+      "Lock Quick is an online-only marketplace connecting customers with trusted locksmiths across Australia. We offer fast, reliable locksmith services—from lock repairs to emergency lockouts—available 24/7 to keep you secure, wherever you are.",
+    get_in_touch: "Questions or feedback? We'd love to hear from you.",
+    social_links: [
+      { platform: "Facebook", url: "https://www.facebook.com/profile.php?id=61577346733921" },
       {
-        title: "Residential Locksmith Services",
-        text: "Secure your home with expert lock installations, repairs, rekeying, and smart lock upgrades. Fast and reliable emergency lockout assistance available.",
+        platform: "Instagram",
+        url: "https://www.instagram.com/lockquick/?fbclid=IwY2xjawLIgkhleHRuA2FlbQIxMQBicmlkETFBdzk4Z1Q4SWMzeVd1M1N2AR4alkyfLtJ3r5f2n0vI2RfhorvIOxfP3ntWVbGmpbyaWyq5K7gY_guBaxHpzQ_aem_O7-r-PxR50El-cGtj4vghw",
       },
-      {
-        title: "Automotive Locksmith Services",
-        text: "Lost your keys or locked out? We provide car lockouts, ignition repairs, and key replacements for all vehicle makes and models.",
-      },
-      {
-        title: "Commercial Locksmith Services",
-        text: "Protect your business with high-security locks, access control systems, and master key solutions for offices, warehouses, and retail spaces.",
-      },
-      {
-        title: "Emergency Locksmith Services",
-        text: "24/7 emergency locksmith services for home, office, and car lockouts, broken locks, or urgent security needs with fast response times.",
-      },
-      {
-        title: "Smart Lock Solutions",
-        text: "Upgrade to smart locks, keyless entry, and biometric security systems for enhanced safety and convenient remote access.",
-      },
+      { platform: "LinkedIn", url: "https://www.linkedin.com/company/lockquick/?viewAsMember=true" },
     ],
-    button_text: "Explore",
   });
   const [message, setMessage] = useState("");
   const [isError, setIsError] = useState(false);
@@ -42,6 +27,8 @@ function ServicesEditor() {
   const [contentId, setContentId] = useState(null);
   const [isNew, setIsNew] = useState(true);
   const navigate = useNavigate();
+
+  const socialPlatforms = ["Facebook", "Instagram", "LinkedIn"];
 
   useEffect(() => {
     const accessToken = localStorage.getItem("accessToken");
@@ -58,15 +45,15 @@ function ServicesEditor() {
   const fetchContent = async () => {
     setLoading(true);
     try {
-      const response = await api.get("/api/content/?section=services");
+      const response = await api.get("/api/content/?section=footer");
       if (response.status === 200 && response.data.length > 0) {
         setFormData(response.data[0].content);
         setContentId(response.data[0].id);
         setIsNew(false);
       }
     } catch (error) {
-      console.error("Error fetching services content:", error);
-      setMessage("Failed to load services content.");
+      console.error("Error fetching footer content:", error);
+      setMessage("Failed to load footer content.");
       setIsError(true);
     } finally {
       setLoading(false);
@@ -75,39 +62,41 @@ function ServicesEditor() {
 
   const handleChange = (e, index) => {
     const { name, value } = e.target;
-    if (name.startsWith("service_title_") || name.startsWith("service_text_")) {
-      const newServices = [...formData.services];
+    if (name.startsWith("social_platform_") || name.startsWith("social_url_")) {
+      const newSocialLinks = [...formData.social_links];
       const idx = parseInt(name.split("_")[2]);
-      if (name.startsWith("service_title_")) {
-        newServices[idx].title = value;
+      if (name.startsWith("social_platform_")) {
+        newSocialLinks[idx].platform = value;
       } else {
-        newServices[idx].text = value;
+        newSocialLinks[idx].url = value;
       }
-      setFormData((prev) => ({ ...prev, services: newServices }));
+      setFormData((prev) => ({ ...prev, social_links: newSocialLinks }));
     } else {
       setFormData((prev) => ({ ...prev, [name]: value }));
     }
   };
 
-  const addService = () => {
-    setFormData((prev) => ({ ...prev, services: [...prev.services, { title: "", text: "" }] }));
-  };
-
-  const removeService = (index) => {
+  const addSocialLink = () => {
     setFormData((prev) => ({
       ...prev,
-      services: prev.services.filter((_, i) => i !== index),
+      social_links: [...prev.social_links, { platform: "", url: "" }],
+    }));
+  };
+
+  const removeSocialLink = (index) => {
+    setFormData((prev) => ({
+      ...prev,
+      social_links: prev.social_links.filter((_, i) => i !== index),
     }));
   };
 
   const handleSave = async () => {
     const accessToken = localStorage.getItem("accessToken");
     if (
-      !formData.heading ||
-      !formData.subheading ||
+      !formData.abn ||
       !formData.description ||
-      !formData.button_text ||
-      formData.services.some((service) => service.title === "" || service.text === "")
+      !formData.get_in_touch ||
+      formData.social_links.some((link) => !link.platform || !link.url)
     ) {
       setMessage("All fields are required.");
       setIsError(true);
@@ -115,7 +104,7 @@ function ServicesEditor() {
     }
 
     const payload = {
-      section: "services",
+      section: "footer",
       content: JSON.stringify(formData),
     };
 
@@ -127,17 +116,17 @@ function ServicesEditor() {
         });
         setContentId(response.data.id);
         setIsNew(false);
-        setMessage("Services content created successfully.");
+        setMessage("Footer content created successfully.");
       } else {
         await api.put(`/api/content/${contentId}/`, payload, {
           headers: { Authorization: `Token ${accessToken}`, "Content-Type": "multipart/form-data" },
         });
-        setMessage("Services content updated successfully.");
+        setMessage("Footer content updated successfully.");
       }
       setIsError(false);
     } catch (error) {
-      console.error("Error saving services content:", error);
-      setMessage("Failed to save services content. Please try again.");
+      console.error("Error saving footer content:", error);
+      setMessage("Failed to save footer content. Please try again.");
       setIsError(true);
     } finally {
       setLoading(false);
@@ -147,7 +136,7 @@ function ServicesEditor() {
   return (
     <Paper elevation={3} sx={{ p: 3 }}>
       <Typography variant="h5" component="h2" gutterBottom sx={{ fontWeight: "bold", color: "primary.main" }}>
-        Services Section Editor
+        Footer Section Editor
       </Typography>
       {message && (
         <Alert severity={isError ? "error" : "success"} onClose={() => setMessage("")} sx={{ mb: 2 }}>
@@ -161,13 +150,12 @@ function ServicesEditor() {
         </Box>
       ) : (
         <Box component="form" noValidate autoComplete="off" sx={{ "& .MuiTextField-root": { mb: 2 } }}>
-          <TextField fullWidth label="Heading" name="heading" variant="outlined" value={formData.heading} onChange={handleChange} margin="normal" />
           <TextField
             fullWidth
-            label="Subheading"
-            name="subheading"
+            label="ABN"
+            name="abn"
             variant="outlined"
-            value={formData.subheading}
+            value={formData.abn}
             onChange={handleChange}
             margin="normal"
           />
@@ -182,53 +170,60 @@ function ServicesEditor() {
             multiline
             rows={4}
           />
-          {formData.services.map((service, index) => (
+          <TextField
+            fullWidth
+            label="Get in Touch Text"
+            name="get_in_touch"
+            variant="outlined"
+            value={formData.get_in_touch}
+            onChange={handleChange}
+            margin="normal"
+            multiline
+            rows={2}
+          />
+          {formData.social_links.map((link, index) => (
             <Grid container spacing={2} key={index} sx={{ mb: 2 }}>
               <Grid item xs={12} sm={5}>
                 <TextField
+                  select
                   fullWidth
-                  label={`Service ${index + 1} Title`}
-                  name={`service_title_${index}`}
+                  label={`Social Platform ${index + 1}`}
+                  name={`social_platform_${index}`}
                   variant="outlined"
-                  value={service.title}
+                  value={link.platform}
                   onChange={(e) => handleChange(e, index)}
                   margin="normal"
-                />
+                >
+                  {socialPlatforms.map((platform) => (
+                    <MenuItem key={platform} value={platform}>
+                      {platform}
+                    </MenuItem>
+                  ))}
+                </TextField>
               </Grid>
               <Grid item xs={12} sm={6}>
                 <TextField
                   fullWidth
-                  label={`Service ${index + 1} Description`}
-                  name={`service_text_${index}`}
+                  label={`Social URL ${index + 1}`}
+                  name={`social_url_${index}`}
                   variant="outlined"
-                  value={service.text}
+                  value={link.url}
                   onChange={(e) => handleChange(e, index)}
                   margin="normal"
-                  multiline
-                  rows={3}
                 />
               </Grid>
               <Grid item xs={12} sm={1} sx={{ display: "flex", alignItems: "center" }}>
-                <IconButton onClick={() => removeService(index)} color="error">
+                <IconButton onClick={() => removeSocialLink(index)} color="error">
                   <DeleteIcon />
                 </IconButton>
               </Grid>
             </Grid>
           ))}
-          <Button variant="outlined" startIcon={<AddIcon />} onClick={addService} sx={{ mb: 2 }}>
-            Add Service
+          <Button variant="outlined" startIcon={<AddIcon />} onClick={addSocialLink} sx={{ mb: 2 }}>
+            Add Social Link
           </Button>
-          <TextField
-            fullWidth
-            label="Button Text"
-            name="button_text"
-            variant="outlined"
-            value={formData.button_text}
-            onChange={handleChange}
-            margin="normal"
-          />
           <Button variant="contained" color="primary" startIcon={<SaveIcon />} onClick={handleSave} sx={{ mt: 2 }} disabled={loading}>
-            {isNew ? "Create" : "Update"} Services Section
+            {isNew ? "Create" : "Update"} Footer Section
           </Button>
         </Box>
       )}
@@ -236,4 +231,4 @@ function ServicesEditor() {
   );
 }
 
-export default ServicesEditor;
+export default FooterEditor;

@@ -250,6 +250,7 @@ import UnlockYourFutureEditor from "../ContentManagement/UnlockYourFutureEditor"
 import ServicesEditor from "../ContentManagement/ServicesEditor";
 import HowWeWorkEditor from "../ContentManagement/HowWeWorkEditor";
 import LastSectionEditor from "../ContentManagement/LastSectionEditor";
+import FooterEditor from "../ContentManagement/FooterEditor";
 import api from "../../api/api";
 import "./Dashboard.css";
 
@@ -301,6 +302,10 @@ const menuItems = [
       {
         name: "Last Section",
         component: React.createElement(LastSectionEditor),
+      },
+      {
+        name: "Footer Section",
+        component: React.createElement(FooterEditor),
       },
     ],
   },
