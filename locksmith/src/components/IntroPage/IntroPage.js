@@ -19,13 +19,8 @@ const IntroPage = () => {
     description:
       "LOCK QUICK IS AN ONLINE-ONLY MARKETPLACE CONNECTING CUSTOMERS WITH TRUSTED LOCKSMITHS ACROSS AUSTRALIA\nWhether you're locked out or need urgent repairs, we offer fast, affordable, and 24/7 locksmith services—anytime, anywhere.",
   });
+  const [images, setImages] = useState([]);
   const navigate = useNavigate();
-
-  const textLimits = {
-    title: 60,
-    subtitle: 40,
-    description: 200,
-  };
 
   const username = localStorage.getItem("username");
   const accessToken = localStorage.getItem("accessToken");
@@ -33,17 +28,45 @@ const IntroPage = () => {
   useEffect(() => {
     const fetchHeroContent = async () => {
       try {
-        const response = await api.get("/api/content/?section=hero_banner");
-        if (response.status === 200 && response.data.length > 0) {
-          const fetchedContent = response.data[0].content;
+        // Fetch hero banner content
+        const heroResponse = await api.get("/api/content/?section=hero_banner");
+        if (heroResponse.status === 200 && heroResponse.data.length > 0) {
           setHeroContent({
-            title: fetchedContent.title.slice(0, textLimits.title),
-            subtitle: fetchedContent.subtitle.slice(0, textLimits.subtitle),
-            description: fetchedContent.description.slice(0, textLimits.description),
+            title: heroResponse.data[0].content.title,
+            subtitle: heroResponse.data[0].content.subtitle,
+            description: heroResponse.data[0].content.description,
           });
         }
+
+        // Fetch images for image1, image2, image3
+        const imageSections = ["image1", "image2", "image3"];
+        const imagePromises = imageSections.map((section) =>
+          api.get(`/api/content/?section=${section}`)
+        );
+        const imageResponses = await Promise.all(imagePromises);
+        const fetchedImages = imageResponses
+          .filter(
+            (response) => response.status === 200 && response.data.length > 0
+          )
+          .map((response) => response.data[0].image)
+          .filter((image) => image); // Filter out null/undefined images
+        setImages(
+          fetchedImages.length > 0
+            ? fetchedImages
+            : [
+                "images/lkbg3new.png",
+                "images/lkbg2new.png",
+                "images/lkbg1new.png",
+              ]
+        );
       } catch (error) {
-        console.error("Error fetching hero content:", error);
+        console.error("Error fetching hero content or images:", error);
+        // Fallback to default images
+        setImages([
+          "images/lkbg3new.png",
+          "images/lkbg2new.png",
+          "images/lkbg1new.png",
+        ]);
       }
     };
     fetchHeroContent();
@@ -70,9 +93,9 @@ const IntroPage = () => {
   return (
     <div className="intro-carousel">
       <div className="carousel">
-        <img src="images/lkbg3new.png" alt="slide1" />
-        <img src="images/lkbg2new.png" alt="slide2" />
-        <img src="images/lkbg1new.png" alt="slide3" />
+        {images.map((image, index) => (
+          <img key={index} src={image} alt={`slide${index + 1}`} />
+        ))}
       </div>
 
       <div className="blur-box">

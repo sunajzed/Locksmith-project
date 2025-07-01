@@ -14,22 +14,37 @@ import api from "../../api/api";
 
 function HeroSection() {
   const [formData, setFormData] = useState({
-    title: "LOCK QUICK – Fast & Reliable Locksmith Services in Australia",
-    subtitle: "24/7 Emergency Locksmith Services – Anytime, Anywhere!",
-    description:
-      "LOCK QUICK IS AN ONLINE-ONLY MARKETPLACE CONNECTING CUSTOMERS WITH TRUSTED LOCKSMITHS ACROSS AUSTRALIA\nWhether you're locked out or need urgent repairs, we offer fast, affordable, and 24/7 locksmith services—anytime, anywhere.",
+    title: "",
+    subtitle: "",
+    description: "",
+    image1: null,
+    image2: null,
+    image3: null,
   });
+
+  const [imageIds, setImageIds] = useState({
+    image1: null,
+    image2: null,
+    image3: null,
+  });
+
+  const [imagePreviews, setImagePreviews] = useState({
+    image1: null,
+    image2: null,
+    image3: null,
+  });
+
+  const [contentId, setContentId] = useState(null);
+  const [isNew, setIsNew] = useState(true);
   const [message, setMessage] = useState("");
   const [isError, setIsError] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [contentId, setContentId] = useState(null);
-  const [isNew, setIsNew] = useState(true);
   const navigate = useNavigate();
 
   const textLimits = {
-    title: 60,
-    subtitle: 40,
-    description: 200,
+    title: 80,
+    subtitle: 120,
+    description: 300,
   };
 
   useEffect(() => {
@@ -47,20 +62,37 @@ function HeroSection() {
   const fetchHeroContent = async () => {
     setLoading(true);
     try {
-      const response = await api.get("/api/content/?section=hero_banner");
-      if (response.status === 200 && response.data.length > 0) {
-        const heroContent = response.data[0].content;
-        setFormData({
-          title: heroContent.title.slice(0, textLimits.title),
-          subtitle: heroContent.subtitle.slice(0, textLimits.subtitle),
-          description: heroContent.description.slice(0, textLimits.description),
-        });
-        setContentId(response.data[0].id);
-        setIsNew(false);
-      }
+      const sections = ["hero_banner", "image1", "image2", "image3"];
+      const fetchPromises = sections.map((section) =>
+        api.get(`/api/content/?section=${section}`)
+      );
+      const responses = await Promise.all(fetchPromises);
+
+      const newFormData = { ...formData };
+      const newImageIds = { ...imageIds };
+
+      responses.forEach((response, index) => {
+        const section = sections[index];
+        if (response.status === 200 && response.data.length > 0) {
+          const data = response.data[0];
+          if (section === "hero_banner") {
+            newFormData.title = data.content.title || "";
+            newFormData.subtitle = data.content.subtitle || "";
+            newFormData.description = data.content.description || "";
+            setContentId(data.id);
+            setIsNew(false);
+          } else {
+            newFormData[section] = data.image || null;
+            newImageIds[section] = data.id;
+          }
+        }
+      });
+
+      setFormData(newFormData);
+      setImageIds(newImageIds);
     } catch (error) {
-      console.error("Error fetching hero content:", error);
-      setMessage("Failed to load hero section content.");
+      console.error("Error fetching hero content or images:", error);
+      setMessage("Failed to load hero section content or images.");
       setIsError(true);
     } finally {
       setLoading(false);
@@ -68,80 +100,119 @@ function HeroSection() {
   };
 
   const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value.slice(0, textLimits[name]),
-    }));
-  };
+    const { name, value, files } = e.target;
 
-  const validateForm = () => {
-    if (!formData.title || formData.title.length > textLimits.title) {
-      return `Title must be between 1 and ${textLimits.title} characters.`;
+    if (files) {
+      const file = files[0];
+      setFormData((prev) => ({ ...prev, [name]: file }));
+
+      const previewUrl = URL.createObjectURL(file);
+      setImagePreviews((prev) => ({
+        ...prev,
+        [name]: previewUrl,
+      }));
+    } else {
+      const limitedValue = textLimits[name]
+        ? value.slice(0, textLimits[name])
+        : value;
+      setFormData((prev) => ({ ...prev, [name]: limitedValue }));
     }
-    if (!formData.subtitle || formData.subtitle.length > textLimits.subtitle) {
-      return `Subtitle must be between 1 and ${textLimits.subtitle} characters.`;
-    }
-    if (
-      !formData.description ||
-      formData.description.length > textLimits.description
-    ) {
-      return `Description must be between 1 and ${textLimits.description} characters.`;
-    }
-    return null;
   };
 
   const handleSave = async () => {
     const accessToken = localStorage.getItem("accessToken");
-    const validationError = validateForm();
-    if (validationError) {
-      setMessage(validationError);
+
+    if (!formData.title || !formData.subtitle || !formData.description) {
+      setMessage("Title, subtitle, and description are required.");
       setIsError(true);
       return;
     }
 
-    const payload = {
-      section: "hero_banner",
-      content: JSON.stringify({
-        title: formData.title,
-        subtitle: formData.subtitle,
-        description: formData.description,
-      }),
-    };
-
     setLoading(true);
     try {
+      const heroPayload = new FormData();
+      heroPayload.append("section", "hero_banner");
+      heroPayload.append(
+        "content",
+        JSON.stringify({
+          title: formData.title,
+          subtitle: formData.subtitle,
+          description: formData.description,
+        })
+      );
+
       if (isNew) {
-        const response = await api.post("/api/content/", payload, {
+        const heroResponse = await api.post("/api/content/", heroPayload, {
           headers: {
             Authorization: `Token ${accessToken}`,
             "Content-Type": "multipart/form-data",
           },
         });
-        setContentId(response.data.id);
+        setContentId(heroResponse.data.id);
         setIsNew(false);
-        setMessage("Hero section created successfully.");
       } else {
-        await api.put(`/api/content/${contentId}/`, payload, {
+        await api.put(`/api/content/${contentId}/`, heroPayload, {
           headers: {
             Authorization: `Token ${accessToken}`,
             "Content-Type": "multipart/form-data",
           },
         });
-        setMessage("Hero section updated successfully.");
       }
+
+      const imageSections = ["image1", "image2", "image3"];
+      for (const section of imageSections) {
+        if (formData[section] && formData[section] instanceof File) {
+          const imagePayload = new FormData();
+          imagePayload.append("section", section);
+          imagePayload.append("content", JSON.stringify({}));
+          imagePayload.append("image", formData[section]);
+
+          if (imageIds[section]) {
+            await api.put(`/api/content/${imageIds[section]}/`, imagePayload, {
+              headers: {
+                Authorization: `Token ${accessToken}`,
+                "Content-Type": "multipart/form-data",
+              },
+            });
+          } else {
+            const response = await api.post("/api/content/", imagePayload, {
+              headers: {
+                Authorization: `Token ${accessToken}`,
+                "Content-Type": "multipart/form-data",
+              },
+            });
+            setImageIds((prev) => ({
+              ...prev,
+              [section]: response.data.id,
+            }));
+          }
+        }
+      }
+
+      setMessage("Hero section and images updated successfully.");
       setIsError(false);
     } catch (error) {
-      console.error("Error saving hero content:", error);
-      setMessage("Failed to save hero section content. Please try again.");
+      console.error("Error saving hero content or images:", error);
+      setMessage(
+        "Failed to save hero section content or images. Please try again."
+      );
       setIsError(true);
     } finally {
       setLoading(false);
     }
   };
 
+  // Cleanup object URLs to avoid memory leaks
+  useEffect(() => {
+    return () => {
+      Object.values(imagePreviews).forEach((url) => {
+        if (url) URL.revokeObjectURL(url);
+      });
+    };
+  }, [imagePreviews]);
+
   return (
-    <Paper elevation={3} sx={{ p: 3, mb: 4 }}>
+    <Paper elevation={3} sx={{ p: 3, mb: 9 }}>
       <Typography
         variant="h5"
         component="h2"
@@ -217,6 +288,45 @@ function HeroSection() {
             inputProps={{ maxLength: textLimits.description }}
             helperText={`${formData.description.length}/${textLimits.description} characters`}
           />
+
+          {["image1", "image2", "image3"].map((imageKey, index) => (
+            <Box key={imageKey} sx={{ mb: 2 }}>
+              <TextField
+                fullWidth
+                type="file"
+                label={`Hero Image ${index + 1}`}
+                name={imageKey}
+                InputLabelProps={{ shrink: true }}
+                onChange={handleChange}
+                margin="normal"
+                inputProps={{ accept: "image/*" }}
+              />
+
+              {(imagePreviews[imageKey] ||
+                (formData[imageKey] &&
+                  typeof formData[imageKey] === "string")) && (
+                <Box sx={{ mt: 1 }}>
+                  <Typography variant="subtitle1">
+                    {imagePreviews[imageKey] ? "Preview" : "Current"} Image{" "}
+                    {index + 1}:
+                  </Typography>
+                  <img
+                    src={
+                      imagePreviews[imageKey]
+                        ? imagePreviews[imageKey]
+                        : formData[imageKey]
+                    }
+                    alt={`Hero image ${index + 1}`}
+                    style={{
+                      maxWidth: "200px",
+                      maxHeight: "200px",
+                      borderRadius: "8px",
+                    }}
+                  />
+                </Box>
+              )}
+            </Box>
+          ))}
 
           <Button
             variant="contained"
