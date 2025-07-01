@@ -1,23 +1,37 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Box, TextField, Typography, Button, Paper, Alert, CircularProgress } from "@mui/material";
+import {
+  Box,
+  TextField,
+  Typography,
+  Button,
+  Paper,
+  Alert,
+  CircularProgress,
+} from "@mui/material";
 import SaveIcon from "@mui/icons-material/Save";
-import api from "../../api/api"; // Assuming api is configured with REACT_APP_BASE_URL
+import api from "../../api/api";
 
 function HeroSection() {
   const [formData, setFormData] = useState({
-    title: "",
-    subtitle: "",
-    description: "",
+    title: "LOCK QUICK – Fast & Reliable Locksmith Services in Australia",
+    subtitle: "24/7 Emergency Locksmith Services – Anytime, Anywhere!",
+    description:
+      "LOCK QUICK IS AN ONLINE-ONLY MARKETPLACE CONNECTING CUSTOMERS WITH TRUSTED LOCKSMITHS ACROSS AUSTRALIA\nWhether you're locked out or need urgent repairs, we offer fast, affordable, and 24/7 locksmith services—anytime, anywhere.",
   });
   const [message, setMessage] = useState("");
   const [isError, setIsError] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [contentId, setContentId] = useState(null); // To store the ID of existing content
-  const [isNew, setIsNew] = useState(true); // To track if content is new or existing
+  const [contentId, setContentId] = useState(null);
+  const [isNew, setIsNew] = useState(true);
   const navigate = useNavigate();
 
-  // Check authentication and fetch content on mount
+  const textLimits = {
+    title: 60,
+    subtitle: 40,
+    description: 200,
+  };
+
   useEffect(() => {
     const accessToken = localStorage.getItem("accessToken");
     const userRole = localStorage.getItem("userRole");
@@ -30,19 +44,18 @@ function HeroSection() {
     fetchHeroContent();
   }, [navigate]);
 
-  // Fetch existing hero section content
   const fetchHeroContent = async () => {
     setLoading(true);
     try {
       const response = await api.get("/api/content/?section=hero_banner");
       if (response.status === 200 && response.data.length > 0) {
-        const heroContent = response.data[0];
+        const heroContent = response.data[0].content;
         setFormData({
-          title: heroContent.content.title || "",
-          subtitle: heroContent.content.subtitle || "",
-          description: heroContent.content.description || "",
+          title: heroContent.title.slice(0, textLimits.title),
+          subtitle: heroContent.subtitle.slice(0, textLimits.subtitle),
+          description: heroContent.description.slice(0, textLimits.description),
         });
-        setContentId(heroContent.id);
+        setContentId(response.data[0].id);
         setIsNew(false);
       }
     } catch (error) {
@@ -54,19 +67,35 @@ function HeroSection() {
     }
   };
 
-  // Handle form input changes
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value.slice(0, textLimits[name]),
+    }));
   };
 
-  // Handle save (create or update)
+  const validateForm = () => {
+    if (!formData.title || formData.title.length > textLimits.title) {
+      return `Title must be between 1 and ${textLimits.title} characters.`;
+    }
+    if (!formData.subtitle || formData.subtitle.length > textLimits.subtitle) {
+      return `Subtitle must be between 1 and ${textLimits.subtitle} characters.`;
+    }
+    if (
+      !formData.description ||
+      formData.description.length > textLimits.description
+    ) {
+      return `Description must be between 1 and ${textLimits.description} characters.`;
+    }
+    return null;
+  };
+
   const handleSave = async () => {
     const accessToken = localStorage.getItem("accessToken");
-
-    // Validate inputs
-    if (!formData.title || !formData.subtitle || !formData.description) {
-      setMessage("All fields are required.");
+    const validationError = validateForm();
+    if (validationError) {
+      setMessage(validationError);
       setIsError(true);
       return;
     }
@@ -83,7 +112,6 @@ function HeroSection() {
     setLoading(true);
     try {
       if (isNew) {
-        // Create new content
         const response = await api.post("/api/content/", payload, {
           headers: {
             Authorization: `Token ${accessToken}`,
@@ -94,7 +122,6 @@ function HeroSection() {
         setIsNew(false);
         setMessage("Hero section created successfully.");
       } else {
-        // Update existing content
         await api.put(`/api/content/${contentId}/`, payload, {
           headers: {
             Authorization: `Token ${accessToken}`,
@@ -135,7 +162,14 @@ function HeroSection() {
       )}
 
       {loading ? (
-        <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center", my: 4 }}>
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            my: 4,
+          }}
+        >
           <CircularProgress />
           <Typography sx={{ ml: 2 }}>Loading...</Typography>
         </Box>
@@ -154,6 +188,8 @@ function HeroSection() {
             value={formData.title}
             onChange={handleChange}
             margin="normal"
+            inputProps={{ maxLength: textLimits.title }}
+            helperText={`${formData.title.length}/${textLimits.title} characters`}
           />
 
           <TextField
@@ -164,6 +200,8 @@ function HeroSection() {
             value={formData.subtitle}
             onChange={handleChange}
             margin="normal"
+            inputProps={{ maxLength: textLimits.subtitle }}
+            helperText={`${formData.subtitle.length}/${textLimits.subtitle} characters`}
           />
 
           <TextField
@@ -176,6 +214,8 @@ function HeroSection() {
             margin="normal"
             multiline
             rows={4}
+            inputProps={{ maxLength: textLimits.description }}
+            helperText={`${formData.description.length}/${textLimits.description} characters`}
           />
 
           <Button

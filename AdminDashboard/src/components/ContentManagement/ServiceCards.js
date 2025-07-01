@@ -1,19 +1,41 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Box, TextField, Typography, Button, Paper, Grid, Alert, CircularProgress } from "@mui/material";
+import {
+  Box,
+  TextField,
+  Typography,
+  Button,
+  Paper,
+  Grid,
+  Alert,
+  CircularProgress,
+  MenuItem,
+} from "@mui/material";
 import SaveIcon from "@mui/icons-material/Save";
-import api from "../../api/api"; // Assuming api is configured with REACT_APP_BASE_URL
+import api from "../../api/api";
 
 function ServiceCards() {
+  const defaultIcons = ["faUserShield", "faIdCard", "faClock"];
   const [formData, setFormData] = useState({
-    maintitle: "",
-    subtitle: "",
-    card1heading: "",
-    card1description: "",
-    card2heading: "",
-    card2description: "",
-    card3heading: "",
-    card3description: "",
+    maintitle: "WHAT WE DO – SPECIALIZED LOCKSMITH SERVICES",
+    subtitle: "Reliable & Efficient Locksmith Solutions",
+    card1: {
+      heading: "Reliable Locksmith",
+      description:
+        "Quick and efficient solutions for lockouts, key replacements, and security installations.",
+      icon: defaultIcons[0],
+    },
+    card2: {
+      heading: "Licensed and Insured",
+      description: "Trustworthy and certified locksmiths ensuring your safety.",
+      icon: defaultIcons[1],
+    },
+    card3: {
+      heading: "24/7 Availability",
+      description:
+        "Round-the-clock assistance for all your emergency lock and key issues.",
+      icon: defaultIcons[2],
+    },
   });
   const [message, setMessage] = useState("");
   const [isError, setIsError] = useState(false);
@@ -22,7 +44,14 @@ function ServiceCards() {
   const [isNew, setIsNew] = useState(true);
   const navigate = useNavigate();
 
-  // Check authentication and fetch content on mount
+  const cardIcons = ["faUserShield", "faIdCard", "faClock"];
+  const textLimits = {
+    maintitle: 50,
+    subtitle: 40,
+    card_heading: 30,
+    card_description: 100,
+  };
+
   useEffect(() => {
     const accessToken = localStorage.getItem("accessToken");
     const userRole = localStorage.getItem("userRole");
@@ -35,22 +64,61 @@ function ServiceCards() {
     fetchServiceCardsContent();
   }, [navigate]);
 
-  // Fetch existing service cards content
   const fetchServiceCardsContent = async () => {
     setLoading(true);
     try {
       const response = await api.get("/api/content/?section=service_cards");
+      console.log("Fetched service cards content:", response.data); // Debug log
       if (response.status === 200 && response.data.length > 0) {
         const content = response.data[0].content;
         setFormData({
-          maintitle: content.maintitle || "",
-          subtitle: content.subtitle || "",
-          card1heading: content.card1?.heading || "",
-          card1description: content.card1?.description || "",
-          card2heading: content.card2?.heading || "",
-          card2description: content.card2?.description || "",
-          card3heading: content.card3?.heading || "",
-          card3description: content.card3?.description || "",
+          maintitle:
+            content.maintitle.slice(0, textLimits.maintitle) ||
+            formData.maintitle,
+          subtitle:
+            content.subtitle.slice(0, textLimits.subtitle) || formData.subtitle,
+          card1: {
+            heading:
+              content.card1?.heading.slice(0, textLimits.card_heading) ||
+              formData.card1.heading,
+            description:
+              content.card1?.description.slice(
+                0,
+                textLimits.card_description
+              ) || formData.card1.description,
+            icon:
+              content.card1?.icon && cardIcons.includes(content.card1.icon)
+                ? content.card1.icon
+                : defaultIcons[0],
+          },
+          card2: {
+            heading:
+              content.card2?.heading.slice(0, textLimits.card_heading) ||
+              formData.card2.heading,
+            description:
+              content.card2?.description.slice(
+                0,
+                textLimits.card_description
+              ) || formData.card2.description,
+            icon:
+              content.card2?.icon && cardIcons.includes(content.card2.icon)
+                ? content.card2.icon
+                : defaultIcons[1],
+          },
+          card3: {
+            heading:
+              content.card3?.heading.slice(0, textLimits.card_heading) ||
+              formData.card3.heading,
+            description:
+              content.card3?.description.slice(
+                0,
+                textLimits.card_description
+              ) || formData.card3.description,
+            icon:
+              content.card3?.icon && cardIcons.includes(content.card3.icon)
+                ? content.card3.icon
+                : defaultIcons[2],
+          },
         });
         setContentId(response.data[0].id);
         setIsNew(false);
@@ -64,28 +132,61 @@ function ServiceCards() {
     }
   };
 
-  // Handle form input changes
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
+    if (name.startsWith("card")) {
+      const [card, field, index] = name.split("_");
+      setFormData((prev) => ({
+        ...prev,
+        [`card${index}`]: {
+          ...prev[`card${index}`],
+          [field]:
+            field === "icon"
+              ? value
+              : value.slice(0, textLimits[`card_${field}`]),
+        },
+      }));
+    } else {
+      setFormData((prev) => ({
+        ...prev,
+        [name]: value.slice(0, textLimits[name]),
+      }));
+    }
   };
 
-  // Handle save (create or update)
-  const handleSave = async () => {
-    const accessToken = localStorage.getItem("accessToken");
-
-    // Validate inputs
+  const validateForm = () => {
     if (
       !formData.maintitle ||
-      !formData.subtitle ||
-      !formData.card1heading ||
-      !formData.card1description ||
-      !formData.card2heading ||
-      !formData.card2description ||
-      !formData.card3heading ||
-      !formData.card3description
+      formData.maintitle.length > textLimits.maintitle
     ) {
-      setMessage("All fields are required.");
+      return `Main Title must be between 1 and ${textLimits.maintitle} characters.`;
+    }
+    if (!formData.subtitle || formData.subtitle.length > textLimits.subtitle) {
+      return `Subtitle must be between 1 and ${textLimits.subtitle} characters.`;
+    }
+    for (let i = 1; i <= 3; i++) {
+      const card = formData[`card${i}`];
+      if (!card.heading || card.heading.length > textLimits.card_heading) {
+        return `Card ${i} Heading must be between 1 and ${textLimits.card_heading} characters.`;
+      }
+      if (
+        !card.description ||
+        card.description.length > textLimits.card_description
+      ) {
+        return `Card ${i} Description must be between 1 and ${textLimits.card_description} characters.`;
+      }
+      if (!card.icon || !cardIcons.includes(card.icon)) {
+        return `Card ${i} Icon is invalid or not selected.`;
+      }
+    }
+    return null;
+  };
+
+  const handleSave = async () => {
+    const accessToken = localStorage.getItem("accessToken");
+    const validationError = validateForm();
+    if (validationError) {
+      setMessage(validationError);
       setIsError(true);
       return;
     }
@@ -95,16 +196,15 @@ function ServiceCards() {
       content: JSON.stringify({
         maintitle: formData.maintitle,
         subtitle: formData.subtitle,
-        card1: { heading: formData.card1heading, description: formData.card1description },
-        card2: { heading: formData.card2heading, description: formData.card2description },
-        card3: { heading: formData.card3heading, description: formData.card3description },
+        card1: formData.card1,
+        card2: formData.card2,
+        card3: formData.card3,
       }),
     };
 
     setLoading(true);
     try {
       if (isNew) {
-        // Create new content
         const response = await api.post("/api/content/", payload, {
           headers: {
             Authorization: `Token ${accessToken}`,
@@ -115,7 +215,6 @@ function ServiceCards() {
         setIsNew(false);
         setMessage("Service cards created successfully.");
       } else {
-        // Update existing content
         await api.put(`/api/content/${contentId}/`, payload, {
           headers: {
             Authorization: `Token ${accessToken}`,
@@ -143,24 +242,49 @@ function ServiceCards() {
       <TextField
         fullWidth
         label={`Card ${n} Heading`}
-        name={`card${n}heading`}
+        name={`card_heading_${n}`}
         variant="outlined"
-        value={formData[`card${n}heading`]}
+        value={formData[`card${n}`].heading}
         onChange={handleChange}
         margin="normal"
+        inputProps={{ maxLength: textLimits.card_heading }}
+        helperText={`${formData[`card${n}`].heading.length}/${
+          textLimits.card_heading
+        } characters`}
       />
 
       <TextField
         fullWidth
         label={`Card ${n} Description`}
-        name={`card${n}description`}
+        name={`card_description_${n}`}
         variant="outlined"
-        value={formData[`card${n}description`]}
+        value={formData[`card${n}`].description}
         onChange={handleChange}
         margin="normal"
         multiline
         rows={3}
+        inputProps={{ maxLength: textLimits.card_description }}
+        helperText={`${formData[`card${n}`].description.length}/${
+          textLimits.card_description
+        } characters`}
       />
+
+      <TextField
+        select
+        fullWidth
+        label={`Card ${n} Icon`}
+        name={`card_icon_${n}`}
+        variant="outlined"
+        value={formData[`card${n}`].icon}
+        onChange={handleChange}
+        margin="normal"
+      >
+        {cardIcons.map((icon) => (
+          <MenuItem key={icon} value={icon}>
+            {icon}
+          </MenuItem>
+        ))}
+      </TextField>
     </Paper>
   );
 
@@ -186,7 +310,14 @@ function ServiceCards() {
       )}
 
       {loading ? (
-        <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center", my: 4 }}>
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            my: 4,
+          }}
+        >
           <CircularProgress />
           <Typography sx={{ ml: 2 }}>Loading...</Typography>
         </Box>
@@ -200,6 +331,8 @@ function ServiceCards() {
             value={formData.maintitle}
             onChange={handleChange}
             margin="normal"
+            inputProps={{ maxLength: textLimits.maintitle }}
+            helperText={`${formData.maintitle.length}/${textLimits.maintitle} characters`}
           />
 
           <TextField
@@ -210,6 +343,8 @@ function ServiceCards() {
             value={formData.subtitle}
             onChange={handleChange}
             margin="normal"
+            inputProps={{ maxLength: textLimits.subtitle }}
+            helperText={`${formData.subtitle.length}/${textLimits.subtitle} characters`}
           />
 
           <Typography
