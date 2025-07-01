@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Box, TextField, Typography, Button, Paper, Alert, CircularProgress, IconButton, Grid } from "@mui/material";
+import { Box, TextField, Typography, Button, Paper, Alert, CircularProgress, IconButton, Grid, MenuItem } from "@mui/material";
 import SaveIcon from "@mui/icons-material/Save";
 import AddIcon from "@mui/icons-material/Add";
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -16,22 +16,27 @@ function ServicesEditor() {
       {
         title: "Residential Locksmith Services",
         text: "Secure your home with expert lock installations, repairs, rekeying, and smart lock upgrades. Fast and reliable emergency lockout assistance available.",
+        icon: "GiHouseKeys",
       },
       {
         title: "Automotive Locksmith Services",
         text: "Lost your keys or locked out? We provide car lockouts, ignition repairs, and key replacements for all vehicle makes and models.",
+        icon: "GiCarKey",
       },
       {
         title: "Commercial Locksmith Services",
         text: "Protect your business with high-security locks, access control systems, and master key solutions for offices, warehouses, and retail spaces.",
+        icon: "FaBuildingLock",
       },
       {
         title: "Emergency Locksmith Services",
         text: "24/7 emergency locksmith services for home, office, and car lockouts, broken locks, or urgent security needs with fast response times.",
+        icon: "GiSiren",
       },
       {
         title: "Smart Lock Solutions",
         text: "Upgrade to smart locks, keyless entry, and biometric security systems for enhanced safety and convenient remote access.",
+        icon: "FaFingerprint",
       },
     ],
     button_text: "Explore",
@@ -42,6 +47,16 @@ function ServicesEditor() {
   const [contentId, setContentId] = useState(null);
   const [isNew, setIsNew] = useState(true);
   const navigate = useNavigate();
+
+  const serviceIcons = ["GiHouseKeys", "GiCarKey", "FaBuildingLock", "GiSiren", "FaFingerprint"];
+  const textLimits = {
+    heading: 20,
+    subheading: 70,
+    description: 300,
+    service_title: 40,
+    service_text: 150,
+    button_text: 15,
+  };
 
   useEffect(() => {
     const accessToken = localStorage.getItem("accessToken");
@@ -75,22 +90,24 @@ function ServicesEditor() {
 
   const handleChange = (e, index) => {
     const { name, value } = e.target;
-    if (name.startsWith("service_title_") || name.startsWith("service_text_")) {
+    if (name.startsWith("service_title_") || name.startsWith("service_text_") || name.startsWith("service_icon_")) {
       const newServices = [...formData.services];
       const idx = parseInt(name.split("_")[2]);
       if (name.startsWith("service_title_")) {
-        newServices[idx].title = value;
+        newServices[idx].title = value.slice(0, textLimits.service_title);
+      } else if (name.startsWith("service_text_")) {
+        newServices[idx].text = value.slice(0, textLimits.service_text);
       } else {
-        newServices[idx].text = value;
+        newServices[idx].icon = value;
       }
       setFormData((prev) => ({ ...prev, services: newServices }));
     } else {
-      setFormData((prev) => ({ ...prev, [name]: value }));
+      setFormData((prev) => ({ ...prev, [name]: value.slice(0, textLimits[name]) }));
     }
   };
 
   const addService = () => {
-    setFormData((prev) => ({ ...prev, services: [...prev.services, { title: "", text: "" }] }));
+    setFormData((prev) => ({ ...prev, services: [...prev.services, { title: "", text: "", icon: "" }] }));
   };
 
   const removeService = (index) => {
@@ -100,16 +117,39 @@ function ServicesEditor() {
     }));
   };
 
+  const validateForm = () => {
+    if (!formData.heading || formData.heading.length > textLimits.heading) {
+      return `Heading must be between 1 and ${textLimits.heading} characters.`;
+    }
+    if (!formData.subheading || formData.subheading.length > textLimits.subheading) {
+      return `Subheading must be between 1 and ${textLimits.subheading} characters.`;
+    }
+    if (!formData.description || formData.description.length > textLimits.description) {
+      return `Description must be between 1 and ${textLimits.description} characters.`;
+    }
+    if (!formData.button_text || formData.button_text.length > textLimits.button_text) {
+      return `Button Text must be between 1 and ${textLimits.button_text} characters.`;
+    }
+    for (let i = 0; i < formData.services.length; i++) {
+      const service = formData.services[i];
+      if (!service.title || service.title.length > textLimits.service_title) {
+        return `Service ${i + 1} Title must be between 1 and ${textLimits.service_title} characters.`;
+      }
+      if (!service.text || service.text.length > textLimits.service_text) {
+        return `Service ${i + 1} Description must be between 1 and ${textLimits.service_text} characters.`;
+      }
+      if (!service.icon) {
+        return `Service ${i + 1} Icon is required.`;
+      }
+    }
+    return null;
+  };
+
   const handleSave = async () => {
     const accessToken = localStorage.getItem("accessToken");
-    if (
-      !formData.heading ||
-      !formData.subheading ||
-      !formData.description ||
-      !formData.button_text ||
-      formData.services.some((service) => service.title === "" || service.text === "")
-    ) {
-      setMessage("All fields are required.");
+    const validationError = validateForm();
+    if (validationError) {
+      setMessage(validationError);
       setIsError(true);
       return;
     }
@@ -161,7 +201,17 @@ function ServicesEditor() {
         </Box>
       ) : (
         <Box component="form" noValidate autoComplete="off" sx={{ "& .MuiTextField-root": { mb: 2 } }}>
-          <TextField fullWidth label="Heading" name="heading" variant="outlined" value={formData.heading} onChange={handleChange} margin="normal" />
+          <TextField
+            fullWidth
+            label="Heading"
+            name="heading"
+            variant="outlined"
+            value={formData.heading}
+            onChange={handleChange}
+            margin="normal"
+            inputProps={{ maxLength: textLimits.heading }}
+            helperText={`${formData.heading.length}/${textLimits.heading} characters`}
+          />
           <TextField
             fullWidth
             label="Subheading"
@@ -170,6 +220,8 @@ function ServicesEditor() {
             value={formData.subheading}
             onChange={handleChange}
             margin="normal"
+            inputProps={{ maxLength: textLimits.subheading }}
+            helperText={`${formData.subheading.length}/${textLimits.subheading} characters`}
           />
           <TextField
             fullWidth
@@ -181,10 +233,12 @@ function ServicesEditor() {
             margin="normal"
             multiline
             rows={4}
+            inputProps={{ maxLength: textLimits.description }}
+            helperText={`${formData.description.length}/${textLimits.description} characters`}
           />
           {formData.services.map((service, index) => (
             <Grid container spacing={2} key={index} sx={{ mb: 2 }}>
-              <Grid item xs={12} sm={5}>
+              <Grid item xs={12} sm={4}>
                 <TextField
                   fullWidth
                   label={`Service ${index + 1} Title`}
@@ -193,9 +247,11 @@ function ServicesEditor() {
                   value={service.title}
                   onChange={(e) => handleChange(e, index)}
                   margin="normal"
+                  inputProps={{ maxLength: textLimits.service_title }}
+                  helperText={`${service.title.length}/${textLimits.service_title} characters`}
                 />
               </Grid>
-              <Grid item xs={12} sm={6}>
+              <Grid item xs={12} sm={4}>
                 <TextField
                   fullWidth
                   label={`Service ${index + 1} Description`}
@@ -206,7 +262,27 @@ function ServicesEditor() {
                   margin="normal"
                   multiline
                   rows={3}
+                  inputProps={{ maxLength: textLimits.service_text }}
+                  helperText={`${service.text.length}/${textLimits.service_text} characters`}
                 />
+              </Grid>
+              <Grid item xs={12} sm={3}>
+                <TextField
+                  select
+                  fullWidth
+                  label={`Service ${index + 1} Icon`}
+                  name={`service_icon_${index}`}
+                  variant="outlined"
+                  value={service.icon}
+                  onChange={(e) => handleChange(e, index)}
+                  margin="normal"
+                >
+                  {serviceIcons.map((icon) => (
+                    <MenuItem key={icon} value={icon}>
+                      {icon}
+                    </MenuItem>
+                  ))}
+                </TextField>
               </Grid>
               <Grid item xs={12} sm={1} sx={{ display: "flex", alignItems: "center" }}>
                 <IconButton onClick={() => removeService(index)} color="error">
@@ -226,6 +302,8 @@ function ServicesEditor() {
             value={formData.button_text}
             onChange={handleChange}
             margin="normal"
+            inputProps={{ maxLength: textLimits.button_text }}
+            helperText={`${formData.button_text.length}/${textLimits.button_text} characters`}
           />
           <Button variant="contained" color="primary" startIcon={<SaveIcon />} onClick={handleSave} sx={{ mt: 2 }} disabled={loading}>
             {isNew ? "Create" : "Update"} Services Section

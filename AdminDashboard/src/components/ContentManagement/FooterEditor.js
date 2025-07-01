@@ -29,6 +29,13 @@ function FooterEditor() {
   const navigate = useNavigate();
 
   const socialPlatforms = ["Facebook", "Instagram", "LinkedIn"];
+  const textLimits = {
+    abn: 20,
+    description: 280,
+    get_in_touch: 60,
+    social_platform: 15,
+    social_url: 150,
+  };
 
   useEffect(() => {
     const accessToken = localStorage.getItem("accessToken");
@@ -66,13 +73,13 @@ function FooterEditor() {
       const newSocialLinks = [...formData.social_links];
       const idx = parseInt(name.split("_")[2]);
       if (name.startsWith("social_platform_")) {
-        newSocialLinks[idx].platform = value;
+        newSocialLinks[idx].platform = value.slice(0, textLimits.social_platform);
       } else {
-        newSocialLinks[idx].url = value;
+        newSocialLinks[idx].url = value.slice(0, textLimits.social_url);
       }
       setFormData((prev) => ({ ...prev, social_links: newSocialLinks }));
     } else {
-      setFormData((prev) => ({ ...prev, [name]: value }));
+      setFormData((prev) => ({ ...prev, [name]: value.slice(0, textLimits[name]) }));
     }
   };
 
@@ -90,15 +97,33 @@ function FooterEditor() {
     }));
   };
 
+  const validateForm = () => {
+    if (!formData.abn || formData.abn.length > textLimits.abn) {
+      return `ABN must be between 1 and ${textLimits.abn} characters.`;
+    }
+    if (!formData.description || formData.description.length > textLimits.description) {
+      return `Description must be between 1 and ${textLimits.description} characters.`;
+    }
+    if (!formData.get_in_touch || formData.get_in_touch.length > textLimits.get_in_touch) {
+      return `Get in Touch text must be between 1 and ${textLimits.get_in_touch} characters.`;
+    }
+    for (let i = 0; i < formData.social_links.length; i++) {
+      const link = formData.social_links[i];
+      if (!link.platform || link.platform.length > textLimits.social_platform) {
+        return `Social Platform ${i + 1} must be between 1 and ${textLimits.social_platform} characters.`;
+      }
+      if (!link.url || link.url.length > textLimits.social_url) {
+        return `Social URL ${i + 1} must be between 1 and ${textLimits.social_url} characters.`;
+      }
+    }
+    return null;
+  };
+
   const handleSave = async () => {
     const accessToken = localStorage.getItem("accessToken");
-    if (
-      !formData.abn ||
-      !formData.description ||
-      !formData.get_in_touch ||
-      formData.social_links.some((link) => !link.platform || !link.url)
-    ) {
-      setMessage("All fields are required.");
+    const validationError = validateForm();
+    if (validationError) {
+      setMessage(validationError);
       setIsError(true);
       return;
     }
@@ -158,6 +183,8 @@ function FooterEditor() {
             value={formData.abn}
             onChange={handleChange}
             margin="normal"
+            inputProps={{ maxLength: textLimits.abn }}
+            helperText={`${formData.abn.length}/${textLimits.abn} characters`}
           />
           <TextField
             fullWidth
@@ -169,6 +196,8 @@ function FooterEditor() {
             margin="normal"
             multiline
             rows={4}
+            inputProps={{ maxLength: textLimits.description }}
+            helperText={`${formData.description.length}/${textLimits.description} characters`}
           />
           <TextField
             fullWidth
@@ -180,6 +209,8 @@ function FooterEditor() {
             margin="normal"
             multiline
             rows={2}
+            inputProps={{ maxLength: textLimits.get_in_touch }}
+            helperText={`${formData.get_in_touch.length}/${textLimits.get_in_touch} characters`}
           />
           {formData.social_links.map((link, index) => (
             <Grid container spacing={2} key={index} sx={{ mb: 2 }}>
@@ -193,6 +224,8 @@ function FooterEditor() {
                   value={link.platform}
                   onChange={(e) => handleChange(e, index)}
                   margin="normal"
+                  inputProps={{ maxLength: textLimits.social_platform }}
+                  helperText={`${link.platform.length}/${textLimits.social_platform} characters`}
                 >
                   {socialPlatforms.map((platform) => (
                     <MenuItem key={platform} value={platform}>
@@ -210,6 +243,8 @@ function FooterEditor() {
                   value={link.url}
                   onChange={(e) => handleChange(e, index)}
                   margin="normal"
+                  inputProps={{ maxLength: textLimits.social_url }}
+                  helperText={`${link.url.length}/${textLimits.social_url} characters`}
                 />
               </Grid>
               <Grid item xs={12} sm={1} sx={{ display: "flex", alignItems: "center" }}>

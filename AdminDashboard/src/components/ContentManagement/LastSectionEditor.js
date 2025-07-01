@@ -19,6 +19,13 @@ function LastSectionEditor() {
   const [isNew, setIsNew] = useState(true);
   const navigate = useNavigate();
 
+  const textLimits = {
+    heading: 25,
+    subheading: 40,
+    description: 320,
+    button_text: 15,
+  };
+
   useEffect(() => {
     const accessToken = localStorage.getItem("accessToken");
     const userRole = localStorage.getItem("userRole");
@@ -51,13 +58,30 @@ function LastSectionEditor() {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
+    setFormData((prev) => ({ ...prev, [name]: value.slice(0, textLimits[name]) }));
+  };
+
+  const validateForm = () => {
+    if (!formData.heading || formData.heading.length > textLimits.heading) {
+      return `Heading must be between 1 and ${textLimits.heading} characters.`;
+    }
+    if (!formData.subheading || formData.subheading.length > textLimits.subheading) {
+      return `Subheading must be between 1 and ${textLimits.subheading} characters.`;
+    }
+    if (!formData.description || formData.description.length > textLimits.description) {
+      return `Description must be between 1 and ${textLimits.description} characters.`;
+    }
+    if (!formData.button_text || formData.button_text.length > textLimits.button_text) {
+      return `Button Text must be between 1 and ${textLimits.button_text} characters.`;
+    }
+    return null;
   };
 
   const handleSave = async () => {
     const accessToken = localStorage.getItem("accessToken");
-    if (!formData.heading || !formData.subheading || !formData.description || !formData.button_text) {
-      setMessage("All fields are required.");
+    const validationError = validateForm();
+    if (validationError) {
+      setMessage(validationError);
       setIsError(true);
       return;
     }
@@ -109,7 +133,17 @@ function LastSectionEditor() {
         </Box>
       ) : (
         <Box component="form" noValidate autoComplete="off" sx={{ "& .MuiTextField-root": { mb: 2 } }}>
-          <TextField fullWidth label="Heading" name="heading" variant="outlined" value={formData.heading} onChange={handleChange} margin="normal" />
+          <TextField
+            fullWidth
+            label="Heading"
+            name="heading"
+            variant="outlined"
+            value={formData.heading}
+            onChange={handleChange}
+            margin="normal"
+            inputProps={{ maxLength: textLimits.heading }}
+            helperText={`${formData.heading.length}/${textLimits.heading} characters`}
+          />
           <TextField
             fullWidth
             label="Subheading"
@@ -118,6 +152,8 @@ function LastSectionEditor() {
             value={formData.subheading}
             onChange={handleChange}
             margin="normal"
+            inputProps={{ maxLength: textLimits.subheading }}
+            helperText={`${formData.subheading.length}/${textLimits.subheading} characters`}
           />
           <TextField
             fullWidth
@@ -129,6 +165,8 @@ function LastSectionEditor() {
             margin="normal"
             multiline
             rows={4}
+            inputProps={{ maxLength: textLimits.description }}
+            helperText={`${formData.description.length}/${textLimits.description} characters`}
           />
           <TextField
             fullWidth
@@ -138,6 +176,8 @@ function LastSectionEditor() {
             value={formData.button_text}
             onChange={handleChange}
             margin="normal"
+            inputProps={{ maxLength: textLimits.button_text }}
+            helperText={`${formData.button_text.length}/${textLimits.button_text} characters`}
           />
           <Button variant="contained" color="primary" startIcon={<SaveIcon />} onClick={handleSave} sx={{ mt: 2 }} disabled={loading}>
             {isNew ? "Create" : "Update"} Last Section
