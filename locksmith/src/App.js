@@ -38,7 +38,8 @@ import PrivateRoute from './components/PrivateRoute/PrivateRoute';
 import CustomerRoute from './components/PrivateRoute/CustomerRoute';
 import ContactForm from './components/ContactUsTwo/ContactUsTwo';
 import PaymentSuccess from "./components/PaymentStatus/PaymentSuccess";
-import PaymentCancel from './components/DetailedServices/Services/PaymentCancel'; // Import the new component
+import PaymentCancel from './components/DetailedServices/Services/PaymentCancel';
+import CCTVPreRegister from './Pages/CCTVPreRegister';
 
 function App() {
   return (
@@ -61,12 +62,13 @@ function App() {
             <Route path="/commercial" element={<Commercial />} />
             <Route path="/emergency" element={<Emergency />} />
             <Route path="/smart-lock" element={<SmartLock />} />
+            <Route path="/cctv-pre-register" element={<CCTVPreRegister />} />
             
             {/* Payment Related Routes */}
             <Route path="/confirm-payment" element={<ConfirmPayment />} />
             <Route path="/success-payment" element={<SuccessPayment />} />
             <Route path="/payment-success" element={<PaymentSuccess />} />
-            <Route path="/payment-cancel" element={<PaymentCancel />} /> {/* Add new route */}
+            <Route path="/payment-cancel" element={<PaymentCancel />} />
             
             {/* Customer Protected Routes */}
             <Route element={<CustomerRoute />}>

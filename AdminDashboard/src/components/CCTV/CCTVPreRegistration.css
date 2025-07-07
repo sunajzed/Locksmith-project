@@ -1,0 +1,34 @@
+.cctv-pre-registration-container {
+  padding: 20px;
+}
+
+.cctv-pre-registration-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+}
+
+.cctv-pre-registration-table th,
+.cctv-pre-registration-table td {
+  border: 1px solid #ddd;
+  padding: 8px;
+  text-align: left;
+}
+
+.cctv-pre-registration-table th {
+  background-color: #f2f2f2;
+  font-weight: bold;
+}
+
+.cctv-pre-registration-table tr:nth-child(even) {
+  background-color: #f9f9f9;
+}
+
+.cctv-pre-registration-table tr:hover {
+  background-color: #f1f1f1;
+}
+
+.error {
+  color: red;
+  margin-bottom: 10px;
+}

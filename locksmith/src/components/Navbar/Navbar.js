@@ -285,8 +285,8 @@ export default function NavBar() {
                       </Dropdown.Item>
                       <Dropdown.Item
                         as={Link}
-                        to="#"
-                        onClick={() => handleNavLinkClick("#")}
+                        to="/cctv-pre-register"
+                        onClick={() => handleNavLinkClick("/cctv-pre-register")}
                       >
                         CCTV Technician
                       </Dropdown.Item>
@@ -312,10 +312,10 @@ export default function NavBar() {
                         Locksmith
                       </Dropdown.Item>
 
-                      <Dropdown.Item
+                     <Dropdown.Item
                         as={Link}
-                        to="#"
-                        onClick={() => handleNavLinkClick("#")}
+                        to="/cctv-pre-register"
+                        onClick={() => handleNavLinkClick("/cctv-pre-register")}
                       >
                         CCTV Technician
                       </Dropdown.Item>
