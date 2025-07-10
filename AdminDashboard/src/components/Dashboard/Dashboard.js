@@ -9,7 +9,7 @@ import {
   Users,
   LogOut,
   MessageCircle,
-  Camera, // Add Camera icon for CCTV
+  Camera,
 } from "lucide-react";
 import CreateService from "../Service/CreateService";
 import ManageLocksmith from "../LockSmith/ManageLocksmith";
@@ -26,7 +26,8 @@ import ServicesEditor from "../ContentManagement/ServicesEditor";
 import HowWeWorkEditor from "../ContentManagement/HowWeWorkEditor";
 import LastSectionEditor from "../ContentManagement/LastSectionEditor";
 import FooterEditor from "../ContentManagement/FooterEditor";
-import CCTVPreRegistration from "../CCTV/CCTVPreRegistration"; // Import the new component
+import CCTVPreRegistration from "../CCTV/CCTVPreRegistration";
+import ManageSuggestedServices from "../Service/ManageSuggestedServices"; // Added new component
 import api from "../../api/api";
 import "./Dashboard.css";
 
@@ -53,6 +54,10 @@ const menuItems = [
       {
         name: "Manage Car Key Details",
         component: React.createElement(ManageCarKeyDetails),
+      },
+      {
+        name: "Manage Suggested Services",
+        component: React.createElement(ManageSuggestedServices),
       },
     ],
   },
