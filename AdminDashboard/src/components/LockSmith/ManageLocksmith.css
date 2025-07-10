@@ -1,49 +1,100 @@
 .locksmith-container {
     padding: 20px;
     text-align: center;
-  }
-  
-  .locksmith-table {
+}
+
+.locksmith-table {
     width: 100%;
     border-collapse: collapse;
     margin-top: 20px;
-  }
-  
-  .locksmith-table th, .locksmith-table td {
+}
+
+.locksmith-table th, .locksmith-table td {
     border: 1px solid #ddd;
     padding: 8px;
     text-align: center;
-  }
-  
-  .locksmith-table th {
+}
+
+.locksmith-table th {
     background-color: #343434;
     color: white;
-  }
-  
-  .photo {
+}
+
+.photo {
     width: 50px;
     height: 50px;
     border-radius: 50%;
-  }
-  
-  .approve-btn {
+}
+
+.approve-btn {
     background-color: green;
     color: white;
     border: none;
     padding: 5px 10px;
     margin-right: 5px;
     cursor: pointer;
-  }
-  
-  .remove-btn {
+}
+
+.remove-btn {
     background-color: red;
     color: white;
     border: none;
     padding: 5px 10px;
+    margin-right: 5px;
     cursor: pointer;
-  }
-  
-  .approve-btn:hover, .remove-btn:hover {
+}
+
+.approve-btn:hover, .remove-btn:hover {
     opacity: 0.8;
-  }
-  
+}
+
+/* Toggle Switch Styles */
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 40px;
+    height: 20px;
+}
+
+.switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    transition: .4s;
+    border-radius: 20px;
+}
+
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 16px;
+    width: 16px;
+    left: 2px;
+    bottom: 2px;
+    background-color: white;
+    transition: .4s;
+    border-radius: 50%;
+}
+
+input:checked + .slider {
+    background-color: #2196F3;
+}
+
+input:checked + .slider:before {
+    transform: translateX(20px);
+}
+
+input:disabled + .slider {
+    background-color: #e0e0e0;
+    cursor: not-allowed;
+}
