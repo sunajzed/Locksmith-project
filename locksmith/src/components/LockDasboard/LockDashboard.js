@@ -9,6 +9,7 @@ import {
   User,
   CheckCircle,
   CreditCard,
+  PlusCircle,
 } from "lucide-react";
 
 import ManageService from "../Services copy/ManageService";
@@ -21,6 +22,7 @@ import MyProfile from "../Services copy/MyProfile/MyProfile";
 import StripeOnboarding from "../StripeOnboarding/StripeOnboarding";
 import StripeStatus from "../Services copy/StripeStatus/StripeStatus";
 import StripeDashboard from "../Services copy/StripeStatus/StripeDashboard";
+import SuggestServices from "../Services copy/SuggestServices/SuggestServices";
 
 const DashboardHome = () => <div>Welcome to Locksmith Dashboard</div>;
 
@@ -52,6 +54,11 @@ const menuItems = [
         component: <StripeDashboard />,
       },
     ],
+  },
+  {
+    name: "Suggest Services",
+    icon: PlusCircle,
+    component: <SuggestServices />,
   },
 ];
 
@@ -109,7 +116,7 @@ const LockDashboard = () => {
             <div className="menu">
               {isMobile && (
                 <button className="close-sidebar-btn" onClick={toggleSidebar}>
-                  &times;
+                  ×
                 </button>
               )}
               {menuItems.map((item) => (
