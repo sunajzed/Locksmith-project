@@ -1,152 +1,6 @@
-// import React, { useState, useEffect } from "react";
-// import "./ManageLocksmith.css";
-// import api from '../../api/api';
-
-// const ManageLocksmith = () => {
-//   const [locksmiths, setLocksmiths] = useState([]);
-//   const [error, setError] = useState("");
-
-//   useEffect(() => {
-//     const fetchLocksmiths = async () => {
-//       const token = localStorage.getItem("accessToken");
-//       if (!token) {
-//         setError("Unauthorized access. Please login as an admin.");
-//         return;
-//       }
-//       try {
-//         const response = await api.get("/api/locksmiths/", {
-//           headers: { Authorization: `Bearer ${token}` },
-//         });
-//         setLocksmiths(response.data);
-//       } catch (err) {
-//         setError("Failed to fetch locksmiths.");
-//       }
-//     };
-
-//     fetchLocksmiths();
-//   }, []);
-
-//   const handleApprove = async (id) => {
-//     const token = localStorage.getItem("accessToken");
-//     if (!token) {
-//       setError("Unauthorized access. Please login as an admin.");
-//       return;
-//     }
-
-//     try {
-//       await api.put(`/api/locksmiths/${id}/verify_locksmith/`, {}, {
-//         headers: { Authorization: `Bearer ${token}` },
-//       });
-
-//       // Update state to reflect approval instantly
-//       setLocksmiths((prevLocksmiths) =>
-//         prevLocksmiths.map((locksmith) =>
-//           locksmith.id === id ? { ...locksmith, is_approved: true } : locksmith
-//         )
-//       );
-//     } catch (err) {
-//       setError(`Failed to approve locksmith with ID: ${id}`);
-//     }
-//   };
-
-//   const handleReject = async (id) => {
-//     const token = localStorage.getItem("accessToken");
-//     if (!token) {
-//       setError("Unauthorized access. Please login as an admin.");
-//       return;
-//     }
-
-//     try {
-//       await api.put(`/api/locksmiths/${id}/reject_locksmith/`, {}, {
-//         headers: { Authorization: `Bearer ${token}` },
-//       });
-
-//       // Update state to reflect rejection instantly
-//       setLocksmiths((prevLocksmiths) =>
-//         prevLocksmiths.map((locksmith) =>
-//           locksmith.id === id ? { ...locksmith, is_approved: false } : locksmith
-//         )
-//       );
-//     } catch (err) {
-//       setError(`Failed to reject locksmith with ID: ${id}`);
-//     }
-//   };
-
-//   return (
-//     <div className="locksmith-container">
-//       <h2>Locksmith Details</h2>
-//       {error && <p className="error">{error}</p>}
-//       <table className="locksmith-table">
-//         <thead>
-//           <tr>
-//             <th>ID</th>
-//             <th>Username</th>
-//             <th>Email</th>
-//             <th>Address</th>
-//             <th>Contact No</th>
-//             <th>PCC File</th>
-//             <th>Licence File</th>
-//             <th>Photo</th>
-//             <th>Service Area</th>
-//             <th>Status</th>
-//             <th>Actions</th>
-//           </tr>
-//         </thead>
-//         <tbody>
-//           {locksmiths.map((locksmith) => (
-//             <tr key={locksmith.id}>
-//               <td>{locksmith.id}</td>
-//               <td>{locksmith.user.username}</td>
-//               <td>{locksmith.user.email}</td>
-//               <td>{locksmith.address}</td>
-//               <td>{locksmith.contact_number}</td>
-//               <td>
-//                 {locksmith.pcc_file ? (
-//                   <a href={locksmith.pcc_file} download>Download</a>
-//                 ) : (
-//                   "No File"
-//                 )}
-//               </td>
-//               <td>
-//                 {locksmith.license_file ? (
-//                   <a href={locksmith.license_file} download>Download</a>
-//                 ) : (
-//                   "No File"
-//                 )}
-//               </td>
-//               <td>
-//                 <img src={locksmith.photo} alt="Locksmith" className="photo" />
-//               </td>
-//               <td>{locksmith.service_area || "N/A"}</td>
-//               <td>{locksmith.is_approved ? "Approved" : "Pending"}</td>
-//               <td>
-//                 <button
-//                   className="approve-btn"
-//                   onClick={() => handleApprove(locksmith.id)}
-//                   disabled={locksmith.is_approved}
-//                 >
-//                   Approve
-//                 </button>
-//                 <button
-//                   className="remove-btn"
-//                   onClick={() => handleReject(locksmith.id)}
-//                   disabled={!locksmith.is_approved}
-//                 >
-//                   Reject
-//                 </button>
-//               </td>
-//             </tr>
-//           ))}
-//         </tbody>
-//       </table>
-//     </div>
-//   );
-// };
-
-// export default ManageLocksmith;
 import React, { useState, useEffect } from "react";
 import "./ManageLocksmith.css";
-import api from '../../api/api';
+import api from "../../api/api";
 
 const ManageLocksmith = () => {
   const [locksmiths, setLocksmiths] = useState([]);
@@ -159,6 +13,7 @@ const ManageLocksmith = () => {
         setError("Unauthorized access. Please login as an admin.");
         return;
       }
+
       try {
         const response = await api.get("/api/locksmiths/", {
           headers: { Authorization: `Bearer ${token}` },
@@ -174,20 +29,19 @@ const ManageLocksmith = () => {
 
   const handleApprove = async (id) => {
     const token = localStorage.getItem("accessToken");
-    if (!token) {
-      setError("Unauthorized access. Please login as an admin.");
-      return;
-    }
+    if (!token) return setError("Unauthorized access. Please login.");
 
     try {
-      await api.put(`/api/locksmiths/${id}/verify_locksmith/`, {}, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      await api.put(
+        `/api/locksmiths/${id}/verify_locksmith/`,
+        {},
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
 
-      setLocksmiths((prevLocksmiths) =>
-        prevLocksmiths.map((locksmith) =>
-          locksmith.id === id ? { ...locksmith, is_approved: true } : locksmith
-        )
+      setLocksmiths((prev) =>
+        prev.map((l) => (l.id === id ? { ...l, is_approved: true } : l))
       );
     } catch (err) {
       setError(`Failed to approve locksmith with ID: ${id}`);
@@ -196,51 +50,50 @@ const ManageLocksmith = () => {
 
   const handleReject = async (id) => {
     const token = localStorage.getItem("accessToken");
-    if (!token) {
-      setError("Unauthorized access. Please login as an admin.");
-      return;
-    }
+    if (!token) return setError("Unauthorized access. Please login.");
 
     try {
-      await api.put(`/api/locksmiths/${id}/reject_locksmith/`, {}, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      await api.put(
+        `/api/locksmiths/${id}/reject_locksmith/`,
+        {},
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
 
-      setLocksmiths((prevLocksmiths) =>
-        prevLocksmiths.map((locksmith) =>
-          locksmith.id === id ? { ...locksmith, is_approved: false } : locksmith
-        )
+      setLocksmiths((prev) =>
+        prev.map((l) => (l.id === id ? { ...l, is_approved: false } : l))
       );
     } catch (err) {
       setError(`Failed to reject locksmith with ID: ${id}`);
     }
   };
 
-  const handleToggleDiscount = async (id, currentStatus) => {
+  const handleDiscountToggle = async (id) => {
     const token = localStorage.getItem("accessToken");
-    if (!token) {
-      setError("Unauthorized access. Please login as an admin.");
-      return;
-    }
+    if (!token) return setError("Unauthorized access. Please login.");
+
+    const confirmToggle = window.confirm(
+      "Are you sure you want to enable the discount for this locksmith?"
+    );
+    if (!confirmToggle) return;
 
     try {
       const response = await api.put(
         `/api/locksmiths/${id}/toggle_discount/`,
-        { is_discounted: !currentStatus },
+        {},
         {
           headers: { Authorization: `Bearer ${token}` },
         }
       );
 
-      setLocksmiths((prevLocksmiths) =>
-        prevLocksmiths.map((locksmith) =>
-          locksmith.id === id
-            ? { ...locksmith, is_discounted: response.data.is_discounted }
-            : locksmith
-        )
+      const { is_discounted } = response.data;
+
+      setLocksmiths((prev) =>
+        prev.map((l) => (l.id === id ? { ...l, is_discounted } : l))
       );
     } catch (err) {
-      setError(`Failed to toggle discount for locksmith with ID: ${id}`);
+      setError(`Failed to toggle discount for locksmith ID: ${id}`);
     }
   };
 
@@ -248,6 +101,7 @@ const ManageLocksmith = () => {
     <div className="locksmith-container">
       <h2>Locksmith Details</h2>
       {error && <p className="error">{error}</p>}
+
       <table className="locksmith-table">
         <thead>
           <tr>
@@ -266,55 +120,72 @@ const ManageLocksmith = () => {
           </tr>
         </thead>
         <tbody>
-          {locksmiths.map((locksmith) => (
-            <tr key={locksmith.id}>
-              <td>{locksmith.id}</td>
-              <td>{locksmith.user.username}</td>
-              <td>{locksmith.user.email}</td>
-              <td>{locksmith.address}</td>
-              <td>{locksmith.contact_number}</td>
+          {locksmiths.map((l) => (
+            <tr key={l.id}>
+              <td>{l.id}</td>
+              <td>{l.user.username}</td>
+              <td>{l.user.email}</td>
+              <td>{l.address}</td>
+              <td>{l.contact_number}</td>
               <td>
-                {locksmith.pcc_file ? (
-                  <a href={locksmith.pcc_file} download>Download</a>
+                {l.pcc_file ? (
+                  <a href={l.pcc_file} download>
+                    Download
+                  </a>
                 ) : (
                   "No File"
                 )}
               </td>
               <td>
-                {locksmith.license_file ? (
-                  <a href={locksmith.license_file} download>Download</a>
+                {l.license_file ? (
+                  <a href={l.license_file} download>
+                    Download
+                  </a>
                 ) : (
                   "No File"
                 )}
               </td>
               <td>
-                <img src={locksmith.photo} alt="Locksmith" className="photo" />
+                <img src={l.photo} alt="Locksmith" className="photo" />
               </td>
-              <td>{locksmith.service_area || "N/A"}</td>
-              <td>{locksmith.is_approved ? "Approved" : "Pending"}</td>
+              <td>{l.service_area || "N/A"}</td>
+              <td>{l.is_approved ? "Approved" : "Pending"}</td>
               <td>
-                <label className="switch">
-                  <input
-                    type="checkbox"
-                    checked={locksmith.is_discounted}
-                    onChange={() => handleToggleDiscount(locksmith.id, locksmith.is_discounted)}
-                    disabled={!locksmith.is_approved}
-                  />
-                  <span className="slider"></span>
-                </label>
+                <div
+                  title={
+                    l.is_approved
+                      ? ""
+                      : "Approve the locksmith to enable discount toggle"
+                  }
+                >
+                  <label
+                    className={`switch ${
+                      !l.is_approved ? "disabled-switch" : ""
+                    }`}
+                  >
+                    <input
+                      type="checkbox"
+                      checked={l.is_discounted || false}
+                      onChange={() => handleDiscountToggle(l.id)}
+                      disabled={!l.is_approved}
+                    />
+                    <span className="slider round"></span>
+                  </label>
+                </div>
               </td>
+
               <td>
                 <button
                   className="approve-btn"
-                  onClick={() => handleApprove(locksmith.id)}
-                  disabled={locksmith.is_approved}
+                  onClick={() => handleApprove(l.id)}
+                  disabled={l.is_approved}
                 >
                   Approve
                 </button>
                 <button
                   className="remove-btn"
-                  onClick={() => handleReject(locksmith.id)}
-                  disabled={!locksmith.is_approved}
+                  onClick={() => handleReject(l.id)}
+                  disabled={!l.is_approved}
                 >
                   Reject
                 </button>
