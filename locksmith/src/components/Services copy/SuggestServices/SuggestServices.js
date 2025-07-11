@@ -9,6 +9,7 @@ const SuggestServices = () => {
     price: "",
     additional_key_price: "",
     supported_vehicles: "",
+    details: "",
   });
   const [carKeyDetails, setCarKeyDetails] = useState([]);
   const [error, setError] = useState("");
@@ -80,6 +81,7 @@ const SuggestServices = () => {
         price: "",
         additional_key_price: "",
         supported_vehicles: "",
+        details: "",
       });
       setCarKeyDetails([]);
     } catch (error) {
@@ -148,6 +150,19 @@ const SuggestServices = () => {
             value={formData.additional_key_price}
             onChange={handleInputChange}
             step="0.01"
+            required
+          />
+        </div>
+        <div className="form-group">
+          <label htmlFor="details">Details</label>
+          <textarea
+            className="form-control"
+            id="details"
+            name="details"
+            value={formData.details}
+            onChange={handleInputChange}
+            placeholder="Enter details about the service (e.g., what's included, special notes)"
+            rows={3}
             required
           />
         </div>
@@ -228,7 +243,7 @@ const SuggestServices = () => {
                     type="number"
                     className="form-control"
                     id={`number_of_buttons-${index}`}
-                    value={ detail.number_of_buttons}
+                    value={detail.number_of_buttons}
                     onChange={(e) =>
                       updateCarKeyDetail(index, "number_of_buttons", e.target.value)
                     }

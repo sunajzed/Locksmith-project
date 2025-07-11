@@ -12,6 +12,7 @@ const ManageSuggestedServices = () => {
     price: "",
     additional_key_price: "",
     supported_vehicles: "",
+    details: "",
   });
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
@@ -40,6 +41,7 @@ const ManageSuggestedServices = () => {
       price: parseFloat(suggestion.price).toFixed(2),
       additional_key_price: parseFloat(suggestion.additional_key_price).toFixed(2),
       supported_vehicles: suggestion.supported_vehicles || "",
+      details: suggestion.details || "",
     });
   };
 
@@ -50,6 +52,7 @@ const ManageSuggestedServices = () => {
         service_type: formData.service_type,
         price: parseFloat(formData.price).toFixed(2),
         additional_key_price: parseFloat(formData.additional_key_price).toFixed(2),
+        details: formData.details,
         ...(formData.service_type === "automotive" && {
           supported_vehicles: formData.supported_vehicles,
           car_key_details: editSuggestion.car_key_details,
@@ -139,6 +142,7 @@ const ManageSuggestedServices = () => {
             <th>Service Type</th>
             <th>Price</th>
             <th>Additional Key Price</th>
+            <th>Details</th>
             <th>Supported Vehicles</th>
             <th>Car Key Details</th>
             <th>Created At</th>
@@ -155,6 +159,7 @@ const ManageSuggestedServices = () => {
               <td>{suggestion.service_type}</td>
               <td>${parseFloat(suggestion.price).toFixed(2)}</td>
               <td>${parseFloat(suggestion.additional_key_price).toFixed(2)}</td>
+              <td>{suggestion.details || "N/A"}</td>
               <td>{suggestion.supported_vehicles || "N/A"}</td>
               <td>
                 {suggestion.car_key_details ? (
@@ -257,6 +262,18 @@ const ManageSuggestedServices = () => {
                 value={formData.additional_key_price}
                 onChange={handleInputChange}
                 step="0.01"
+                required
+              />
+            </div>
+            <div className="form-group">
+              <label htmlFor="details">Details</label>
+              <textarea
+                className="form-control"
+                id="details"
+                name="details"
+                value={formData.details}
+                onChange={handleInputChange}
+                rows={3}
                 required
               />
             </div>
