@@ -40,8 +40,10 @@ const MyServices = () => {
             <th className="table-header">ID</th>
             <th className="table-header">Admin Service ID</th>
             <th className="table-header">Admin Service Name</th>
+            <th className="table-header">Service Type</th>
             <th className="table-header">Price ($)</th>
             <th className="table-header">Additional Key Price ($)</th>
+          
             <th className="table-header">Manufacturer</th>
             <th className="table-header">Model</th>
             <th className="table-header">Year Range</th>
@@ -60,8 +62,10 @@ const MyServices = () => {
                   <td>{service.id}</td>
                   <td>{service.admin_service_id}</td>
                   <td>{service.admin_service_name || "N/A"}</td>
+                  <td>{service.service_type || "N/A"}</td>
                   <td>{service.custom_price}</td>
                   <td>{service.additional_key_price || "N/A"}</td>
+                 
                   <td>{carKeyDetails.manufacturer || "N/A"}</td>
                   <td>{carKeyDetails.model || "N/A"}</td>
                   <td>{
