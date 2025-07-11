@@ -1,6 +1,9 @@
 import { useState, useEffect } from "react";
 import api from "../../api/api";
 import "./ManageSuggestedServices.css";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import Modal from "react-bootstrap/Modal";
 
 const ManageSuggestedServices = () => {
   const [suggestions, setSuggestions] = useState([]);
@@ -16,6 +19,7 @@ const ManageSuggestedServices = () => {
   });
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
+  const [showModal, setShowModal] = useState(false);
   const serviceTypes = ["smart_lock", "automotive", "commercial", "residential"];
 
   useEffect(() => {
@@ -43,6 +47,7 @@ const ManageSuggestedServices = () => {
       supported_vehicles: suggestion.supported_vehicles || "",
       details: suggestion.details || "",
     });
+    setShowModal(true);
   };
 
   const handleConfirmApprove = async () => {
@@ -59,17 +64,19 @@ const ManageSuggestedServices = () => {
         }),
       };
       await api.post(`/api/suggested-services/${editSuggestion.id}/confirm_and_add/`, payload);
-      setSuccess("Service approved and added successfully!");
+      toast.success("Service approved and added successfully!", { autoClose: 3000 });
       setSuggestions(suggestions.filter((s) => s.id !== editSuggestion.id));
       setEditSuggestion(null);
+      setShowModal(false);
       // Refresh suggestions after approval
       const response = await api.get("/api/suggested-services/");
       setSuggestions(response.data);
     } catch (error) {
-      setError(
+      toast.error(
         error.response?.data?.non_field_errors?.[0] ||
           error.response?.data?.error ||
-          "Failed to approve service suggestion."
+          "Failed to approve service suggestion.",
+        { autoClose: 3000 }
       );
     }
   };
@@ -79,13 +86,13 @@ const ManageSuggestedServices = () => {
     setSuccess("");
     try {
       await api.post(`/api/suggested-services/${id}/reject_suggestion/`);
-      setSuccess("Suggestion rejected successfully!");
+      toast.success("Suggestion rejected successfully!", { autoClose: 3000 });
       setSuggestions(suggestions.filter((s) => s.id !== id));
       // Refresh suggestions after rejection
       const response = await api.get("/api/suggested-services/");
       setSuggestions(response.data);
     } catch (error) {
-      setError("Failed to reject service suggestion.");
+      toast.error("Failed to reject service suggestion.", { autoClose: 3000 });
     }
   };
 
@@ -132,8 +139,7 @@ const ManageSuggestedServices = () => {
           All
         </button>
       </div>
-      {error && <div className="alert alert-danger">{error}</div>}
-      {success && <div className="alert alert-success">{success}</div>}
+      <ToastContainer position="top-right" autoClose={3000} hideProgressBar closeOnClick pauseOnHover />
       <table className="table table-striped">
         <thead>
           <tr>
@@ -207,120 +213,63 @@ const ManageSuggestedServices = () => {
         </tbody>
       </table>
 
-      {editSuggestion && (
-        <div className="approve-form">
-          <h3>Approve Service: {editSuggestion.name}</h3>
-          <form onSubmit={(e) => { e.preventDefault(); handleConfirmApprove(); }}>
-            <div className="form-group">
+      <Modal show={showModal} onHide={() => { setShowModal(false); setEditSuggestion(null); }} centered>
+        <Modal.Header closeButton>
+          <Modal.Title>Approve Service: {editSuggestion?.name}</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <form onSubmit={e => { e.preventDefault(); handleConfirmApprove(); }}>
+            <div className="form-group mb-2">
               <label htmlFor="name">Service Name</label>
-              <input
-                type="text"
-                className="form-control"
-                id="name"
-                name="name"
-                value={formData.name}
-                onChange={handleInputChange}
-                required
-              />
+              <input type="text" className="form-control" id="name" name="name" value={formData.name} onChange={handleInputChange} required />
             </div>
-            <div className="form-group">
+            <div className="form-group mb-2">
               <label htmlFor="service_type">Service Type</label>
-              <select
-                className="form-control"
-                id="service_type"
-                name="service_type"
-                value={formData.service_type}
-                onChange={handleInputChange}
-              >
-                {serviceTypes.map((type) => (
-                  <option key={type} value={type}>
-                    {type.charAt(0).toUpperCase() + type.slice(1)}
-                  </option>
+              <select className="form-control" id="service_type" name="service_type" value={formData.service_type} onChange={handleInputChange}>
+                {serviceTypes.map(type => (
+                  <option key={type} value={type}>{type.charAt(0).toUpperCase() + type.slice(1)}</option>
                 ))}
               </select>
             </div>
-            <div className="form-group">
+            <div className="form-group mb-2">
               <label htmlFor="price">Price ($)</label>
-              <input
-                type="number"
-                className="form-control"
-                id="price"
-                name="price"
-                value={formData.price}
-                onChange={handleInputChange}
-                step="0.01"
-                required
-              />
+              <input type="number" className="form-control" id="price" name="price" value={formData.price} onChange={handleInputChange} step="0.01" required />
             </div>
-            <div className="form-group">
+            <div className="form-group mb-2">
               <label htmlFor="additional_key_price">Additional Key Price ($)</label>
-              <input
-                type="number"
-                className="form-control"
-                id="additional_key_price"
-                name="additional_key_price"
-                value={formData.additional_key_price}
-                onChange={handleInputChange}
-                step="0.01"
-                required
-              />
+              <input type="number" className="form-control" id="additional_key_price" name="additional_key_price" value={formData.additional_key_price} onChange={handleInputChange} step="0.01" required />
             </div>
-            <div className="form-group">
+            <div className="form-group mb-2">
               <label htmlFor="details">Details</label>
-              <textarea
-                className="form-control"
-                id="details"
-                name="details"
-                value={formData.details}
-                onChange={handleInputChange}
-                rows={3}
-                required
-              />
+              <textarea className="form-control" id="details" name="details" value={formData.details} onChange={handleInputChange} rows={3} required />
             </div>
             {formData.service_type === "automotive" && (
               <>
-                <div className="form-group">
+                <div className="form-group mb-2">
                   <label htmlFor="supported_vehicles">Supported Vehicles</label>
-                  <input
-                    type="text"
-                    className="form-control"
-                    id="supported_vehicles"
-                    name="supported_vehicles"
-                    value={formData.supported_vehicles}
-                    onChange={handleInputChange}
-                    placeholder="e.g., Toyota, Honda, Ford"
-                  />
+                  <input type="text" className="form-control" id="supported_vehicles" name="supported_vehicles" value={formData.supported_vehicles} onChange={handleInputChange} placeholder="e.g., Toyota, Honda, Ford" />
                 </div>
-                <div className="form-group">
+                <div className="form-group mb-2">
                   <label>Car Key Details (Read-Only)</label>
-                  {editSuggestion.car_key_details ? (
+                  {editSuggestion?.car_key_details ? (
                     <ul className="car-key-details">
                       {editSuggestion.car_key_details.map((detail, index) => (
                         <li key={index}>
-                          {detail.manufacturer} {detail.model} ({detail.year_from}-
-                          {detail.year_to}, {detail.number_of_buttons} buttons)
+                          {detail.manufacturer} {detail.model} ({detail.year_from}-{detail.year_to}, {detail.number_of_buttons} buttons)
                         </li>
                       ))}
                     </ul>
-                  ) : (
-                    <p>No car key details provided.</p>
-                  )}
+                  ) : (<p>No car key details provided.</p>)}
                 </div>
               </>
             )}
-            <button type="submit" className="btn btn-primary">
-              Confirm Approval
-            </button>
-            <button
-              type="button"
-              className="btn btn-secondary"
-              onClick={() => setEditSuggestion(null)}
-            >
-              Cancel
-            </button>
+            <div className="d-flex justify-content-end gap-2 mt-3">
+              <button type="button" className="btn btn-secondary" onClick={() => { setShowModal(false); setEditSuggestion(null); }}>Cancel</button>
+              <button type="submit" className="btn btn-primary">Confirm Approval</button>
+            </div>
           </form>
-        </div>
-      )}
+        </Modal.Body>
+      </Modal>
     </div>
   );
 };

@@ -1,6 +1,8 @@
 import { useState } from "react";
 import api from "../../../api/api";
 import "./SuggestServices.css";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const SuggestServices = () => {
   const [formData, setFormData] = useState({
@@ -59,7 +61,7 @@ const SuggestServices = () => {
     setSuccess("");
 
     if (formData.service_type === "automotive" && carKeyDetails.length === 0) {
-      setError("Car key details are required for automotive services.");
+      toast.error("Car key details are required for automotive services.", { autoClose: 3000 });
       return;
     }
 
@@ -74,7 +76,7 @@ const SuggestServices = () => {
       };
 
       const response = await api.post("/api/suggested-services/", payload);
-      setSuccess("Service suggestion submitted successfully!");
+      toast.success("Service suggestion submitted successfully!", { autoClose: 3000 });
       setFormData({
         name: "",
         service_type: "smart_lock",
@@ -85,10 +87,11 @@ const SuggestServices = () => {
       });
       setCarKeyDetails([]);
     } catch (error) {
-      setError(
+      toast.error(
         error.response?.data?.non_field_errors?.[0] ||
           error.response?.data?.service_type?.[0] ||
-          "Failed to submit service suggestion."
+          "Failed to submit service suggestion.",
+        { autoClose: 3000 }
       );
     }
   };
@@ -96,8 +99,7 @@ const SuggestServices = () => {
   return (
     <div className="suggest-services">
       <h2>Suggest a New Service</h2>
-      {error && <div className="alert alert-danger">{error}</div>}
-      {success && <div className="alert alert-success">{success}</div>}
+      <ToastContainer position="top-right" autoClose={3000} hideProgressBar closeOnClick pauseOnHover />
       <form onSubmit={handleSubmit}>
         <div className="form-group">
           <label htmlFor="name">Service Name</label>
