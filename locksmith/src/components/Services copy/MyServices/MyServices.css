@@ -12,6 +12,41 @@
 .table th, .table td {
   text-align: center;
   vertical-align: middle;
+  padding: 12px 16px;
+  font-size: 1rem;
+}
+
+.table th {
+  min-width: 100px;
+}
+
+.table td {
+  word-break: break-word;
+}
+
+/* Custom column widths for better usability */
+.table th:nth-child(1), .table td:nth-child(1) { min-width: 60px; }   /* ID */
+.table th:nth-child(2), .table td:nth-child(2) { min-width: 120px; }  /* Admin Service ID */
+.table th:nth-child(3), .table td:nth-child(3) { min-width: 180px; }  /* Admin Service Name */
+.table th:nth-child(4), .table td:nth-child(4) { min-width: 120px; }  /* Custom Price */
+.table th:nth-child(5), .table td:nth-child(5) { min-width: 120px; }  /* Total Price */
+.table th:nth-child(6), .table td:nth-child(6) { min-width: 140px; }  /* Manufacturer */
+.table th:nth-child(7), .table td:nth-child(7) { min-width: 140px; }  /* Model */
+.table th:nth-child(8), .table td:nth-child(8) { min-width: 120px; }  /* Year Range */
+.table th:nth-child(9), .table td:nth-child(9) { min-width: 100px; }  /* Buttons */
+.table th:nth-child(10), .table td:nth-child(10) { min-width: 180px; } /* Details */
+.table th:nth-child(11), .table td:nth-child(11) { min-width: 120px; } /* Status */
+
+/* Responsive table: horizontal scroll on small screens */
+@media (max-width: 900px) {
+  .table-responsive {
+    overflow-x: auto;
+  }
+  .table th, .table td {
+    min-width: 100px;
+    font-size: 0.95rem;
+    padding: 10px 8px;
+  }
 }
 
 .table-header {
