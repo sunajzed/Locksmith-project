@@ -94,13 +94,13 @@ const ConfirmPayment = () => {
     );
   }
 
-  // Calculate the total price
-  const adjustedBasePrice =
-    parseFloat(basePrice) + additionalKeys * parseFloat(additionalKeyPrice);
-  const tenPercentFee = adjustedBasePrice * 0.1;
-  const platformFee = 40;
-  const gst = (tenPercentFee + platformFee) * 0.1;
-  const totalPrice = adjustedBasePrice + tenPercentFee + platformFee + gst;
+  // Calculate the total price (with discount logic)
+  const adjustedBasePrice = parseFloat(basePrice) + additionalKeys * parseFloat(additionalKeyPrice);
+  const isDiscounted = service?.is_discounted;
+  const serviceFee = isDiscounted ? 0 : adjustedBasePrice * 0.1;
+  const lockquickFee = 40;
+  const gst = (serviceFee + lockquickFee) * 0.1;
+  const totalPrice = adjustedBasePrice + serviceFee + lockquickFee + gst;
 
   const handleConfirmPayment = async () => {
     const accessToken = localStorage.getItem("accessToken");
@@ -210,20 +210,33 @@ const ConfirmPayment = () => {
             )}
             <div className="breakdown-item">
               <span>Service Fee (10%):</span>
-              <span>${tenPercentFee.toFixed(2)}</span>
+              <span>
+                {isDiscounted ? (
+                  <>
+                    Waived ($0.00)
+                  </>
+                ) : (
+                  <>${(adjustedBasePrice * 0.1).toFixed(2)}</>
+                )}
+              </span>
             </div>
             <div className="breakdown-item">
               <span>LockQuick Fee:</span>
-              <span>${platformFee.toFixed(2)}</span>
+              <span>${lockquickFee.toFixed(2)}</span>
             </div>
             <div className="breakdown-item">
-              <span>GST:</span>
+              <span>GST (10% on {isDiscounted ? `$${lockquickFee.toFixed(2)}` : `$${(serviceFee + lockquickFee).toFixed(2)}`}):</span>
               <span>${gst.toFixed(2)}</span>
             </div>
             <div className="breakdown-item total">
-              <span>Total Amount:</span>
+              <span>Total Amount Payable:</span>
               <span>${totalPrice.toFixed(2)}</span>
             </div>
+            {isDiscounted && (
+              <div className="breakdown-note" style={{color:'#388e3c',marginTop:'8px'}}>
+                <span>10% platform service fee waived for this booking.</span>
+              </div>
+            )}
           </div>
 
           <div className="booking-details">
