@@ -1996,7 +1996,13 @@ const Commercial = () => {
               }}
             >
               <Typography variant="h6">
-                Total Price: ${calculateTotalPrice().toFixed(2)}
+                Total Price: $
+                {currentService?.service?.total_price
+                  ? (
+                      Number(currentService.service.total_price) +
+                      (needMoreKeys && additionalKeys > 0 ? Number(additionalKeyPrice) * Number(additionalKeys) : 0)
+                    ).toFixed(2)
+                  : '0.00'}
               </Typography>
               {needMoreKeys && additionalKeys > 0 && currentService && (
                 <Typography variant="caption" sx={{ color: "text.secondary" }}>
