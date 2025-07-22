@@ -80,6 +80,58 @@ form label {
 }
 
 /* Responsive */
+/* Export Button */
+.export-container {
+  margin-left: auto;
+  padding-left: 1rem;
+}
+
+.export-btn {
+  min-width: 85px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.3rem 0.8rem;
+  font-size: 0.85rem;
+  font-weight: 500;
+  border-radius: 4px;
+  transition: all 0.2s ease-in-out;
+  background-color: #28a745;
+  border-color: #28a745;
+  color: white;
+}
+
+.export-btn:hover {
+  transform: translateY(-1px);
+  background-color: #218838;
+  border-color: #1e7e34;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+  color: white;
+}
+
+.export-btn:active {
+  transform: translateY(0);
+  background-color: #1e7e34;
+  border-color: #1c7430;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+}
+
+.export-btn:focus {
+  box-shadow: 0 0 0 0.2rem rgba(40, 167, 69, 0.25);
+}
+
+.export-btn:disabled {
+  background-color: #6c757d;
+  border-color: #6c757d;
+  opacity: 0.65;
+  cursor: not-allowed;
+}
+
+.export-btn .fa-file-export {
+  font-size: 0.9em;
+  margin-right: 0.4rem;
+}
+
 @media (max-width: 768px) {
   .table-container {
     padding: 1rem;
@@ -99,5 +151,10 @@ form label {
   .form-select,
   .form-control {
     font-size: 0.9rem;
+  }
+  
+  .export-btn {
+    padding: 0.2rem 0.6rem;
+    font-size: 0.8rem;
   }
 }

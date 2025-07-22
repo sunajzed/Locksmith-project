@@ -18,6 +18,7 @@ import ViewServices from "../Service/ViewService";
 import ApproveService from "../Service/ApproveService";
 import ViewMessages from "../ViewMessage/ViewMessages";
 import ManageCarKeyDetails from "../Service/ManageCarKeyDetails";
+import ManageSuggestedServices from "../Service/ManageSuggestedServices";
 import HeroSection from "../ContentManagement/HeroSection";
 import ServiceCards from "../ContentManagement/ServiceCards";
 import LockSmithEditor from "../ContentManagement/LockSmithEditor";
@@ -27,8 +28,8 @@ import HowWeWorkEditor from "../ContentManagement/HowWeWorkEditor";
 import LastSectionEditor from "../ContentManagement/LastSectionEditor";
 import FooterEditor from "../ContentManagement/FooterEditor";
 import CCTVPreRegistration from "../CCTV/CCTVPreRegistration";
-import ManageSuggestedServices from "../Service/ManageSuggestedServices"; // Added new component
 import api from "../../api/api";
+import { FaMoneyBillWave } from 'react-icons/fa';
 import "./Dashboard.css";
 
 const DashboardHome = function () {
@@ -60,6 +61,11 @@ const menuItems = [
         component: React.createElement(ManageSuggestedServices),
       },
     ],
+  },
+  {
+    name: "Earnings Summary",
+    icon: FaMoneyBillWave,
+    component: React.createElement(React.lazy(() => import('./EarningsSummary'))),
   },
   {
     name: "Content Management",

@@ -6,8 +6,43 @@ import api from "./../../api/api";
 
 const ApproveService = () => {    
   const [services, setServices] = useState([]);
+  const [filteredServices, setFilteredServices] = useState([]);
   const [message, setMessage] = useState(null);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
+
+  const fetchServices = async (search = searchTerm) => {
+    try {
+      const accessToken = localStorage.getItem("accessToken");
+      if (!accessToken) {
+        setMessage({ type: "danger", text: "Unauthorized. Please log in." });
+        return;
+      }
+
+      const response = await api.get(
+        "/api/admin/services/all_locksmith_services/",
+        {
+          headers: { Authorization: `Bearer ${accessToken}` },
+          params: search ? { search } : {},
+        }
+      );
+
+      const fetchedServices = response.data;
+      setServices(fetchedServices);
+      setFilteredServices(fetchedServices);
+
+      // Auto-approve services that meet criteria
+      fetchedServices.forEach((service) => {
+        if (!service.approved && isValidService(service)) {
+          handleApproval(service.id, "approve");
+        }
+      });
+    } catch (error) {
+      setMessage({ type: "danger", text: "Failed to fetch services." });
+      console.error("Error fetching services:", error);
+    }
+  };
 
   useEffect(() => {
     const userRole = localStorage.getItem("userRole");
@@ -17,38 +52,8 @@ const ApproveService = () => {
       return;
     }
 
-    const fetchServices = async () => {
-      try {
-        const accessToken = localStorage.getItem("accessToken");
-        if (!accessToken) {
-          setMessage({ type: "danger", text: "Unauthorized. Please log in." });
-          return;
-        }
-
-        const response = await api.get(
-          "/api/admin/services/all_locksmith_services/",
-          {
-            headers: { Authorization: `Bearer ${accessToken}` },
-          }
-        );
-
-        const fetchedServices = response.data;
-        setServices(fetchedServices);
-
-        // Auto-approve services that meet criteria
-        fetchedServices.forEach((service) => {
-          if (!service.approved && isValidService(service)) {
-            handleApproval(service.id, "approve");
-          }
-        });
-      } catch (error) {
-        setMessage({ type: "danger", text: "Failed to fetch services." });
-        console.error("Error fetching services:", error);
-      }
-    };
-
     fetchServices();
-  }, [navigate]);
+  }, [navigate, searchTerm]);
 
   // Function to validate if a service can be auto-approved
   const isValidService = (service) => {
@@ -66,6 +71,51 @@ const ApproveService = () => {
          service.car_key_details.year_from &&
          service.car_key_details.year_to))
     );
+  };
+
+  const handleExportCSV = async () => {
+    try {
+      setIsLoading(true);
+      const accessToken = localStorage.getItem("accessToken");
+      if (!accessToken) {
+        setMessage({ type: "danger", text: "Unauthorized. Please log in." });
+        return;
+      }
+
+      const response = await api.get(
+        "/api/admin/services/all_locksmith_services/",
+        {
+          headers: { Authorization: `Bearer ${accessToken}` },
+          params: { export: 'csv' },
+          responseType: 'blob',
+        }
+      );
+
+      // Create a blob URL for the file
+      const url = window.URL.createObjectURL(new Blob([response.data]));
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', 'locksmith_services.csv');
+      document.body.appendChild(link);
+      link.click();
+      link.parentNode.removeChild(link);
+      window.URL.revokeObjectURL(url);
+    } catch (error) {
+      setMessage({ type: "danger", text: "Failed to export services." });
+      console.error("Error exporting services:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleSearch = (e) => {
+    e.preventDefault();
+    fetchServices(searchTerm);
+  };
+
+  const clearSearch = () => {
+    setSearchTerm('');
+    fetchServices('');
   };
 
   const handleApproval = async (id, action) => {
@@ -103,8 +153,50 @@ const ApproveService = () => {
 
   return (
     <Container className="approve-service-container">
-      <h2 className="text-center">Approve Locksmith Services</h2>
+      <div className="d-flex justify-content-between align-items-center mb-3">
+        <h2 className="mb-0">Approve Locksmith Services</h2>
+        <Button 
+          variant="success" 
+          onClick={handleExportCSV}
+          disabled={isLoading || services.length === 0}
+        >
+          {isLoading ? 'Exporting...' : 'Export to CSV'}
+        </Button>
+      </div>
+      
       {message && <Alert variant={message.type}>{message.text}</Alert>}
+      
+      <div className="search-container mb-3">
+        <form onSubmit={handleSearch} className="d-flex gap-2">
+          <div className="flex-grow-1">
+            <input
+              type="text"
+              className="form-control"
+              placeholder="Search by username, email, contact, or service type..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              disabled={isLoading}
+            />
+          </div>
+          <Button 
+            variant="primary" 
+            type="submit"
+            disabled={isLoading}
+          >
+            Search
+          </Button>
+          {searchTerm && (
+            <Button 
+              variant="outline-secondary" 
+              onClick={clearSearch}
+              disabled={isLoading}
+            >
+              Clear
+            </Button>
+          )}
+        </form>
+      </div>
+      
       <Table bordered responsive className="mt-3 custom-table">
         <thead className="table-dark">
           <tr>
@@ -127,8 +219,22 @@ const ApproveService = () => {
           </tr>
         </thead>
         <tbody>
-          {services.length > 0 ? (
-            services.map((service) => (
+          {isLoading ? (
+            <tr>
+              <td colSpan="16" className="text-center">
+                <div className="spinner-border text-primary" role="status">
+                  <span className="visually-hidden">Loading...</span>
+                </div>
+              </td>
+            </tr>
+          ) : filteredServices.length === 0 ? (
+            <tr>
+              <td colSpan="16" className="text-center">
+                {searchTerm ? 'No matching services found' : 'No services available'}
+              </td>
+            </tr>
+          ) : (
+            filteredServices.map((service) => (
               <tr key={service.id}>
                 <td>{service.id}</td>
                 <td>{service.locksmith_name}</td>
@@ -158,12 +264,6 @@ const ApproveService = () => {
                 </td>
               </tr>
             ))
-          ) : (
-            <tr>
-              <td colSpan="16" className="text-center">
-                No locksmith services found.
-              </td>
-            </tr>
           )}
         </tbody>
       </Table>

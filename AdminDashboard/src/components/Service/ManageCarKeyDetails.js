@@ -15,13 +15,14 @@ const ManageCarKeyDetails = () => {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
 
   // Fetch all car key details on component mount
   useEffect(() => {
     fetchCarKeyDetails();
   }, []);
 
-  const fetchCarKeyDetails = async () => {
+  const fetchCarKeyDetails = async (search = "") => {
     setIsLoading(true);
     try {
       const accessToken = localStorage.getItem("accessToken");
@@ -30,10 +31,16 @@ const ManageCarKeyDetails = () => {
         return;
       }
 
+      const params = {};
+      if (search) {
+        params.search = search;
+      }
+
       const response = await api.get("/api/carkeydetails/", {
         headers: {
           Authorization: `Bearer ${accessToken}`,
         },
+        params,
       });
 
       setCarKeyDetails(response.data);
@@ -190,6 +197,46 @@ const ManageCarKeyDetails = () => {
     }
   };
 
+  const handleSearch = (e) => {
+    e.preventDefault();
+    fetchCarKeyDetails(searchTerm);
+  };
+
+  const handleExportCSV = async () => {
+    try {
+      const accessToken = localStorage.getItem("accessToken");
+      if (!accessToken) {
+        setError("No access token found. Please log in again.");
+        return;
+      }
+
+      const response = await api.get("/api/carkeydetails/", {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+        params: { export: 'csv' },
+        responseType: 'blob',
+      });
+
+      // Create a blob URL for the file
+      const url = window.URL.createObjectURL(new Blob([response.data]));
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', 'car_key_details.csv');
+      document.body.appendChild(link);
+      link.click();
+      link.parentNode.removeChild(link);
+      window.URL.revokeObjectURL(url);
+    } catch (err) {
+      console.error("Error exporting CSV:", err);
+      setError(
+        err.response?.data?.detail ||
+          err.response?.data?.message ||
+          "Failed to export car key details. Please try again."
+      );
+    }
+  };
+
   const resetForm = () => {
     setFormData({
       manufacturer: "",
@@ -203,10 +250,53 @@ const ManageCarKeyDetails = () => {
 
   return (
     <div className="manage-car-key-details">
-      <h2>Manage Car Key Details</h2>
+      <div className="header-container">
+        <h2>Manage Car Key Details</h2>
+        <button 
+          onClick={handleExportCSV} 
+          className="export-button"
+          title="Export to CSV"
+          disabled={isLoading || carKeyDetails.length === 0}
+        >
+          {isLoading ? 'Exporting...' : 'Export to CSV'}
+        </button>
+      </div>
 
       {error && <div className="alert alert-danger">{error}</div>}
       {success && <div className="alert alert-success">{success}</div>}
+
+      <div className="search-container">
+        <form onSubmit={handleSearch} className="search-form">
+          <input
+            type="text"
+            placeholder="Search by manufacturer, model, or year..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="search-input"
+            disabled={isLoading}
+          />
+          <button 
+            type="submit" 
+            className="search-button"
+            disabled={isLoading}
+          >
+            Search
+          </button>
+          {searchTerm && (
+            <button
+              type="button"
+              className="clear-search"
+              onClick={() => {
+                setSearchTerm("");
+                fetchCarKeyDetails();
+              }}
+              disabled={isLoading}
+            >
+              Clear
+            </button>
+          )}
+        </form>
+      </div>
 
       <form onSubmit={handleSubmit} className="car-key-form mb-5">
         <h3>{editingId ? "Edit" : "Add New"} Car Key Details</h3>

@@ -1,0 +1,117 @@
+Calendar container
+.fc {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  font-size: 0.9rem;
+}
+
+/* Header toolbar */
+.fc .fc-toolbar {
+  flex-direction: row;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.fc .fc-toolbar-title {
+  font-size: 1.4rem;
+  font-weight: 600;
+  color: #333;
+}
+
+/* Buttons */
+.fc .fc-button {
+  background-color: #f8f9fa;
+  border: 1px solid #dee2e6;
+  color: #212529;
+  padding: 0.3rem 0.65rem;
+  font-size: 0.875rem;
+  line-height: 1.5;
+  border-radius: 0.2rem;
+  transition: all 0.15s ease-in-out;
+}
+
+.fc .fc-button:hover {
+  background-color: #e2e6ea;
+  border-color: #dae0e5;
+  color: #16181b;
+}
+
+.fc .fc-button-primary:not(:disabled).fc-button-active,
+.fc .fc-button-primary:not(:disabled):active {
+  background-color: #0d6efd;
+  border-color: #0d6efd;
+  color: #fff;
+}
+
+/* Calendar header cells */
+.fc .fc-col-header-cell {
+  background-color: #f8f9fa;
+  padding: 0.5rem 0;
+  border-color: #dee2e6;
+}
+
+.fc .fc-col-header-cell-cushion {
+  color: #495057;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+/* Day cells */
+.fc .fc-daygrid-day {
+  border-color: #dee2e6;
+}
+
+.fc .fc-day-today {
+  background-color: #f8f9fa;
+}
+
+/* Events */
+.fc .fc-event {
+  border: none;
+  border-radius: 0.25rem;
+  padding: 0.15rem 0.35rem;
+  font-size: 0.8rem;
+  cursor: pointer;
+  margin: 1px 2px;
+  transition: all 0.2s ease;
+}
+
+.fc .fc-event:hover {
+  opacity: 0.9;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+/* Event dot */
+.fc .fc-daygrid-event-dot {
+  margin-right: 0.25rem;
+}
+
+/* Time grid */
+.fc .fc-timegrid-slot {
+  height: 2.5em;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .fc .fc-toolbar {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  
+  .fc .fc-toolbar-chunk {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.25rem;
+  }
+  
+  .fc .fc-toolbar-title {
+    font-size: 1.2rem;
+    margin: 0.5rem 0;
+  }
+  
+  .fc .fc-button {
+    padding: 0.25rem 0.5rem;
+    font-size: 0.8rem;
+  }
+}

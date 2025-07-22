@@ -10,13 +10,23 @@
   position: relative;
 }
 
+/* Header container */
+.header-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
 /* Headings */
 .manage-car-key-details h2 {
   font-size: 2rem;
   font-weight: 700;
   color: #1f2937;
-  margin-bottom: 1.5rem;
-  text-align: center;
+  margin: 0;
+  text-align: left;
 }
 
 .manage-car-key-details h3 {
@@ -24,6 +34,89 @@
   font-weight: 600;
   color: #374151;
   margin-bottom: 1.25rem;
+}
+
+/* Search container */
+.search-container {
+  margin: 1.5rem 0;
+}
+
+.search-form {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.search-input {
+  flex: 1;
+  min-width: 250px;
+  padding: 0.6rem 1rem;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  font-size: 0.95rem;
+  transition: all 0.2s ease;
+}
+
+.search-input:focus {
+  outline: none;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
+}
+
+.search-button, .clear-search {
+  padding: 0.6rem 1.25rem;
+  border: none;
+  border-radius: 6px;
+  font-size: 0.95rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.search-button {
+  background-color: #3b82f6;
+  color: white;
+}
+
+.search-button:hover:not(:disabled) {
+  background-color: #2563eb;
+}
+
+.search-button:disabled {
+  background-color: #93c5fd;
+  cursor: not-allowed;
+}
+
+.clear-search {
+  background-color: #f3f4f6;
+  color: #4b5563;
+}
+
+.clear-search:hover:not(:disabled) {
+  background-color: #e5e7eb;
+}
+
+.export-button {
+  background-color: #10b981;
+  color: white;
+  border: none;
+  padding: 0.6rem 1.25rem;
+  border-radius: 6px;
+  font-size: 0.95rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.export-button:hover:not(:disabled) {
+  background-color: #059669;
+}
+
+.export-button:disabled {
+  background-color: #a7f3d0;
+  cursor: not-allowed;
 }
 
 /* Alerts */
@@ -59,21 +152,29 @@
   bottom: 20px;
   right: 20px;
   max-width: 300px;
-  padding: 0.75rem 1rem;
+  padding: 12px 16px;
   border-radius: 8px;
   font-size: 0.875rem;
   color: #ffffff;
   display: flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: 10px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
   animation: slideIn 0.3s ease-in, fadeOut 0.3s ease-out 2.7s forwards;
   z-index: 1000;
+  background-color: #10b981;
+  border-left: 4px solid #059669;
 }
 
-.toast-success {
-  background-color: #10b981;
-  border: 1px solid #065f46;
+.toast svg {
+  flex-shrink: 0;
+  width: 18px;
+  height: 18px;
+}
+
+.toast-message {
+  flex-grow: 1;
+  line-height: 1.4;
 }
 
 /* Form styling */
@@ -221,7 +322,7 @@
 @keyframes slideIn {
   from {
     opacity: 0;
-    transform: translateX(20px);
+    transform: translateX(100%);
   }
   to {
     opacity: 1;

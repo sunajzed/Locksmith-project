@@ -23,11 +23,14 @@ import StripeOnboarding from "../StripeOnboarding/StripeOnboarding";
 import StripeStatus from "../Services copy/StripeStatus/StripeStatus";
 import StripeDashboard from "../Services copy/StripeStatus/StripeDashboard";
 import SuggestServices from "../Services copy/SuggestServices/SuggestServices";
+import { Calendar } from "lucide-react";
+import BookingsCalendar from "../Services copy/BookingsCalendar";
 
 const DashboardHome = () => <div>Welcome to Locksmith Dashboard</div>;
 
 const menuItems = [
   { name: "Dashboard", icon: Home, component: <DashboardHome /> },
+  { name: "Bookings Calendar", icon: Calendar, component: <BookingsCalendar /> },
   { name: "My Profile", icon: User, component: <MyProfile /> },
   {
     name: "Manage Service",
