@@ -1,73 +1,51 @@
-import React, { useState, useEffect, useCallback, useMemo } from "react";
-import { Button } from "react-bootstrap";
-import { FileEarmarkArrowDown } from "react-bootstrap-icons";
+import React, { useState, useEffect, useRef } from "react";
+import { CSVLink } from "react-csv";
 import "./ManageLocksmith.css";
 import api from "../../api/api";
-import { debounce } from "lodash";
 
 const ManageLocksmith = () => {
   const [locksmiths, setLocksmiths] = useState([]);
-  const [filteredLocksmiths, setFilteredLocksmiths] = useState([]);
   const [error, setError] = useState("");
-  const [searchTerm, setSearchTerm] = useState("");
-  const [sortOrder, setSortOrder] = useState("-user__date_joined");
-  const [isLoading, setIsLoading] = useState(false);
-  const [message, setMessage] = useState({ type: "", text: "" });
+  const [search, setSearch] = useState("");
+  const [sortOrder, setSortOrder] = useState("");
+  const csvLinkRef = useRef(null);
 
-  const fetchLocksmiths = useCallback(
-    async (search = "") => {
-      const token = localStorage.getItem("accessToken");
-      if (!token) {
-        setError("Unauthorized access. Please login as an admin.");
-        return;
-      }
+  const fetchLocksmiths = async (searchQuery = "", sort = "") => {
+    const token = localStorage.getItem("accessToken");
+    if (!token) {
+      setError("Unauthorized access. Please login as an admin.");
+      return;
+    }
 
-      try {
-        setIsLoading(true);
-        const response = await api.get("/api/locksmiths/", {
-          headers: { Authorization: `Bearer ${token}` },
-          params: {
-            search: search || undefined,
-            ordering: sortOrder,
-          },
-        });
-        setLocksmiths(response.data);
-        setFilteredLocksmiths(response.data);
-        setError("");
-      } catch (err) {
-        setError("Failed to fetch locksmiths.");
-        console.error("Error fetching locksmiths:", err);
-      } finally {
-        setIsLoading(false);
-      }
-    },
-    [sortOrder]
-  );
+    try {
+      const params = {};
+      if (searchQuery) params.search = searchQuery;
+      if (sort) params.ordering = sort === "asc" ? "user__date_joined" : "-user__date_joined";
 
-  // Memoize the debounced search function
-  const debouncedSearch = useMemo(
-    () =>
-      debounce((term) => {
-        fetchLocksmiths(term);
-      }, 300),
-    [fetchLocksmiths]
-  );
-
-  // Cleanup debounce on unmount
-  useEffect(() => {
-    return () => {
-      debouncedSearch.cancel();
-    };
-  }, [debouncedSearch]);
-
-  // Handle search term changes
-  useEffect(() => {
-    debouncedSearch(searchTerm);
-  }, [searchTerm, debouncedSearch]);
+      const response = await api.get("/api/locksmiths/", {
+        headers: { Authorization: `Bearer ${token}` },
+        params,
+      });
+      setLocksmiths(response.data);
+    } catch (err) {
+      setError("Failed to fetch locksmiths.");
+    }
+  };
 
   useEffect(() => {
     fetchLocksmiths();
-  }, [fetchLocksmiths]);
+  }, []);
+
+  const handleSearch = (e) => {
+    const searchValue = e.target.value;
+    setSearch(searchValue);
+    fetchLocksmiths(searchValue, sortOrder);
+  };
+
+  const handleSort = (order) => {
+    setSortOrder(order);
+    fetchLocksmiths(search, order);
+  };
 
   const handleApprove = async (id) => {
     const token = localStorage.getItem("accessToken");
@@ -111,6 +89,26 @@ const ManageLocksmith = () => {
     }
   };
 
+  const handleDelete = async (id) => {
+    const token = localStorage.getItem("accessToken");
+    if (!token) return setError("Unauthorized access. Please login.");
+
+    const confirmDelete = window.confirm(
+      "Are you sure you want to delete this locksmith? This action cannot be undone."
+    );
+    if (!confirmDelete) return;
+
+    try {
+      await api.delete(`/api/locksmiths/${id}/`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      setLocksmiths((prev) => prev.filter((l) => l.id !== id));
+    } catch (err) {
+      setError(`Failed to delete locksmith with ID: ${id}`);
+    }
+  };
+
   const handleDiscountToggle = async (id) => {
     const token = localStorage.getItem("accessToken");
     if (!token) return setError("Unauthorized access. Please login.");
@@ -139,144 +137,73 @@ const ManageLocksmith = () => {
     }
   };
 
-  const handleExportCSV = async () => {
-    const token = localStorage.getItem("accessToken");
-    if (!token) {
-      setError("Unauthorized access. Please login as an admin.");
-      return;
-    }
-
-    try {
-      setIsLoading(true);
-      const response = await api.get("/api/locksmiths/export-csv/", {
-        headers: { Authorization: `Bearer ${token}` },
-        responseType: 'blob',
-      });
-
-      const url = window.URL.createObjectURL(new Blob([response.data]));
-      const link = document.createElement('a');
-      link.href = url;
-      link.setAttribute('download', `locksmiths_export_${new Date().toISOString()}.csv`);
-      document.body.appendChild(link);
-      link.click();
-      link.remove();
-      window.URL.revokeObjectURL(url);
-    } catch (err) {
-      setError("Failed to export locksmiths data.");
-      console.error("Error exporting locksmiths:", err);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const handleDelete = async (id) => {
-    if (!window.confirm("Are you sure you want to delete this locksmith? This action cannot be undone.")) {
-      return;
-    }
-
-    const token = localStorage.getItem("accessToken");
-    if (!token) {
-      setError("Unauthorized access. Please login as an admin.");
-      return;
-    }
-
-    try {
-      setIsLoading(true);
-      await api.delete(`/api/locksmiths/${id}/`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      
-      setMessage({ type: "success", text: "Locksmith deleted successfully." });
-      fetchLocksmiths(searchTerm);
-    } catch (err) {
-      setMessage({ type: "danger", text: "Failed to delete locksmith." });
-      console.error("Error deleting locksmith:", err);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const toggleSortOrder = () => {
-    setSortOrder(prev => prev.startsWith('-') ? 'user__date_joined' : '-user__date_joined');
-  };
+  const csvHeaders = [
+    { label: "Username", key: "user.username" },
+    { label: "Email", key: "user.email" },
+    { label: "Contact", key: "contact_number" },
+    { label: "Discount Status", key: "is_discounted" },
+    { label: "Address", key: "address" },
+    { label: "Date Joined", key: "user.date_joined" },
+  ];
 
   return (
     <div className="locksmith-container">
       <div className="locksmith-header">
         <h2>Locksmith Details</h2>
-        <div className="locksmith-actions">
-          <Button
-            variant="success"
-            onClick={handleExportCSV}
-            disabled={isLoading}
-            className="export-btn"
-          >
-            <FileEarmarkArrowDown className="me-2" />
-            {isLoading ? 'Exporting...' : 'Export as CSV'}
-          </Button>
-        </div>
-      </div>
-      
-      <div className="locksmith-controls">
-        <div className="search-container">
+        <div className="locksmith-controls">
           <input
             type="text"
-            placeholder="Search by username, email, or contact"
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            className="search-input"
+            placeholder="Search by username, email, or contact number"
+            value={search}
+            onChange={handleSearch}
+            className="search-bar"
           />
-          {searchTerm && (
-            <button 
-              className="clear-search"
-              onClick={() => setSearchTerm('')}
-              title="Clear search"
+          <div className="sort-buttons">
+            <button
+              className={`sort-btn ${sortOrder === "asc" ? "active" : ""}`}
+              onClick={() => handleSort("asc")}
             >
-              ×
+              Sort Oldest First
             </button>
-          )}
-        </div>
-        
-        <div className="sort-container">
-          <span>Sort by: </span>
-          <button 
-            className={`sort-button ${sortOrder.startsWith('-') ? 'desc' : 'asc'}`}
-            onClick={toggleSortOrder}
-            disabled={isLoading}
+            <button
+              className={`sort-btn ${sortOrder === "desc" ? "active" : ""}`}
+              onClick={() => handleSort("desc")}
+            >
+              Sort Newest First
+            </button>
+          </div>
+          <CSVLink
+            data={locksmiths}
+            headers={csvHeaders}
+            filename="locksmiths_export.csv"
+            className="export-btn"
+            ref={csvLinkRef}
           >
-            {sortOrder.startsWith('-') ? 'Newest First' : 'Oldest First'}
-          </button>
+            Export to CSV
+          </CSVLink>
         </div>
       </div>
-      
-      {message.text && (
-        <div className={`alert alert-${message.type}`}>
-          {message.text}
-        </div>
-      )}
-      {error && <div className="error">{error}</div>}
-      {isLoading && <div className="loading">Loading...</div>}
 
       <div className="table-container">
         <table className="locksmith-table">
           <thead>
             <tr>
-              <th scope="col">ID</th>
-              <th scope="col">Username</th>
-              <th scope="col">Email</th>
-              <th scope="col">Address</th>
-              <th scope="col">Contact No</th>
-              <th scope="col">PCC File</th>
-              <th scope="col">Licence File</th>
-              <th scope="col">Photo</th>
-              <th scope="col">Service Area</th>
-              <th scope="col">Status</th>
-              <th scope="col">Discount</th>
-              <th scope="col">Actions</th>
+              <th>ID</th>
+              <th>Username</th>
+              <th>Email</th>
+              <th>Address</th>
+              <th>Contact No</th>
+              <th>PCC File</th>
+              <th>Licence File</th>
+              <th>Photo</th>
+              <th>Service Area</th>
+              <th>Status</th>
+              <th>Discount</th>
+              <th>Actions</th>
             </tr>
           </thead>
           <tbody>
-            {filteredLocksmiths.map((l) => (
+            {locksmiths.map((l) => (
               <tr key={l.id}>
                 <td>{l.id}</td>
                 <td>{l.user.username}</td>
@@ -330,22 +257,26 @@ const ManageLocksmith = () => {
                   </div>
                 </td>
                 <td>
-                  <div className="action-buttons">
-                    <button
-                      className="btn-approve"
-                      onClick={() => handleApprove(l.id)}
-                      disabled={l.is_approved}
-                    >
-                      {l.is_approved ? "Approved" : "Approve"}
-                    </button>
-                    <button
-                      className="btn-delete"
-                      onClick={() => handleDelete(l.id)}
-                      disabled={isLoading}
-                    >
-                      Delete
-                    </button>
-                  </div>
+                  <button
+                    className="approve-btn"
+                    onClick={() => handleApprove(l.id)}
+                    disabled={l.is_approved}
+                  >
+                    Approve
+                  </button>
+                  <button
+                    className="remove-btn"
+                    onClick={() => handleReject(l.id)}
+                    disabled={!l.is_approved}
+                  >
+                    Reject
+                  </button>
+                  <button
+                    className="delete-btn"
+                    onClick={() => handleDelete(l.id)}
+                  >
+                    Delete
+                  </button>
                 </td>
               </tr>
             ))}
