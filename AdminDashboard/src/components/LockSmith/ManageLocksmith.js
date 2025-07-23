@@ -1,4 +1,6 @@
 import React, { useState, useEffect, useCallback, useMemo } from "react";
+import { Button } from "react-bootstrap";
+import { FileEarmarkArrowDown } from "react-bootstrap-icons";
 import "./ManageLocksmith.css";
 import api from "../../api/api";
 import { debounce } from "lodash";
@@ -114,7 +116,7 @@ const ManageLocksmith = () => {
     if (!token) return setError("Unauthorized access. Please login.");
 
     const confirmToggle = window.confirm(
-      "Are you sure you want to enable the discount for this locksmith?"
+      "Are you sure you want to toggle the discount for this locksmith?"
     );
     if (!confirmToggle) return;
 
@@ -151,14 +153,14 @@ const ManageLocksmith = () => {
         responseType: 'blob',
       });
 
-      // Create a blob URL for the file
       const url = window.URL.createObjectURL(new Blob([response.data]));
       const link = document.createElement('a');
       link.href = url;
-      link.setAttribute('download', 'locksmiths_export.csv');
+      link.setAttribute('download', `locksmiths_export_${new Date().toISOString()}.csv`);
       document.body.appendChild(link);
       link.click();
       link.remove();
+      window.URL.revokeObjectURL(url);
     } catch (err) {
       setError("Failed to export locksmiths data.");
       console.error("Error exporting locksmiths:", err);
@@ -184,7 +186,6 @@ const ManageLocksmith = () => {
         headers: { Authorization: `Bearer ${token}` },
       });
       
-      // Refresh the list after successful deletion
       setMessage({ type: "success", text: "Locksmith deleted successfully." });
       fetchLocksmiths(searchTerm);
     } catch (err) {
@@ -204,13 +205,15 @@ const ManageLocksmith = () => {
       <div className="locksmith-header">
         <h2>Locksmith Details</h2>
         <div className="locksmith-actions">
-          <button 
-            className="btn btn-export"
+          <Button
+            variant="success"
             onClick={handleExportCSV}
             disabled={isLoading}
+            className="export-btn"
           >
+            <FileEarmarkArrowDown className="me-2" />
             {isLoading ? 'Exporting...' : 'Export as CSV'}
-          </button>
+          </Button>
         </div>
       </div>
       
@@ -251,102 +254,104 @@ const ManageLocksmith = () => {
           {message.text}
         </div>
       )}
-      {error && <p className="error">{error}</p>}
+      {error && <div className="error">{error}</div>}
       {isLoading && <div className="loading">Loading...</div>}
 
-      <table className="locksmith-table">
-        <thead>
-          <tr>
-            <th>ID</th>
-            <th>Username</th>
-            <th>Email</th>
-            <th>Address</th>
-            <th>Contact No</th>
-            <th>PCC File</th>
-            <th>Licence File</th>
-            <th>Photo</th>
-            <th>Service Area</th>
-            <th>Status</th>
-            <th>Discount</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          {filteredLocksmiths.map((l) => (
-            <tr key={l.id}>
-              <td>{l.id}</td>
-              <td>{l.user.username}</td>
-              <td>{l.user.email}</td>
-              <td>{l.address}</td>
-              <td>{l.contact_number}</td>
-              <td>
-                {l.pcc_file ? (
-                  <a href={l.pcc_file} download>
-                    Download
-                  </a>
-                ) : (
-                  "No File"
-                )}
-              </td>
-              <td>
-                {l.license_file ? (
-                  <a href={l.license_file} download>
-                    Download
-                  </a>
-                ) : (
-                  "No File"
-                )}
-              </td>
-              <td>
-                <img src={l.photo} alt="Locksmith" className="photo" />
-              </td>
-              <td>{l.service_area || "N/A"}</td>
-              <td>{l.is_approved ? "Approved" : "Pending"}</td>
-              <td>
-                <div
-                  title={
-                    l.is_approved
-                      ? ""
-                      : "Approve the locksmith to enable discount toggle"
-                  }
-                >
-                  <label
-                    className={`switch ${
-                      !l.is_approved ? "disabled-switch" : ""
-                    }`}
-                  >
-                    <input
-                      type="checkbox"
-                      checked={l.is_discounted || false}
-                      onChange={() => handleDiscountToggle(l.id)}
-                      disabled={!l.is_approved}
-                    />
-                    <span className="slider round"></span>
-                  </label>
-                </div>
-              </td>
-              <td>
-                <div className="action-buttons">
-                  <button
-                    className="btn-approve"
-                    onClick={() => handleApprove(l.id)}
-                    disabled={l.is_approved}
-                  >
-                    {l.is_approved ? "Approved" : "Approve"}
-                  </button>
-                  <button
-                    className="btn-delete"
-                    onClick={() => handleDelete(l.id)}
-                    disabled={isLoading}
-                  >
-                    Delete
-                  </button>
-                </div>
-              </td>
+      <div className="table-container">
+        <table className="locksmith-table">
+          <thead>
+            <tr>
+              <th scope="col">ID</th>
+              <th scope="col">Username</th>
+              <th scope="col">Email</th>
+              <th scope="col">Address</th>
+              <th scope="col">Contact No</th>
+              <th scope="col">PCC File</th>
+              <th scope="col">Licence File</th>
+              <th scope="col">Photo</th>
+              <th scope="col">Service Area</th>
+              <th scope="col">Status</th>
+              <th scope="col">Discount</th>
+              <th scope="col">Actions</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {filteredLocksmiths.map((l) => (
+              <tr key={l.id}>
+                <td>{l.id}</td>
+                <td>{l.user.username}</td>
+                <td>{l.user.email}</td>
+                <td>{l.address}</td>
+                <td>{l.contact_number}</td>
+                <td>
+                  {l.pcc_file ? (
+                    <a href={l.pcc_file} download>
+                      Download
+                    </a>
+                  ) : (
+                    "No File"
+                  )}
+                </td>
+                <td>
+                  {l.license_file ? (
+                    <a href={l.license_file} download>
+                      Download
+                    </a>
+                  ) : (
+                    "No File"
+                  )}
+                </td>
+                <td>
+                  <img src={l.photo} alt="Locksmith" className="photo" />
+                </td>
+                <td>{l.service_area || "N/A"}</td>
+                <td>{l.is_approved ? "Approved" : "Pending"}</td>
+                <td>
+                  <div
+                    title={
+                      l.is_approved
+                        ? ""
+                        : "Approve the locksmith to enable discount toggle"
+                    }
+                  >
+                    <label
+                      className={`switch ${
+                        !l.is_approved ? "disabled-switch" : ""
+                      }`}
+                    >
+                      <input
+                        type="checkbox"
+                        checked={l.is_discounted || false}
+                        onChange={() => handleDiscountToggle(l.id)}
+                        disabled={!l.is_approved}
+                      />
+                      <span className="slider round"></span>
+                    </label>
+                  </div>
+                </td>
+                <td>
+                  <div className="action-buttons">
+                    <button
+                      className="btn-approve"
+                      onClick={() => handleApprove(l.id)}
+                      disabled={l.is_approved}
+                    >
+                      {l.is_approved ? "Approved" : "Approve"}
+                    </button>
+                    <button
+                      className="btn-delete"
+                      onClick={() => handleDelete(l.id)}
+                      disabled={isLoading}
+                    >
+                      Delete
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 };
