@@ -2,8 +2,8 @@ import React, { useState, useEffect } from "react";
 import { useNavigate, useLocation, Link } from "react-router-dom";
 import "./Signup.css";
 import api from "../../api/api";
-import { FaEye, FaEyeSlash } from "react-icons/fa";
-import { auth, provider } from "../../firebase";
+import { FaEye, FaEyeSlash, FaFacebook } from "react-icons/fa";
+import { auth, googleProvider, facebookProvider } from "../../firebase";
 import { signInWithPopup } from "firebase/auth";
 
 export default function Login() {
@@ -134,48 +134,107 @@ export default function Login() {
     }
   };
 
-  const handleGoogleSignIn = async () => {
+  const handleSocialLogin = async (providerType) => {
     if (!agreeToTerms) {
       setError("You must agree to the Terms of Use and Privacy Policy to proceed.");
       return;
     }
 
     try {
-      const result = await signInWithPopup(auth, provider);
+      let result;
+      if (providerType === 'google') {
+        result = await signInWithPopup(auth, googleProvider);
+      } else if (providerType === 'facebook') {
+        result = await signInWithPopup(auth, facebookProvider);
+      } else {
+        throw new Error('Unsupported provider');
+      }
+
       const user = result.user;
       const idToken = await user.getIdToken();
 
       let username = user.displayName;
+      let email = user.email;
 
-      if (!username) {
-        const newUsername = prompt("Please enter your name:");
-        if (!newUsername) {
-          alert("Name is required! Please try again.");
-          return;
+      // For Facebook, check if email exists
+      if (providerType === 'facebook' && !email) {
+        const response = await api.post("/api/facebook-login/", {
+          token: idToken,
+          role: selectedRole,
+        });
+
+        if (response.data.status === 'email_required') {
+          // Prompt for email if not provided by Facebook
+          email = prompt("Please enter your email to continue:");
+          if (!email) {
+            setError("Email is required to continue with Facebook login.");
+            return;
+          }
+          
+          // Send email to backend to trigger OTP
+          const otpResponse = await api.post("/facebook-login/", {
+            token: idToken,
+            email: email,
+            role: selectedRole,
+          });
+
+          if (otpResponse.data.status === 'otp_sent') {
+            // Handle OTP verification
+            const otp = prompt("Please enter the OTP sent to your email:");
+            if (!otp) {
+              setError("OTP is required to continue with Facebook login.");
+              return;
+            }
+
+            // Verify OTP
+            const verifyResponse = await api.post("/verify-otp-login/", {
+              email: email,
+              otp: otp
+            });
+
+            if (verifyResponse.data.status === 'otp_login') {
+              // OTP verification successful, save tokens
+              localStorage.setItem("accessToken", verifyResponse.data.access);
+              localStorage.setItem("refreshToken", verifyResponse.data.refresh);
+              localStorage.setItem("userRole", selectedRole);
+              localStorage.setItem("username", username || email.split('@')[0]);
+              
+              navigate(selectedRole === "customer" ? "/" : "/locksmith");
+              return;
+            } else {
+              throw new Error('OTP verification failed');
+            }
+          }
         }
-        username = newUsername;
+      } else {
+        // Normal flow with email
+        const response = await api.post(
+          providerType === 'google' ? "/api/google-login/" : "/api/facebook-login/", 
+          {
+            token: idToken,
+            role: selectedRole,
+          }
+        );
+
+        const access = response.data.access_token || response.data.access;
+        const refresh = response.data.refresh_token || response.data.refresh;
+        const role = response.data.user?.role || selectedRole;
+
+        localStorage.setItem("accessToken", access);
+        localStorage.setItem("refreshToken", refresh);
+        localStorage.setItem("userRole", role);
+        localStorage.setItem("username", username || email.split('@')[0]);
+
+        navigate(role === "customer" ? "/" : "/locksmith");
       }
-
-      const response = await api.post("/api/google-login/", {
-        token: idToken,
-        role: selectedRole,
-      });
-
-      const access = response.data.access_token;
-      const refresh = response.data.refresh_token;
-      const role = response.data.user.role;
-
-      localStorage.setItem("accessToken", access);
-      localStorage.setItem("refreshToken", refresh);
-      localStorage.setItem("userRole", role);
-      localStorage.setItem("username", username);
-
-      navigate(role === "customer" ? "/" : "/locksmith");
     } catch (error) {
-      console.error("Google login failed:", error);
-      setError("Google login failed. Please try again.");
+      console.error(`${providerType} login failed:`, error);
+      setError(`${providerType === 'google' ? 'Google' : 'Facebook'} login failed. ${error.response?.data?.error || 'Please try again.'}`);
     }
   };
+
+  const handleGoogleSignIn = () => handleSocialLogin('google');
+  const handleFacebookSignIn = () => handleSocialLogin('facebook');
 
   const handleForgotPasswordSubmit = async (e) => {
     e.preventDefault();
@@ -295,13 +354,13 @@ export default function Login() {
               React.createElement("div", { className: "text-center text-muted mb-3" }, "or login with"),
               React.createElement(
                 "div",
-                { className: "d-flex justify-content-center" },
+                { className: "d-flex gap-2 w-100" },
                 React.createElement(
                   "button",
-                  { type: "button", className: "btn btn-google w-100", onClick: handleGoogleSignIn, disabled: !agreeToTerms },
+                  { type: "button", className: "btn btn-google flex-grow-1", onClick: handleGoogleSignIn, disabled: !agreeToTerms },
                   React.createElement(
                     "svg",
-                    { xmlns: "http://www.w3.org/2000/svg", width: "24", height: "24", viewBox: "0 0 24 24", className: "me-2" },
+                    { xmlns: "http://www.w3.org/2000/svg", width: "20", height: "20", viewBox: "0 0 24 24", className: "me-2" },
                     React.createElement("path", {
                       fill: "#4285F4",
                       d: "M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z",
@@ -319,7 +378,13 @@ export default function Login() {
                       d: "M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z",
                     })
                   ),
-                  "Sign in with Google"
+                  "Google"
+                ),
+                React.createElement(
+                  "button",
+                  { type: "button", className: "btn btn-facebook flex-grow-1", onClick: handleFacebookSignIn, disabled: !agreeToTerms },
+                  React.createElement(FaFacebook, { className: "me-2" }),
+                  "Facebook"
                 )
               )
             ),
