@@ -172,7 +172,7 @@ export default function Login() {
           }
           
           // Send email to backend to trigger OTP
-          const otpResponse = await api.post("/facebook-login/", {
+          const otpResponse = await api.post("/api/facebook-login/", {
             token: idToken,
             email: email,
             role: selectedRole,
@@ -187,7 +187,7 @@ export default function Login() {
             }
 
             // Verify OTP
-            const verifyResponse = await api.post("/verify-otp-login/", {
+            const verifyResponse = await api.post("/api/verify-otp-login/", {
               email: email,
               otp: otp
             });

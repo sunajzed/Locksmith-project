@@ -178,15 +178,18 @@ export default function UserSignup() {
 
       const user = result.user;
       const idToken = await user.getIdToken();
+      console.log('Facebook ID Token:', idToken);
 
       let username = user.displayName;
       let email = user.email;
 
       // For Facebook, check if email exists
       if (providerType === 'facebook' && !email) {
+        const role = 'customer';
+        console.log('Sending Facebook login request with role:', role);
         const response = await api.post("/api/facebook-login/", {
           token: idToken,
-          role: 'customer',
+          role: role,
         });
 
         if (response.data.status === 'email_required') {
@@ -198,7 +201,7 @@ export default function UserSignup() {
           }
           
           // Send email to backend to trigger OTP
-          const otpResponse = await api.post("/facebook-login/", {
+          const otpResponse = await api.post("/api/facebook-login/", {
             token: idToken,
             email: email,
             role: 'customer',
@@ -213,7 +216,7 @@ export default function UserSignup() {
             }
 
             // Verify OTP
-            const verifyResponse = await api.post("/verify-otp-login/", {
+            const verifyResponse = await api.post("/api/verify-otp-login/", {
               email: email,
               otp: otp
             });
